@@ -12,4 +12,4 @@ Aviasales.ru Поиск Дешевых Авиабилетов по 728 Авиа�
 ![bpmn](https://user-images.githubusercontent.com/22819920/228568057-e37499b7-ae11-4635-bf1f-9a284126a0d4.png)
 
 # API #
-TODO
+http://localhost:9095/swagger-ui/index.html#/
