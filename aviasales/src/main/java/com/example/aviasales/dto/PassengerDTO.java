@@ -4,7 +4,6 @@ import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.enums.Gender;
 import com.example.aviasales.util.annotations.ValueOfEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +12,37 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public class PassengerDTO {
+
+    public PassengerDTO(
+            String firstName,
+            String lastName,
+            String patronymic,
+            String gender,
+            String citizenship,
+            Boolean isKid,
+            String documentType,
+            String documentNumber,
+            LocalDate expirationDate,
+            Boolean hasHearingDifficulties,
+            Boolean hasVisionDifficulties,
+            Boolean requiredWheelchair,
+            Long tariffId
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.gender = gender;
+        this.citizenship = citizenship;
+        this.isKid = isKid;
+        this.documentType = documentType;
+        this.documentNumber = documentNumber;
+        this.expirationDate = expirationDate;
+        this.hasHearingDifficulties = (hasHearingDifficulties == null ? Boolean.FALSE : hasHearingDifficulties);
+        this.hasVisionDifficulties = (hasVisionDifficulties == null ? Boolean.FALSE : hasVisionDifficulties);
+        this.requiredWheelchair = (requiredWheelchair == null ? Boolean.FALSE : requiredWheelchair);
+        this.tariffId = tariffId;
+    }
     @NotBlank(message = "First-name is required.")
     private String firstName;
     @NotBlank(message = "Last-name is required.")
@@ -36,9 +64,9 @@ public class PassengerDTO {
     @NotNull(message = "Expiration-date cannot be null.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;
-    private Boolean hasHearingDifficulties = Boolean.FALSE;
-    private Boolean hasVisionDifficulties = Boolean.FALSE;
-    private Boolean requiredWheelchair = Boolean.FALSE;
+    private Boolean hasHearingDifficulties;
+    private Boolean hasVisionDifficulties;
+    private Boolean requiredWheelchair;
     @NotNull(message = "Tariff-id cannot be null.")
     @Min(1)
     private Long tariffId;

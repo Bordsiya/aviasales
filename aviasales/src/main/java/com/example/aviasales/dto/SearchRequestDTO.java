@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +20,41 @@ import java.time.LocalTime;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public class SearchRequestDTO {
+
+    public SearchRequestDTO (
+            Long airportFromId,
+            Long airportToId,
+            LocalDate dateFrom,
+            LocalDate dateBack,
+            Long amountOfAdults,
+            Long amountOfChildren,
+            String tariff,
+            Boolean hasBaggage,
+            LocalTime departureTimeFrom,
+            LocalTime arrivalTimeFrom,
+            Long flightDurationTimeUntilInHH,
+            Long maxPrice,
+            String sortingAlgorithm,
+            Integer pageNumber,
+            Integer pageSize
+    ) {
+        this.airportFromId = airportFromId;
+        this.airportToId = airportToId;
+        this.dateFrom = dateFrom;
+        this.dateBack = dateBack;
+        this.amountOfAdults = amountOfAdults;
+        this.amountOfChildren = amountOfChildren;
+        this.tariff = tariff;
+        this.hasBaggage = (hasBaggage == null ? Boolean.FALSE : hasBaggage);
+        this.departureTimeFrom = (departureTimeFrom == null ? LocalTime.MIN : departureTimeFrom);
+        this.arrivalTimeFrom = (arrivalTimeFrom == null ? LocalTime.MIN : arrivalTimeFrom);
+        this.flightDurationTimeUntilInHH = (flightDurationTimeUntilInHH == null ? 32L : flightDurationTimeUntilInHH);
+        this.maxPrice = (maxPrice == null ? 40000L : maxPrice);
+        this.sortingAlgorithm = (sortingAlgorithm == null ? SortingAlgorithm.CHEAP_FIRST.name() : sortingAlgorithm);
+        this.pageNumber = (pageNumber == null ? 1 : pageNumber);
+        this.pageSize = (pageSize == null ? 10 : pageSize);
+    }
     @NotNull(message = "The city-from cannot be null.")
     @JsonView
     private Long airportFromId;
@@ -49,28 +81,28 @@ public class SearchRequestDTO {
     @JsonView
     private String tariff;
     @JsonView
-    private Boolean hasBaggage = Boolean.FALSE;
+    private Boolean hasBaggage;
     @JsonView
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
-    private LocalTime departureTimeFrom = LocalTime.MIN;
+    private LocalTime departureTimeFrom;
     @JsonView
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
-    private LocalTime arrivalTimeFrom = LocalTime.MIN;
+    private LocalTime arrivalTimeFrom;
     @Min(0)
     @JsonView
-    private Long flightDurationTimeUntilInHH = 32L;
+    private Long flightDurationTimeUntilInHH;
     @Min(0)
     @JsonView
-    private Long maxPrice = 400000L;
+    private Long maxPrice;
     @ValueOfEnum(enumClass = SortingAlgorithm.class)
     @JsonView
-    private String sortingAlgorithm = SortingAlgorithm.CHEAP_FIRST.name();
-    @Min(0)
+    private String sortingAlgorithm;
+    @Min(1)
     @JsonView
-    private Integer pageNumber = 0;
-    @Min(0)
+    private Integer pageNumber;
+    @Min(1)
     @JsonView
-    private Integer pageSize = 10;
+    private Integer pageSize;
 }
