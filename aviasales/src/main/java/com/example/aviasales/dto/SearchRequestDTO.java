@@ -69,8 +69,8 @@ public class SearchRequestDTO {
     private String sortingAlgorithm = SortingAlgorithm.CHEAP_FIRST.name();
     @Min(0)
     @JsonView
-    private Long pageNumber = 0L;
+    private Integer pageNumber = 0;
     @Min(0)
     @JsonView
-    private Long pageSize = 10L;
+    private Integer pageSize = 10;
 }

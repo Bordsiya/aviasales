@@ -10,16 +10,14 @@ import java.util.Set;
 @Component
 public class SearchResponseMapper {
     public SearchResponseDTO toDTO(
-            Long minPrice,
             Airline airline,
             Flight flight,
             Airport departureAirport,
             Airport arrivalAirport,
-            Set<Tariff> tariffs,
+            Set<SearchResponseTariffWithPriceDTO> tariffsWithPrices,
             Aircraft aircraft
     ) {
         return new SearchResponseDTO(
-                minPrice,
                 new SearchResponseAirlineDTO(
                         airline.getAirlineId(),
                         airline.getAirlineName()
@@ -54,7 +52,7 @@ public class SearchResponseMapper {
                         aircraft.getAircraftId(),
                         aircraft.getModel()
                 ),
-                tariffs
+                tariffsWithPrices
         );
     }
 

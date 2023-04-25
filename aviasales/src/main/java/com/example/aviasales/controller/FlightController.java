@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/flights")
@@ -48,7 +47,7 @@ public class FlightController {
     )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces =
             MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<SearchResponseDTO>> searchFlights(
+    public ResponseEntity<List<SearchResponseDTO>> searchFlights(
             @Validated @RequestBody SearchRequestDTO searchRequestDTO
     ) {
         return ResponseEntity.ok(flightService.getFlightsFiltered(searchRequestDTO));

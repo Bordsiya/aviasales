@@ -1,9 +1,7 @@
 package com.example.aviasales.dto.search_response;
 
-import com.example.aviasales.entity.Tariff;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +11,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public class SearchResponseDTO {
-    @JsonView
-    private Long minPrice;
     @JsonView
     private SearchResponseAirlineDTO airline;
     @JsonView
@@ -26,5 +22,5 @@ public class SearchResponseDTO {
     @JsonView
     private SearchResponseAircraftDTO aircraft;
     @JsonView
-    private Set<Tariff> tariffs;
+    private Set<SearchResponseTariffWithPriceDTO> tariffsWithPrices;
 }
