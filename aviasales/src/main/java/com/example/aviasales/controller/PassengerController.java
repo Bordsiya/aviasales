@@ -4,6 +4,7 @@ import com.example.aviasales.dto.AddPassengersDTO;
 import com.example.aviasales.entity.Passenger;
 import com.example.aviasales.service.PassengerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,7 +36,7 @@ public class PassengerController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces =
             MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Passenger>> addPassengers(
-            @Validated @RequestBody AddPassengersDTO addPassengersDTO
+            @Validated @RequestBody @Parameter(description = "Запрос добавления пассажира") AddPassengersDTO addPassengersDTO
             ){
         return ResponseEntity.ok(passengerService.addPassengers(addPassengersDTO));
     }

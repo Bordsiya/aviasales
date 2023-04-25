@@ -48,7 +48,7 @@ public class FlightController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces =
             MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchResponseDTO>> searchFlights(
-            @Validated @RequestBody SearchRequestDTO searchRequestDTO
+            @Validated @RequestBody @Parameter(description = "Запрос поиска") SearchRequestDTO searchRequestDTO
     ) {
         return ResponseEntity.ok(flightService.getFlightsFiltered(searchRequestDTO));
     }
