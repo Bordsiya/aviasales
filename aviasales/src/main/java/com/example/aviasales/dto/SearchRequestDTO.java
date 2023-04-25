@@ -59,52 +59,67 @@ public class SearchRequestDTO {
     }
     @NotNull(message = "The city-from cannot be null.")
     @JsonView
+    @Schema(description = "ID аэропорта отправления", example = "1")
     private Long airportFromId;
     @NotNull(message = "The city-to cannot be null.")
     @JsonView
+    @Schema(description = "ID аэропорта прибытия", example = "2")
     private Long airportToId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonView
     @NotNull(message = "The date-from cannot be null.")
+    @Schema(description = "Дата отправления", example = "2023-02-09")
     private LocalDate dateFrom;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonView
+    @Schema(description = "Дата прибытия", example = "2023-02-10")
     private LocalDate dateBack;
     @Min(0)
     @NotNull(message = "Amount-of-adults cannot be null.")
     @JsonView
+    @Schema(description = "Количество взрослых", example = "2")
     private Long amountOfAdults;
     @Min(0)
     @NotNull(message = "Amount-of-children cannot be null.")
     @JsonView
+    @Schema(description = "Количество детей", example = "1")
     private Long amountOfChildren;
     @NotBlank(message = "Tariff is required.")
     @ValueOfEnum(enumClass = TariffType.class)
     @JsonView
+    @Schema(description = "Тип тарифа", example = "ECONOM")
     private String tariff;
     @JsonView
+    @Schema(description = "Имеется ли багаж", example = "true")
     private Boolean hasBaggage;
     @JsonView
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
+    @Schema(description = "Время отправления (начиная с)", example = "10:00")
     private LocalTime departureTimeFrom;
     @JsonView
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
+    @Schema(description = "Время прибытия (начиная с)", example = "14:00")
     private LocalTime arrivalTimeFrom;
     @Min(0)
     @JsonView
+    @Schema(description = "Длительность полёта (в часах)", example = "4")
     private Long flightDurationTimeUntilInHH;
     @Min(0)
     @JsonView
+    @Schema(description = "Максимальная цена", example = "40000")
     private Long maxPrice;
     @ValueOfEnum(enumClass = SortingAlgorithm.class)
     @JsonView
+    @Schema(description = "Алгоритм сортировки результата", example = "CHEAP_FIRST")
     private String sortingAlgorithm;
     @Min(1)
     @JsonView
+    @Schema(description = "Номер страницы", example = "1")
     private Integer pageNumber;
     @Min(1)
     @JsonView
+    @Schema(description = "Максимальное количество записей на 1 странице", example = "10")
     private Integer pageSize;
 }
