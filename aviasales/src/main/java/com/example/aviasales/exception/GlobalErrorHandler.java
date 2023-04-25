@@ -48,6 +48,14 @@ public class GlobalErrorHandler {
         return errorDTO;
     }
 
+    @ExceptionHandler(MailException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleUnexpectedErrorException(MailException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.MAIL_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleUnexpectedErrorException(Exception ex, WebRequest request) {

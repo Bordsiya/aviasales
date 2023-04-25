@@ -4,40 +4,49 @@ import com.example.aviasales.dto.AddPassengersDTO;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
 import com.example.aviasales.entity.*;
+import com.example.aviasales.exception.MailException;
 import com.example.aviasales.exception.NoAdultsForFlightException;
 import com.example.aviasales.exception.not_match.AirlinesNotMatchesException;
 import com.example.aviasales.exception.NotEnoughSeatsInAircraftException;
 import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException;
 import com.example.aviasales.repo.PassengerRepository;
+import com.example.aviasales.util.EmailService;
 import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.mappers.PassengerMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class PassengerService {
+    Logger logger = LoggerFactory.getLogger(PassengerService.class);
     private PassengerRepository passengerRepository;
     private TariffService tariffService;
     private FlightService flightService;
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
+    private EmailService emailService;
     @Autowired
     public PassengerService(
             PassengerRepository passengerRepository,
             TariffService tariffService,
             FlightService flightService,
             ReservationService reservationService,
-            PassengerMapper passengerMapper
+            PassengerMapper passengerMapper,
+            EmailService emailService
     ) {
         this.passengerRepository = passengerRepository;
         this.tariffService = tariffService;
         this.flightService = flightService;
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
+        this.emailService = emailService;
     }
 
     public Set<Passenger> addPassengers(AddPassengersDTO addPassengersDTO) {
@@ -86,6 +95,41 @@ public class PassengerService {
 
             passengers.add(passengerRepository.save(passengerMapper.fromDto(passengerDTO, tariff, flight, reservation)));
         }
+
+        sendAddPassengersEmail(flight, reservation, passengers);
         return passengers;
+    }
+
+    private void sendAddPassengersEmail(Flight flight, Reservation reservation, Set<Passenger> passengers) {
+        String textBase = "<b>Ваши билеты на aviasales.ru по заказу " + reservation.getReservationCode() + "</b>,<br>" +
+                "<i>Аэропорт вылета: " + flight.getDepartureAirport().getAirportName() + "</br>" +
+                "Аэропорт приземления: " + flight.getArrivalAirport().getAirportName() + "</br>" +
+                "Самолёт: " + flight.getAircraft().getModel() + "</br>" +
+                "Дата вылета: " + flight.getDepartureDate().toString() + "</br>" +
+                "Время вылета: " + flight.getDepartureTime().toString() + "</br>" +
+                "Дата приземления: " + flight.getArrivalDate().toString() + "</br>" +
+                "Время приземления: " + flight.getArrivalTime().toString() + "</br>" +
+                "</br> </br>" +
+                "Путешественики: </br>" +
+                "%s" +
+                "</i>";
+
+        StringBuilder passengersText = new StringBuilder();
+        for (Passenger passenger: passengers) {
+            passengersText.append(passenger.getFirstName()).append(" ").append(passenger.getLastName()).append(" ").append(passenger.getPatronymic()).append("</br>");
+            passengersText.append("Документ: ").append(passenger.getDocumentType().documentName).append("</br>");
+            passengersText.append("Номер документа: ").append(passenger.getDocumentNumber()).append("</br>");
+            passengersText.append("</br>");
+        }
+
+        try {
+            emailService.sendHTMLMessage(
+                    reservation.getEmail(),
+                    flight.getAircraft().getAirline().getAirlineName(),
+                    String.format(textBase, passengersText)
+            );
+        } catch (MessagingException e) {
+            throw new MailException(reservation.getEmail());
+        }
     }
 }
