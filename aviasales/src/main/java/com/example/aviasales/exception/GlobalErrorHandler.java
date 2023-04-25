@@ -1,0 +1,59 @@
+package com.example.aviasales.exception;
+
+import com.example.aviasales.dto.ErrorDTO;
+import com.example.aviasales.exception.not_found.ResourceNotFoundException;
+import com.example.aviasales.exception.not_match.ResourceNotMatchException;
+import com.example.aviasales.util.enums.Code;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.Date;
+
+@ControllerAdvice
+@ResponseBody
+public class GlobalErrorHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorDTO handleNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.RESOURCE_NOT_FOUND, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+    @ExceptionHandler(ResourceNotMatchException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleNotMatchesException(ResourceNotMatchException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.NOT_MATCHES, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+    @ExceptionHandler(NotEnoughSeatsInAircraftException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleNotEnoughSeatsInAircraftException(NotEnoughSeatsInAircraftException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.IMPOSSIBLE_OPERATION, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+    @ExceptionHandler(NoAdultsForFlightException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleNoAdultsForFlightException(NoAdultsForFlightException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.IMPOSSIBLE_OPERATION, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleUnexpectedErrorException(Exception ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                        Code.INTERNAL_SERVER_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+}
