@@ -60,12 +60,4 @@ public class GlobalErrorHandler {
         return errorDTO;
     }
 
-    @ExceptionHandler(HttpClientErrorException.UnsupportedMediaType.class)
-    @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ErrorDTO handleUnsupportedMediaTypeException(MailException ex, WebRequest request) {
-        ErrorDTO errorDTO = new ErrorDTO(
-                Code.UNSUPPORTED_MEDIA_TYPE, new Date(), ex.getMessage(), request.getDescription(false));
-        return errorDTO;
-    }
-
 }
