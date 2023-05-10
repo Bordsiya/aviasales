@@ -3,7 +3,6 @@ package com.example.aviasales.dto;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.enums.TariffType;
 import com.example.aviasales.util.annotations.ValueOfEnum;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,12 +11,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -33,8 +32,8 @@ public class SearchRequestDTO {
             Long amountOfChildren,
             String tariff,
             Boolean hasBaggage,
-            LocalTime departureTimeFrom,
-            LocalTime arrivalTimeFrom,
+            String departureTimeFrom,
+            String arrivalTimeFrom,
             Long flightDurationTimeUntilInHH,
             Long maxPrice,
             String sortingAlgorithm,
@@ -49,8 +48,8 @@ public class SearchRequestDTO {
         this.amountOfChildren = amountOfChildren;
         this.tariff = tariff;
         this.hasBaggage = (hasBaggage == null ? Boolean.FALSE : hasBaggage);
-        this.departureTimeFrom = (departureTimeFrom == null ? LocalTime.MIN : departureTimeFrom);
-        this.arrivalTimeFrom = (arrivalTimeFrom == null ? LocalTime.MIN : arrivalTimeFrom);
+        this.departureTimeFrom = (departureTimeFrom == null ? "00:00" : departureTimeFrom);
+        this.arrivalTimeFrom = (arrivalTimeFrom == null ? "00:00" : arrivalTimeFrom);
         this.flightDurationTimeUntilInHH = (flightDurationTimeUntilInHH == null ? 32L : flightDurationTimeUntilInHH);
         this.maxPrice = (maxPrice == null ? 40000L : maxPrice);
         this.sortingAlgorithm = (sortingAlgorithm == null ? SortingAlgorithm.CHEAP_FIRST.name() : sortingAlgorithm);
@@ -65,12 +64,12 @@ public class SearchRequestDTO {
     @JsonView
     @Schema(description = "ID аэропорта прибытия", example = "2")
     private Long airportToId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonView
     @NotNull(message = "The date-from cannot be null.")
     @Schema(description = "Дата отправления", example = "2023-02-09")
     private LocalDate dateFrom;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonView
     @Schema(description = "Дата прибытия", example = "2023-02-10")
     private LocalDate dateBack;
@@ -96,12 +95,12 @@ public class SearchRequestDTO {
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
     @Schema(description = "Время отправления (начиная с)", example = "10:00")
-    private LocalTime departureTimeFrom;
+    private String departureTimeFrom;
     @JsonView
     @JsonDeserialize(using = LocalTimeDeserializer.class)
     @JsonSerialize(using = LocalTimeSerializer.class)
     @Schema(description = "Время прибытия (начиная с)", example = "14:00")
-    private LocalTime arrivalTimeFrom;
+    private String arrivalTimeFrom;
     @Min(0)
     @JsonView
     @Schema(description = "Длительность полёта (в часах)", example = "4")

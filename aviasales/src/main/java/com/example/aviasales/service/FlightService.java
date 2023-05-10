@@ -1,12 +1,12 @@
 package com.example.aviasales.service;
 
-import com.example.aviasales.dto.SearchRequestDTO;
 import com.example.aviasales.dto.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.Flight;
 import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
+import com.example.aviasales.util.SearchRequest;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.SearchResponseMapper;
@@ -34,23 +34,23 @@ public class FlightService {
         return flightRepository.findById(flightId).orElseThrow(() -> new FlightNotFoundException(flightId));
     }
 
-    public List<SearchResponseDTO> getFlightsFiltered(SearchRequestDTO searchRequestDTO) {
+    public List<SearchResponseDTO> getFlightsFiltered(SearchRequest searchRequest) {
         Set<Flight> filteredFlights = flightRepository.getFlightsSearched(
-                searchRequestDTO.getAirportToId(),
-                searchRequestDTO.getAirportFromId(),
-                searchRequestDTO.getDepartureTimeFrom(),
-                searchRequestDTO.getArrivalTimeFrom(),
-                searchRequestDTO.getFlightDurationTimeUntilInHH(),
-                searchRequestDTO.getDateFrom()
+                searchRequest.getAirportToId(),
+                searchRequest.getAirportFromId(),
+                searchRequest.getDepartureTimeFrom(),
+                searchRequest.getArrivalTimeFrom(),
+                searchRequest.getFlightDurationTimeUntilInHH(),
+                searchRequest.getDateFrom()
         );
-        if (searchRequestDTO.getDateBack() != null) {
+        if (searchRequest.getDateBack() != null) {
             filteredFlights.addAll(flightRepository.getFlightsSearched(
-                    searchRequestDTO.getAirportToId(),
-                    searchRequestDTO.getAirportFromId(),
-                    searchRequestDTO.getDepartureTimeFrom(),
-                    searchRequestDTO.getArrivalTimeFrom(),
-                    searchRequestDTO.getFlightDurationTimeUntilInHH(),
-                    searchRequestDTO.getDateBack()
+                    searchRequest.getAirportToId(),
+                    searchRequest.getAirportFromId(),
+                    searchRequest.getDepartureTimeFrom(),
+                    searchRequest.getArrivalTimeFrom(),
+                    searchRequest.getFlightDurationTimeUntilInHH(),
+                    searchRequest.getDateBack()
             ));
         }
         List<SearchResponseDTO> searchResponseDTOS = new ArrayList<>();
@@ -58,11 +58,11 @@ public class FlightService {
             Set<Tariff> tariffs = flight.getAircraft().getAirline().getTariffs();
             Set<SearchResponseTariffWithPriceDTO> tariffsWithPrices = new TreeSet<>(SearchResponseTariffWithPriceDTOSortUtils.getComparator());
             for (Tariff tariff: tariffs) {
-                long price = (flight.getDefaultPriceForKids() + tariff.getPriceForKids()) * searchRequestDTO.getAmountOfChildren()
-                        + (flight.getDefaultPriceForAdults() + tariff.getPriceForAdults()) * searchRequestDTO.getAmountOfAdults();
-                if (tariff.getTariffType().name().equals(searchRequestDTO.getTariff())
-                        && tariff.getHasBaggage().equals(searchRequestDTO.getHasBaggage())
-                        && price <= searchRequestDTO.getMaxPrice()
+                long price = (flight.getDefaultPriceForKids() + tariff.getPriceForKids()) * searchRequest.getAmountOfChildren()
+                        + (flight.getDefaultPriceForAdults() + tariff.getPriceForAdults()) * searchRequest.getAmountOfAdults();
+                if (tariff.getTariffType().name().equals(searchRequest.getTariff())
+                        && tariff.getHasBaggage().equals(searchRequest.getHasBaggage())
+                        && price <= searchRequest.getMaxPrice()
                 ) tariffsWithPrices.add(
                         new SearchResponseTariffWithPriceDTO(
                                 tariff,
@@ -83,7 +83,7 @@ public class FlightService {
         }
 
         searchResponseDTOS.sort(SearchResponseDTOSortUtils.getComparatorBySortingAlgorithm(
-                SortingAlgorithm.valueOf(searchRequestDTO.getSortingAlgorithm())));
-        return Utils.getPage(searchResponseDTOS, searchRequestDTO.getPageNumber(), searchRequestDTO.getPageSize());
+                SortingAlgorithm.valueOf(searchRequest.getSortingAlgorithm())));
+        return Utils.getPage(searchResponseDTOS, searchRequest.getPageNumber(), searchRequest.getPageSize());
     }
 }

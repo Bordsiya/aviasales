@@ -1,10 +1,8 @@
 package com.example.aviasales.controller;
 
 import com.example.aviasales.entity.Airline;
-import com.example.aviasales.entity.Flight;
 import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.service.AirlineService;
-import com.example.aviasales.service.TariffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

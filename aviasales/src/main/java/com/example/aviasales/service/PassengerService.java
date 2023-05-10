@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ public class PassengerService {
         this.emailService = emailService;
     }
 
+    @Transactional(rollbackOn = Throwable.class)
     public Set<Passenger> addPassengers(AddPassengersDTO addPassengersDTO) {
         Flight flight = flightService.getFlightById(addPassengersDTO.getFlightId());
 
@@ -67,8 +69,6 @@ public class PassengerService {
             throw new NoAdultsForFlightException(flight.getFlightId());
         }
 
-        Reservation reservation = null;
-        Set<Passenger> passengers = new HashSet<>();
         for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
             Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
             if (!tariff.getAirline().equals(flight.getAircraft().getAirline())) {
@@ -79,21 +79,25 @@ public class PassengerService {
                 );
             }
 
-            if(passengerDTO.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
+            if (passengerDTO.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
                     || passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.PASSPORT.name()))
             ) {
                 throw new DocumentTypeNotMachKidException(passengerDTO.getDocumentType(), passengerDTO.getIsKid());
             }
+        }
 
-            if (reservation == null) {
-                reservation = reservationService.addReservation(new ReservationDTO(
-                        Utils.generateReservationCode(),
-                        addPassengersDTO.getPhoneNumber(),
-                        addPassengersDTO.getEmail()
-                ));
-            }
+        Reservation reservation = reservationService.addReservation(new ReservationDTO(
+                Utils.generateReservationCode(),
+                addPassengersDTO.getPhoneNumber(),
+                addPassengersDTO.getEmail()
+        ));
 
-            passengers.add(passengerRepository.save(passengerMapper.fromDto(passengerDTO, tariff, flight, reservation)));
+        Set<Passenger> passengers = new HashSet<>();
+        for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
+            Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
+            Passenger newPassenger = passengerMapper.fromDto(passengerDTO, tariff, flight, reservation);
+
+            passengers.add(passengerRepository.save(newPassenger));
         }
 
         sendAddPassengersEmail(flight, reservation, passengers);

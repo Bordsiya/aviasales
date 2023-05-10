@@ -4,11 +4,15 @@ import com.example.aviasales.dto.ErrorDTO;
 import com.example.aviasales.exception.not_found.ResourceNotFoundException;
 import com.example.aviasales.exception.not_match.ResourceNotMatchException;
 import com.example.aviasales.util.enums.Code;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
@@ -50,17 +54,17 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(MailException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDTO handleUnexpectedErrorException(MailException ex, WebRequest request) {
+    public ErrorDTO handleMailException(MailException ex, WebRequest request) {
         ErrorDTO errorDTO = new ErrorDTO(
                 Code.MAIL_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
         return errorDTO;
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorDTO handleUnexpectedErrorException(Exception ex, WebRequest request) {
+    @ExceptionHandler(HttpClientErrorException.UnsupportedMediaType.class)
+    @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorDTO handleUnsupportedMediaTypeException(MailException ex, WebRequest request) {
         ErrorDTO errorDTO = new ErrorDTO(
-                        Code.INTERNAL_SERVER_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
+                Code.UNSUPPORTED_MEDIA_TYPE, new Date(), ex.getMessage(), request.getDescription(false));
         return errorDTO;
     }
 

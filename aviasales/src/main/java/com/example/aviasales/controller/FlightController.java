@@ -4,6 +4,7 @@ import com.example.aviasales.dto.SearchRequestDTO;
 import com.example.aviasales.dto.search_response.SearchResponseDTO;
 import com.example.aviasales.entity.Flight;
 import com.example.aviasales.service.FlightService;
+import com.example.aviasales.util.mappers.SearchRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,10 +24,12 @@ import java.util.List;
 public class FlightController {
 
     private FlightService flightService;
+    private SearchRequestMapper searchRequestMapper;
 
     @Autowired
-    public FlightController(FlightService flightService) {
+    public FlightController(FlightService flightService, SearchRequestMapper searchRequestMapper) {
         this.flightService = flightService;
+        this.searchRequestMapper = searchRequestMapper;
     }
 
     @Operation(
@@ -45,12 +48,11 @@ public class FlightController {
             summary = "Получение списка предпочтительных рейсов",
             description = "Позволяет по заданным фильтрам получить список предпочтительных полетов"
     )
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces =
-            MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SearchResponseDTO>> searchFlights(
-            @Validated @RequestBody @Parameter(description = "Запрос поиска") SearchRequestDTO searchRequestDTO
+            @Validated @Parameter(description = "Запрос поиска") SearchRequestDTO searchRequestDTO
     ) {
-        return ResponseEntity.ok(flightService.getFlightsFiltered(searchRequestDTO));
+        return ResponseEntity.ok(flightService.getFlightsFiltered(searchRequestMapper.fromDTO(searchRequestDTO)));
     }
 
 }
