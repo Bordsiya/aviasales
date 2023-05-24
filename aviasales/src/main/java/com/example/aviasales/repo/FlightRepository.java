@@ -28,4 +28,14 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
         @Param("flightDurationTimeUntilInHH") Long flightDurationTimeUntilInHH,
         @Param("dateFrom") LocalDate dateFrom
     );
+
+    @Query(value = "select id from flights " +
+            "where aircraft_id = :aircraftId " +
+            "and (departure_date >= :departureDate and arrival_date <= :arrivalDate)"
+    , nativeQuery = true)
+    Long getFlightIdWithAircraftIdBetweenDepartureDateAndArrivalDate(
+            @Param("aircraftId") Long aircraftId,
+            @Param("departureDate") LocalDate departureDate,
+            @Param("arrivalDate") LocalDate arrivalDate
+    );
 }

@@ -35,4 +35,29 @@ public class PassengerMapper {
                 reservation
         );
     }
+
+    public Passenger fromDto(Long id, PassengerDTO passengerDTO,
+                             Tariff tariff,
+                             Flight flight,
+                             Reservation reservation
+    ) {
+        return new Passenger(
+                id,
+                passengerDTO.getFirstName(),
+                passengerDTO.getLastName(),
+                passengerDTO.getPatronymic(),
+                Gender.valueOf(passengerDTO.getGender()),
+                passengerDTO.getCitizenship(),
+                passengerDTO.getIsKid(),
+                DocumentType.valueOf(passengerDTO.getDocumentType()),
+                passengerDTO.getDocumentNumber(),
+                passengerDTO.getExpirationDate(),
+                passengerDTO.getHasHearingDifficulties(),
+                passengerDTO.getHasVisionDifficulties(),
+                passengerDTO.getRequiredWheelchair(),
+                flight,
+                tariff,
+                reservation
+        );
+    }
 }

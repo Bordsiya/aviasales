@@ -25,10 +25,10 @@ public class Airline {
     @Column(name = "name", nullable = false)
     @JsonView
     private String airlineName;
-    @OneToMany(mappedBy = "airline")
+    @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Set<Aircraft> aircrafts;
-    @OneToMany(mappedBy = "airline")
+    @OneToMany(mappedBy = "airline", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Set<Tariff> tariffs;
 

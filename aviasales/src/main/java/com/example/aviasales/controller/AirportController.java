@@ -17,7 +17,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @RestController
-@RequestMapping(value = "/airports")
+@RequestMapping(value = "/public/airports")
 @Tag(name = "Контроллер аэропортов", description = "Описание аэропортов")
 public class AirportController {
     private AirportService airportService;

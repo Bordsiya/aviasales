@@ -17,7 +17,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @RestController
-@RequestMapping(value = "/tariffs")
+@RequestMapping(value = "/public/tariffs")
 @Tag(name = "Контроллер тарифов", description = "Описание тарифов")
 public class TariffController {
     private TariffService tariffService;
