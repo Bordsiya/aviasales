@@ -32,7 +32,7 @@ public class AuthController {
     }
 
     @Hidden
-    @PostMapping(path = "/admin/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/private/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> registerAdmin(
             @Valid @RequestBody UserDTO userDTO
     ) {
