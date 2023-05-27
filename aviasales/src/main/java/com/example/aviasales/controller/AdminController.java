@@ -1,10 +1,7 @@
 package com.example.aviasales.controller;
 
 import com.example.aviasales.dto.PassengerDTO;
-import com.example.aviasales.dto.requests.AddAircraftsDTO;
-import com.example.aviasales.dto.requests.AddAirlinesDTO;
-import com.example.aviasales.dto.requests.AddFlightsDTO;
-import com.example.aviasales.dto.requests.DeletePassengersDTO;
+import com.example.aviasales.dto.requests.*;
 import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Airline;
 import com.example.aviasales.entity.Flight;
@@ -13,7 +10,7 @@ import com.example.aviasales.service.AircraftService;
 import com.example.aviasales.service.AirlineService;
 import com.example.aviasales.service.FlightService;
 import com.example.aviasales.service.PassengerService;
-import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,13 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/private")
 @Tag(name = "Контроллер администратора", description = "Описание администраторских действий")
+@SecurityRequirement(name = "basicAuth")
 public class AdminController {
     private AircraftService aircraftService;
     private AirlineService airlineService;
@@ -78,9 +74,9 @@ public class AdminController {
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Set<Long>> deleteFlights(
-            @Valid @NotNull @NotEmpty Set<Long> flightIds
-    ) {
-        return ResponseEntity.ok(flightService.deleteFlights(flightIds));
+            @Valid @RequestBody DeleteFlightsRequest deleteFlightsRequest
+            ) {
+        return ResponseEntity.ok(flightService.deleteFlights(deleteFlightsRequest));
     }
 
     @DeleteMapping(

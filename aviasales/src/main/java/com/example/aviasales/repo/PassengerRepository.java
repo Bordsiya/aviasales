@@ -12,7 +12,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     Long countByFlightId(@Param("flightId") Long flightId);
 
     @Query(value = "select id from passengers \n" +
-            "inner join reservations on passengers.reservation_id = reservations.id \n" +
-            "where reservations.id = :reservationId", nativeQuery = true)
+            "where reservation_id = :reservationId", nativeQuery = true)
     Set<Long> getPassengersBySameReservation(@Param("reservationId") Long reservationId);
 }
