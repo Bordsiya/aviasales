@@ -54,5 +54,4 @@ public class BitronixConfig {
         bitronixDataSourceBean.setDriverProperties(properties);
         return bitronixDataSourceBean;
     }
-
 }
