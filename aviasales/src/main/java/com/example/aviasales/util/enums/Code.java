@@ -8,5 +8,6 @@ public enum Code {
     MAIL_ERROR,
     JSON_ERROR,
     UNSUPPORTED_MEDIA_TYPE,
-    AUTH_ERROR
+    AUTH_ERROR,
+    TRANSACTION_ERROR
 }

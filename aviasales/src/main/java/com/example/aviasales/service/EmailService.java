@@ -24,21 +24,19 @@ public class EmailService {
 
     public void sendHTMLMessage(String to, String subject, String text) throws MailException {
 
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
         try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
             helper.setSubject(subject);
             helper.setFrom(sender);
             helper.setTo(to);
 
             boolean html = true;
             helper.setText(text, html);
+            emailSender.send(message);
         }
         catch (MessagingException e) {
             throw new MailException(to);
         }
-
-
-        emailSender.send(message);
     }
 }
