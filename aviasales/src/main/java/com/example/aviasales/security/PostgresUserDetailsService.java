@@ -1,4 +1,4 @@
-package com.example.aviasales.util;
+package com.example.aviasales.security;
 
 import com.example.aviasales.entity.User;
 import com.example.aviasales.exception.not_found.UserNotFoundException;

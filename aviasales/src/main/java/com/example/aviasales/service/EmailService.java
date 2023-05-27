@@ -1,4 +1,4 @@
-package com.example.aviasales.util;
+package com.example.aviasales.service;
 
 import com.example.aviasales.exception.MailException;
 import org.springframework.beans.factory.annotation.Autowired;

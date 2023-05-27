@@ -1,7 +1,6 @@
 package com.example.aviasales.config;
 
-import com.example.aviasales.util.MyBasicAuthenticationEntryPoint;
-import com.example.aviasales.util.PostgresUserDetailsService;
+import com.example.aviasales.security.MyBasicAuthenticationEntryPoint;
 import com.example.aviasales.util.enums.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity

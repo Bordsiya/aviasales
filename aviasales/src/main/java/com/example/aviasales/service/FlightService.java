@@ -11,7 +11,6 @@ import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
 import com.example.aviasales.exception.FlightWithTheSameAirportsException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
-import com.example.aviasales.util.EmailService;
 import com.example.aviasales.util.mappers.FlightsMapper;
 import com.example.aviasales.util.mappers.models.AddFlightRequest;
 import com.example.aviasales.util.mappers.models.SearchRequest;
