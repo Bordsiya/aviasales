@@ -1,13 +1,16 @@
 package com.example.aviasales.service;
 
+import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.AirlineDTO;
 import com.example.aviasales.dto.requests.AddAirlinesDTO;
 import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Airline;
 import com.example.aviasales.entity.Tariff;
+import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.AirlineNotFoundException;
 import com.example.aviasales.repo.AirlineRepository;
 import com.example.aviasales.util.mappers.AirlineMapper;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -19,18 +22,16 @@ import java.util.Set;
 @Service
 public class AirlineService {
     private AirlineRepository airlineRepository;
-    private AircraftService aircraftService;
-    private TariffService tariffService;
     private AirlineMapper airlineMapper;
+    private BitronixTransactionManager bitronixTransactionManager;
+
     @Autowired
     public AirlineService(AirlineRepository airlineRepository,
-                          @Lazy AircraftService aircraftService,
-                          @Lazy TariffService tariffService,
-                          AirlineMapper airlineMapper) {
+                          AirlineMapper airlineMapper,
+                          BitronixTransactionManager bitronixTransactionManager) {
         this.airlineRepository = airlineRepository;
-        this.aircraftService = aircraftService;
-        this.tariffService = tariffService;
         this.airlineMapper = airlineMapper;
+        this.bitronixTransactionManager = bitronixTransactionManager;
     }
     public Airline getAirlineById(Long airlineId) {
         return airlineRepository.findById(airlineId).orElseThrow(() -> new AirlineNotFoundException(airlineId));
@@ -39,12 +40,22 @@ public class AirlineService {
         Airline airline = getAirlineById(airlineId);
         return airline.getTariffs();
     }
-    @Transactional(rollbackFor = Throwable.class)
+
+    @SneakyThrows
     public Set<Airline> addAirlines(AddAirlinesDTO addAirlinesDTO) {
-        Set<Airline> airlines = new HashSet<>();
-        for (AirlineDTO airlineDTO : addAirlinesDTO.getAirlines()) {
-            airlines.add(airlineRepository.save(airlineMapper.fromDTO(airlineDTO, new HashSet<>(), new HashSet<>())));
+        try {
+            bitronixTransactionManager.begin();
+            Set<Airline> airlines = new HashSet<>();
+            for (AirlineDTO airlineDTO : addAirlinesDTO.getAirlines()) {
+                airlines.add(airlineRepository.save(airlineMapper.fromDTO(airlineDTO, new HashSet<>(), new HashSet<>())));
+            }
+            bitronixTransactionManager.commit();
+            return airlines;
         }
-        return airlines;
+        catch (Exception e) {
+            bitronixTransactionManager.rollback();
+            throw new TransactionException("adding airlines - " + e.getMessage());
+        }
+
     }
 }

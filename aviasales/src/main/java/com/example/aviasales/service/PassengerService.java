@@ -1,12 +1,18 @@
 package com.example.aviasales.service;
 
+import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
 import com.example.aviasales.dto.requests.DeletePassengersDTO;
 import com.example.aviasales.entity.*;
+import com.example.aviasales.exception.MailException;
 import com.example.aviasales.exception.NoAdultsForFlightException;
+import com.example.aviasales.exception.TransactionException;
+import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.exception.not_found.PassengerNotFoundException;
+import com.example.aviasales.exception.not_found.ReservationNotFoundException;
+import com.example.aviasales.exception.not_found.TariffNotFoundException;
 import com.example.aviasales.exception.not_match.AirlinesNotMatchesException;
 import com.example.aviasales.exception.NotEnoughSeatsInAircraftException;
 import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException;
@@ -15,6 +21,7 @@ import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.Gender;
 import com.example.aviasales.util.mappers.PassengerMapper;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +36,14 @@ import java.util.Set;
 
 @Service
 public class PassengerService {
-    Logger logger = LoggerFactory.getLogger(PassengerService.class);
     private PassengerRepository passengerRepository;
     private TariffService tariffService;
     private FlightService flightService;
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
     private EmailService emailService;
+    private BitronixTransactionManager bitronixTransactionManager;
+
     @Autowired
     public PassengerService(
             PassengerRepository passengerRepository,
@@ -43,7 +51,8 @@ public class PassengerService {
             @Lazy FlightService flightService,
             @Lazy ReservationService reservationService,
             PassengerMapper passengerMapper,
-            EmailService emailService
+            EmailService emailService,
+            BitronixTransactionManager bitronixTransactionManager
     ) {
         this.passengerRepository = passengerRepository;
         this.tariffService = tariffService;
@@ -51,108 +60,125 @@ public class PassengerService {
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
         this.emailService = emailService;
+        this.bitronixTransactionManager = bitronixTransactionManager;
     }
 
     public Passenger getPassengerById(Long passengerId) {
         return passengerRepository.findById(passengerId).orElseThrow(() -> new PassengerNotFoundException(passengerId));
     }
 
-    @Transactional(rollbackFor = Throwable.class)
+    @SneakyThrows
     public Set<Passenger> addPassengers(AddPassengersDTO addPassengersDTO) {
-        Flight flight = flightService.getFlightById(addPassengersDTO.getFlightId());
+        try {
+            bitronixTransactionManager.begin();
+            Flight flight = flightService.getFlightById(addPassengersDTO.getFlightId());
 
-        Aircraft aircraft = flight.getAircraft();
-        Long amountOfRegisteredPassengers = passengerRepository.countByFlightId(flight.getFlightId());
-        if (amountOfRegisteredPassengers + addPassengersDTO.getPassengers().size() > aircraft.getNumberOfSeats()) {
-            throw new NotEnoughSeatsInAircraftException(
-                    aircraft.getAircraftId(), aircraft.getNumberOfSeats()
-            );
-        }
-
-        long amountOfAdults = addPassengersDTO.getPassengers().stream()
-                .filter(passengerDTO -> passengerDTO.getIsKid() == Boolean.FALSE)
-                .count();
-        if (amountOfAdults == 0) {
-            throw new NoAdultsForFlightException(flight.getFlightId());
-        }
-
-        for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
-            Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
-            if (!tariff.getAirline().equals(flight.getAircraft().getAirline())) {
-                throw new AirlinesNotMatchesException(
-                        "Flight", "Tariff",
-                        flight.getAircraft().getAirline().getAirlineId(),
-                        tariff.getAirline().getAirlineId()
+            Aircraft aircraft = flight.getAircraft();
+            Long amountOfRegisteredPassengers = passengerRepository.countByFlightId(flight.getFlightId());
+            if (amountOfRegisteredPassengers + addPassengersDTO.getPassengers().size() > aircraft.getNumberOfSeats()) {
+                throw new NotEnoughSeatsInAircraftException(
+                        aircraft.getAircraftId(), aircraft.getNumberOfSeats()
                 );
             }
 
-            if (passengerDTO.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
-                    || passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.PASSPORT.name()))
-            ) {
-                throw new DocumentTypeNotMachKidException(passengerDTO.getDocumentType(), passengerDTO.getIsKid());
+            long amountOfAdults = addPassengersDTO.getPassengers().stream()
+                    .filter(passengerDTO -> passengerDTO.getIsKid() == Boolean.FALSE)
+                    .count();
+            if (amountOfAdults == 0) {
+                throw new NoAdultsForFlightException(flight.getFlightId());
             }
+
+            for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
+                Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
+                if (!tariff.getAirline().equals(flight.getAircraft().getAirline())) {
+                    throw new AirlinesNotMatchesException(
+                            "Flight", "Tariff",
+                            flight.getAircraft().getAirline().getAirlineId(),
+                            tariff.getAirline().getAirlineId()
+                    );
+                }
+
+                if (passengerDTO.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
+                        || passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.PASSPORT.name()))
+                ) {
+                    throw new DocumentTypeNotMachKidException(passengerDTO.getDocumentType(), passengerDTO.getIsKid());
+                }
+            }
+
+            Reservation reservation = reservationService.addReservation(new ReservationDTO(
+                    Utils.generateReservationCode(),
+                    addPassengersDTO.getPhoneNumber(),
+                    addPassengersDTO.getEmail()
+            ));
+
+            Set<Passenger> passengers = new HashSet<>();
+            for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
+                Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
+                Passenger newPassenger = passengerMapper.fromDto(passengerDTO, tariff, flight, reservation);
+
+                passengers.add(passengerRepository.save(newPassenger));
+            }
+
+            sendEmail(buildAddPassengersText(flight, reservation, passengers),
+                    flight.getAircraft().getAirline().getAirlineName(), reservation.getEmail());
+            bitronixTransactionManager.commit();
+            return passengers;
         }
-
-        Reservation reservation = reservationService.addReservation(new ReservationDTO(
-                Utils.generateReservationCode(),
-                addPassengersDTO.getPhoneNumber(),
-                addPassengersDTO.getEmail()
-        ));
-
-        Set<Passenger> passengers = new HashSet<>();
-        for (PassengerDTO passengerDTO: addPassengersDTO.getPassengers()) {
-            Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
-            Passenger newPassenger = passengerMapper.fromDto(passengerDTO, tariff, flight, reservation);
-
-            passengers.add(passengerRepository.save(newPassenger));
+        catch (Exception e) {
+            bitronixTransactionManager.rollback();
+            throw new TransactionException("adding passengers - " + e.getMessage());
         }
-
-        sendEmail(buildAddPassengersText(flight, reservation, passengers),
-                flight.getAircraft().getAirline().getAirlineName(), reservation.getEmail());
-        return passengers;
     }
-    @Transactional(rollbackFor = Throwable.class)
+
+    @SneakyThrows
     public Set<Long> deletePassengers(DeletePassengersDTO deletePassengersDTO) {
-        Set<Long> deletePassengersIds = new HashSet<>(deletePassengersDTO.getPassengersIds());
-        Map<String, String> reservationCodeToEmail = new HashMap<>();
-        Map<String, String> reservationCodeToAirlineName = new HashMap<>();
-        for (Long passengerId : deletePassengersIds) {
-            deletePassengersIds.add(passengerId);
+        try {
+            bitronixTransactionManager.begin();
+            Set<Long> deletePassengersIds = new HashSet<>(deletePassengersDTO.getPassengersIds());
+            Map<String, String> reservationCodeToEmail = new HashMap<>();
+            Map<String, String> reservationCodeToAirlineName = new HashMap<>();
+            for (Long passengerId : deletePassengersIds) {
+                deletePassengersIds.add(passengerId);
 
-            Passenger passenger = getPassengerById(passengerId);
-            Set<Long> passengersWithTheSameReservation = passengerRepository
-                    .getPassengersBySameReservation(passenger.getReservation().getReservationId());
-            if (passengersWithTheSameReservation.size() == 1) {
-                reservationService.deleteReservation(passenger.getReservation().getReservationId());
-            }
-            else {
-                long amountOfAdultsAfterDeleting = 0;
-                for (Long passengerReservationId : passengersWithTheSameReservation) {
-                    if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting++;
+                Passenger passenger = getPassengerById(passengerId);
+                Set<Long> passengersWithTheSameReservation = passengerRepository
+                        .getPassengersBySameReservation(passenger.getReservation().getReservationId());
+                if (passengersWithTheSameReservation.size() == 1) {
+                    reservationService.deleteReservation(passenger.getReservation().getReservationId());
                 }
-                if (passenger.getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting--;
-                if (amountOfAdultsAfterDeleting == 0) {
-                    throw new NoAdultsForFlightException(passenger.getFlight().getFlightId());
+                else {
+                    long amountOfAdultsAfterDeleting = 0;
+                    for (Long passengerReservationId : passengersWithTheSameReservation) {
+                        if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting++;
+                    }
+                    if (passenger.getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting--;
+                    if (amountOfAdultsAfterDeleting == 0) {
+                        throw new NoAdultsForFlightException(passenger.getFlight().getFlightId());
+                    }
+                    passengerRepository.deleteById(passengerId);
                 }
-                passengerRepository.deleteById(passengerId);
+                if (!reservationCodeToEmail.containsKey(passenger.getReservation().getReservationCode())) {
+                    reservationCodeToEmail.put(
+                            passenger.getReservation().getReservationCode(),
+                            passenger.getReservation().getEmail());
+                    reservationCodeToAirlineName.put(
+                            passenger.getReservation().getReservationCode(),
+                            passenger.getFlight().getAircraft().getAirline().getAirlineName()
+                    );
+                }
             }
-            if (!reservationCodeToEmail.containsKey(passenger.getReservation().getReservationCode())) {
-                reservationCodeToEmail.put(
-                        passenger.getReservation().getReservationCode(),
-                        passenger.getReservation().getEmail());
-                reservationCodeToAirlineName.put(
-                        passenger.getReservation().getReservationCode(),
-                        passenger.getFlight().getAircraft().getAirline().getAirlineName()
-                );
+            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
+                sendEmail(buildDeletePassengersEmail(entry.getKey()), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
             }
+            bitronixTransactionManager.commit();
+            return deletePassengersIds;
         }
-        for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-            sendEmail(buildDeletePassengersEmail(entry.getKey()), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
+        catch (Exception e) {
+            bitronixTransactionManager.rollback();
+            throw new TransactionException("deleting passengers - " + e.getMessage());
         }
-        return deletePassengersIds;
     }
 
-    @Transactional(rollbackFor = Throwable.class)
     public Passenger updatePassenger(Long passengerId, PassengerDTO passengerDTO) {
         Passenger passenger = getPassengerById(passengerId);
         passenger.setFirstName(passengerDTO.getFirstName());
@@ -239,7 +265,7 @@ public class PassengerService {
                 passenger.getFirstName() + " " + passenger.getLastName() + " " + passenger.getPatronymic() + "</br></i>";
     }
 
-    private void sendEmail(String text, String subject, String email) {
+    private void sendEmail(String text, String subject, String email) throws MailException {
         emailService.sendHTMLMessage(
                 email,
                 subject,

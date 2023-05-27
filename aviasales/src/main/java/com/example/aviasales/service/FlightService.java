@@ -1,14 +1,15 @@
 package com.example.aviasales.service;
 
+import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
 import com.example.aviasales.dto.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.*;
-import com.example.aviasales.exception.AircraftAlreadyInUseException;
-import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
-import com.example.aviasales.exception.FlightWithTheSameAirportsException;
+import com.example.aviasales.exception.*;
+import com.example.aviasales.exception.not_found.AircraftNotFoundException;
+import com.example.aviasales.exception.not_found.AirportNotFoundException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
 import com.example.aviasales.util.mappers.FlightsMapper;
@@ -19,11 +20,10 @@ import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.SearchResponseMapper;
 import com.example.aviasales.util.sort.SearchResponseDTOSortUtils;
 import com.example.aviasales.util.sort.SearchResponseTariffWithPriceDTOSortUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -35,6 +35,8 @@ public class FlightService {
     private EmailService emailService;
     private SearchResponseMapper searchResponseMapper;
     private FlightsMapper flightsMapper;
+    private BitronixTransactionManager bitronixTransactionManager;
+
     @Autowired
     public FlightService(
             FlightRepository flightRepository,
@@ -43,7 +45,8 @@ public class FlightService {
             @Lazy ReservationService reservationService,
             EmailService emailService,
             SearchResponseMapper searchResponseMapper,
-            FlightsMapper flightsMapper
+            FlightsMapper flightsMapper,
+            BitronixTransactionManager bitronixTransactionManager
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
@@ -52,6 +55,7 @@ public class FlightService {
         this.emailService = emailService;
         this.searchResponseMapper = searchResponseMapper;
         this.flightsMapper = flightsMapper;
+        this.bitronixTransactionManager = bitronixTransactionManager;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -111,78 +115,94 @@ public class FlightService {
         return Utils.getPage(searchResponseDTOS, searchRequest.getPageNumber(), searchRequest.getPageSize());
     }
 
-    @Transactional(rollbackFor = Throwable.class)
+    @SneakyThrows
     public Set<Flight> addFlights(AddFlightsDTO addFlightsDTO) {
-        Set<Flight> flights = new HashSet<>();
-        for (FlightDTO flightDTO : addFlightsDTO.getFlights()) {
-            AddFlightRequest addFlightRequest = flightsMapper.fromDTO(flightDTO);
+        try {
+            bitronixTransactionManager.begin();
+            Set<Flight> flights = new HashSet<>();
+            for (FlightDTO flightDTO : addFlightsDTO.getFlights()) {
+                AddFlightRequest addFlightRequest = flightsMapper.fromDTO(flightDTO);
 
-            Airport departureAirport = airportService.getAirportById(addFlightRequest.getDepartureAirportId());
-            Airport arrivalAirport = airportService.getAirportById(addFlightRequest.getArrivalAirportId());
-            Aircraft aircraft = aircraftService.getAircraftById(addFlightRequest.getAircraftId());
+                Airport departureAirport = airportService.getAirportById(addFlightRequest.getDepartureAirportId());
+                Airport arrivalAirport = airportService.getAirportById(addFlightRequest.getArrivalAirportId());
+                Aircraft aircraft = aircraftService.getAircraftById(addFlightRequest.getAircraftId());
 
-            if (departureAirport.getAirportId().equals(arrivalAirport.getAirportId())) {
-                throw new FlightWithTheSameAirportsException(departureAirport.getAirportId());
-            }
-
-            if (addFlightRequest.getDepartureDate().isAfter(addFlightRequest.getArrivalDate())) {
-                throw new DepartureTimeAfterArrivalTimeException(
-                        addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
-            }
-
-            Long flightIdUsingAircraft = flightRepository.getFlightIdWithAircraftIdBetweenDepartureDateAndArrivalDate(
-                    addFlightRequest.getAircraftId(), addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
-            if (flightIdUsingAircraft != null) {
-                throw new AircraftAlreadyInUseException(addFlightRequest.getAircraftId(), flightIdUsingAircraft);
-            }
-
-            flights.add(
-                    flightRepository.save(
-                            flightsMapper.fromDTO(
-                                    addFlightRequest,
-                                    departureAirport,
-                                    arrivalAirport,
-                                    aircraft,
-                                    new ArrayList<>()
-                            )
-                    )
-            );
-        }
-        return flights;
-    }
-
-    @Transactional(rollbackFor = Throwable.class)
-    public Set<Long> deleteFlights(DeleteFlightsRequest deleteFlightsRequest) {
-        Set<Long> reservationsIds = new HashSet<>();
-        Set<Long> deleteFlightsIds = new HashSet<>(deleteFlightsRequest.getFlightsIds());
-        Map<String, String> reservationCodeToEmail = new HashMap<>();
-        Map<String, String> reservationCodeToAirlineName = new HashMap<>();
-        for (Long flightId:deleteFlightsIds) {
-            Flight flight = getFlightById(flightId);
-            for (Passenger passenger : flight.getPassengers()) {
-                reservationsIds.add(passenger.getReservation().getReservationId());
-                if (!reservationCodeToEmail.containsKey(passenger.getReservation().getReservationCode())) {
-                    reservationCodeToEmail.put(
-                            passenger.getReservation().getReservationCode(),
-                            passenger.getReservation().getEmail());
-                    reservationCodeToAirlineName.put(
-                            passenger.getReservation().getReservationCode(),
-                            passenger.getFlight().getAircraft().getAirline().getAirlineName()
-                    );
+                if (departureAirport.getAirportId().equals(arrivalAirport.getAirportId())) {
+                    throw new FlightWithTheSameAirportsException(departureAirport.getAirportId());
                 }
+
+                if (addFlightRequest.getDepartureDate().isAfter(addFlightRequest.getArrivalDate())) {
+                    throw new DepartureTimeAfterArrivalTimeException(
+                            addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
+                }
+
+                Long flightIdUsingAircraft = flightRepository.getFlightIdWithAircraftIdBetweenDepartureDateAndArrivalDate(
+                        addFlightRequest.getAircraftId(), addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
+                if (flightIdUsingAircraft != null) {
+                    throw new AircraftAlreadyInUseException(addFlightRequest.getAircraftId(), flightIdUsingAircraft);
+                }
+
+                flights.add(
+                        flightRepository.save(
+                                flightsMapper.fromDTO(
+                                        addFlightRequest,
+                                        departureAirport,
+                                        arrivalAirport,
+                                        aircraft,
+                                        new ArrayList<>()
+                                )
+                        )
+                );
             }
-            flightRepository.deleteById(flightId);
+            bitronixTransactionManager.commit();
+            return flights;
         }
-        for (Long reservationId : reservationsIds) {
-            reservationService.deleteReservation(reservationId);
+        catch (Exception e) {
+            bitronixTransactionManager.rollback();
+            throw new TransactionException("adding flights - " + e.getMessage());
         }
-        for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-            sendDeleteFlightEmail(entry.getKey(), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
-        }
-        return deleteFlightsIds;
     }
 
-    private void sendDeleteFlightEmail(String reservationCode, String airlineName, String email) {
+    @SneakyThrows
+    public Set<Long> deleteFlights(DeleteFlightsRequest deleteFlightsRequest) {
+        try {
+            bitronixTransactionManager.begin();
+            Set<Long> reservationsIds = new HashSet<>();
+            Set<Long> deleteFlightsIds = new HashSet<>(deleteFlightsRequest.getFlightsIds());
+            Map<String, String> reservationCodeToEmail = new HashMap<>();
+            Map<String, String> reservationCodeToAirlineName = new HashMap<>();
+            for (Long flightId: deleteFlightsIds) {
+                Flight flight = getFlightById(flightId);
+                for (Passenger passenger : flight.getPassengers()) {
+                    reservationsIds.add(passenger.getReservation().getReservationId());
+                    if (!reservationCodeToEmail.containsKey(passenger.getReservation().getReservationCode())) {
+                        reservationCodeToEmail.put(
+                                passenger.getReservation().getReservationCode(),
+                                passenger.getReservation().getEmail());
+                        reservationCodeToAirlineName.put(
+                                passenger.getReservation().getReservationCode(),
+                                passenger.getFlight().getAircraft().getAirline().getAirlineName()
+                        );
+                    }
+                }
+                flightRepository.deleteById(flightId);
+            }
+            for (Long reservationId : reservationsIds) {
+                reservationService.deleteReservation(reservationId);
+            }
+            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
+                sendDeleteFlightEmail(entry.getKey(), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
+            }
+            bitronixTransactionManager.commit();
+            return deleteFlightsIds;
+        }
+        catch (Exception e) {
+            bitronixTransactionManager.rollback();
+            throw new TransactionException("deleting flights - " + e.getMessage());
+        }
+    }
+
+    private void sendDeleteFlightEmail(String reservationCode, String airlineName, String email) throws MailException {
         String textBase = "<b>Ваши билеты на aviasales.ru по заказу " + reservationCode + " больше недействительны </b>,<br>" +
                 "<i>Произошла отмена рейса </br>" +
                 "Обратитесь на сайт за возвратом </br> </i>";

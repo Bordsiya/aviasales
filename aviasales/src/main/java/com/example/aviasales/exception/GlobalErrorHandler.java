@@ -83,4 +83,12 @@ public class GlobalErrorHandler {
                 Code.IMPOSSIBLE_OPERATION, new Date(), ex.getMessage(), request.getDescription(false));
         return errorDTO;
     }
+
+    @ExceptionHandler(TransactionException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleTransactionException(TransactionException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.TRANSACTION_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
 }
