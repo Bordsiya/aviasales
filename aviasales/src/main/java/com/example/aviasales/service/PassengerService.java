@@ -124,6 +124,7 @@ public class PassengerService {
             return passengers;
         }
         catch (Exception e) {
+            log.error("Error", e);
             try {
                 bitronixTransactionManager.rollback();
             } catch (Exception ignore) {

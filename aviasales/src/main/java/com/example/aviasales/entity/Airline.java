@@ -18,7 +18,8 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Airline {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "airlines_id_seq")
+    @SequenceGenerator(name = "airlines_id_seq", allocationSize = 1)
     @Column(name = "id")
     @JsonView
     private Long airlineId;

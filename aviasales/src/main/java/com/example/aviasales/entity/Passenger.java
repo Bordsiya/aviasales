@@ -18,7 +18,8 @@ import java.time.LocalDate;
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Passenger {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passengers_id_seq")
+    @SequenceGenerator(name = "passengers_id_seq", allocationSize = 1, sequenceName = "passengers_id_seq")
     @Column(name = "id")
     @JsonView
     private Long passengerId;

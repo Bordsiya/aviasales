@@ -19,7 +19,7 @@ public class PassengerUpdateSubscriber implements MessageListener {
     private final ObjectMapper mapper;
 
     public void onMessage(final Message message, final byte[] pattern) {
-        log.info("Passenger received: " + new String(message.getBody()));
+//        log.info("Passenger received: " + new String(message.getBody()));
         try {
             var passenger = mapper.readValue(message.getBody(), Passenger.class);
             // passengerUpdateWorker.processPassengerAsync(flight);
