@@ -4,6 +4,7 @@ import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.service.TariffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Min;
 @RestController
 @RequestMapping(value = "/public/tariffs")
 @Tag(name = "Контроллер тарифов", description = "Описание тарифов")
+@SecurityRequirement(name = "basicAuth")
 public class TariffController {
     private TariffService tariffService;
 

@@ -1,6 +1,5 @@
 package com.example.aviasales.service;
 
-import com.example.aviasales.dto.LongIdDTO;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
@@ -117,27 +116,28 @@ public class PassengerService {
     }
     @Transactional(rollbackFor = Throwable.class)
     public Set<Long> deletePassengers(DeletePassengersDTO deletePassengersDTO) {
-        Set<Long> deletePassengersIds = new HashSet<>();
+        Set<Long> deletePassengersIds = new HashSet<>(deletePassengersDTO.getPassengersIds());
         Map<String, String> reservationCodeToEmail = new HashMap<>();
         Map<String, String> reservationCodeToAirlineName = new HashMap<>();
-        for (LongIdDTO longIdDTO : deletePassengersDTO.getPassengersIds()) {
-            deletePassengersIds.add(longIdDTO.getId());
+        for (Long passengerId : deletePassengersIds) {
+            deletePassengersIds.add(passengerId);
 
-            Passenger passenger = getPassengerById(longIdDTO.getId());
+            Passenger passenger = getPassengerById(passengerId);
             Set<Long> passengersWithTheSameReservation = passengerRepository
                     .getPassengersBySameReservation(passenger.getReservation().getReservationId());
             if (passengersWithTheSameReservation.size() == 1) {
                 reservationService.deleteReservation(passenger.getReservation().getReservationId());
             }
             else {
-                long amountOfAdults = 0;
+                long amountOfAdultsAfterDeleting = 0;
                 for (Long passengerReservationId : passengersWithTheSameReservation) {
-                    if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) amountOfAdults++;
+                    if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting++;
                 }
-                if (amountOfAdults == 0) {
+                if (passenger.getIsKid() == Boolean.FALSE) amountOfAdultsAfterDeleting--;
+                if (amountOfAdultsAfterDeleting == 0) {
                     throw new NoAdultsForFlightException(passenger.getFlight().getFlightId());
                 }
-                passengerRepository.deleteById(longIdDTO.getId());
+                passengerRepository.deleteById(passengerId);
             }
             if (!reservationCodeToEmail.containsKey(passenger.getReservation().getReservationCode())) {
                 reservationCodeToEmail.put(
@@ -243,14 +243,10 @@ public class PassengerService {
     }
 
     private void sendEmail(String text, String subject, String email) {
-        try {
-            emailService.sendHTMLMessage(
-                    email,
-                    subject,
-                    text
-            );
-        } catch (MessagingException e) {
-            throw new MailException(email);
-        }
+        emailService.sendHTMLMessage(
+                email,
+                subject,
+                text
+        );
     }
 }

@@ -2,13 +2,13 @@ package com.example.aviasales.service;
 
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
+import com.example.aviasales.dto.requests.DeleteFlightsRequest;
 import com.example.aviasales.dto.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.*;
 import com.example.aviasales.exception.AircraftAlreadyInUseException;
 import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
 import com.example.aviasales.exception.FlightWithTheSameAirportsException;
-import com.example.aviasales.exception.MailException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
 import com.example.aviasales.util.EmailService;
@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
 import java.util.*;
 
 @Service
@@ -34,7 +33,6 @@ public class FlightService {
     private AirportService airportService;
     private AircraftService aircraftService;
     private ReservationService reservationService;
-    private PassengerService passengerService;
     private EmailService emailService;
     private SearchResponseMapper searchResponseMapper;
     private FlightsMapper flightsMapper;
@@ -44,7 +42,6 @@ public class FlightService {
             @Lazy AirportService airportService,
             @Lazy AircraftService aircraftService,
             @Lazy ReservationService reservationService,
-            @Lazy PassengerService passengerService,
             EmailService emailService,
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper
@@ -53,7 +50,6 @@ public class FlightService {
         this.airportService = airportService;
         this.aircraftService = aircraftService;
         this.reservationService = reservationService;
-        this.passengerService = passengerService;
         this.emailService = emailService;
         this.searchResponseMapper = searchResponseMapper;
         this.flightsMapper = flightsMapper;
@@ -157,11 +153,12 @@ public class FlightService {
     }
 
     @Transactional(rollbackFor = Throwable.class)
-    public Set<Long> deleteFlights(Set<Long> flightIds) {
+    public Set<Long> deleteFlights(DeleteFlightsRequest deleteFlightsRequest) {
         Set<Long> reservationsIds = new HashSet<>();
+        Set<Long> deleteFlightsIds = new HashSet<>(deleteFlightsRequest.getFlightsIds());
         Map<String, String> reservationCodeToEmail = new HashMap<>();
         Map<String, String> reservationCodeToAirlineName = new HashMap<>();
-        for (Long flightId: flightIds) {
+        for (Long flightId:deleteFlightsIds) {
             Flight flight = getFlightById(flightId);
             for (Passenger passenger : flight.getPassengers()) {
                 reservationsIds.add(passenger.getReservation().getReservationId());
@@ -183,21 +180,19 @@ public class FlightService {
         for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
             sendDeleteFlightEmail(entry.getKey(), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
         }
-        return flightIds;
+        return deleteFlightsIds;
     }
 
     private void sendDeleteFlightEmail(String reservationCode, String airlineName, String email) {
         String textBase = "<b>Ваши билеты на aviasales.ru по заказу " + reservationCode + " больше недействительны </b>,<br>" +
                 "<i>Произошла отмена рейса </br>" +
                 "Обратитесь на сайт за возвратом </br> </i>";
-        try {
-            emailService.sendHTMLMessage(
-                    email,
-                    airlineName,
-                    textBase
-            );
-        } catch (MessagingException e) {
-            throw new MailException(email);
-        }
+        emailService.sendHTMLMessage(
+                email,
+                airlineName,
+                textBase
+        );
     }
+
+
 }

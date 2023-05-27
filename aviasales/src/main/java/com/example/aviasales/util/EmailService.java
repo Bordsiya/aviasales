@@ -1,5 +1,6 @@
 package com.example.aviasales.util;
 
+import com.example.aviasales.exception.MailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,17 +22,22 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
-    public void sendHTMLMessage(String to, String subject, String text) throws MessagingException {
+    public void sendHTMLMessage(String to, String subject, String text) throws MailException {
 
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setSubject(subject);
+            helper.setFrom(sender);
+            helper.setTo(to);
 
-        helper.setSubject(subject);
-        helper.setFrom(sender);
-        helper.setTo(to);
+            boolean html = true;
+            helper.setText(text, html);
+        }
+        catch (MessagingException e) {
+            throw new MailException(to);
+        }
 
-        boolean html = true;
-        helper.setText(text, html);
 
         emailSender.send(message);
     }

@@ -5,6 +5,7 @@ import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.service.AircraftService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/public/aircrafts")
 @Tag(name = "Контроллер самолётов", description = "Описание самолётов")
+@SecurityRequirement(name = "basicAuth")
 public class AircraftController {
     private AircraftService aircraftService;
 

@@ -1,5 +1,6 @@
 package com.example.aviasales.config;
 
+import com.example.aviasales.util.MyBasicAuthenticationEntryPoint;
 import com.example.aviasales.util.PostgresUserDetailsService;
 import com.example.aviasales.util.enums.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
-    private BasicAuthenticationEntryPoint basicAuthenticationEntryPoint;
+    private MyBasicAuthenticationEntryPoint basicAuthenticationEntryPoint;
 
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService,
-                          BasicAuthenticationEntryPoint basicAuthenticationEntryPoint) {
+                          MyBasicAuthenticationEntryPoint basicAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.basicAuthenticationEntryPoint = basicAuthenticationEntryPoint;
     }
@@ -37,14 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                //.exceptionHandling().authenticationEntryPoint(basicAuthenticationEntryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(basicAuthenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/public/**").hasAnyAuthority(
                         RoleType.ADMIN.name(), RoleType.CUSTOMER.name())
                 .antMatchers("/private/**").hasAnyAuthority(RoleType.ADMIN.name())
                 .and().httpBasic()
                 .and().authorizeRequests().antMatchers("/register").permitAll()
-                //.and().authorizeRequests().antMatchers("/swagger-ui/**").permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
