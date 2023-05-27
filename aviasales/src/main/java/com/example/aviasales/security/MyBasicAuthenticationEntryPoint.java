@@ -1,4 +1,4 @@
-package com.example.aviasales.util;
+package com.example.aviasales.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
