@@ -1,26 +1,25 @@
 package com.example.aviasales.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.AirlineDTO;
 import com.example.aviasales.dto.requests.AddAirlinesDTO;
-import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Airline;
 import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.AirlineNotFoundException;
 import com.example.aviasales.repo.AirlineRepository;
 import com.example.aviasales.util.mappers.AirlineMapper;
-import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class AirlineService {
+    Logger log = LoggerFactory.getLogger(AirlineService.class);
     private AirlineRepository airlineRepository;
     private AirlineMapper airlineMapper;
     private BitronixTransactionManager bitronixTransactionManager;
@@ -41,7 +40,6 @@ public class AirlineService {
         return airline.getTariffs();
     }
 
-    @SneakyThrows
     public Set<Airline> addAirlines(AddAirlinesDTO addAirlinesDTO) {
         try {
             bitronixTransactionManager.begin();
@@ -53,7 +51,11 @@ public class AirlineService {
             return airlines;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("adding airlines - " + e.getMessage());
         }
 

@@ -1,5 +1,8 @@
 package com.example.aviasales.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.AircraftDTO;
 import com.example.aviasales.dto.requests.AddAircraftsDTO;
@@ -7,20 +10,17 @@ import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Airline;
 import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.AircraftNotFoundException;
-import com.example.aviasales.exception.not_found.AirlineNotFoundException;
 import com.example.aviasales.repo.AircraftRepository;
 import com.example.aviasales.util.mappers.AircraftMapper;
-import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class AircraftService {
+    Logger log = LoggerFactory.getLogger(AircraftService.class);
     private AircraftRepository aircraftRepository;
     private AirlineService airlineService;
     private AircraftMapper aircraftMapper;
@@ -37,10 +37,11 @@ public class AircraftService {
         this.aircraftMapper = aircraftMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
     }
+
     public Aircraft getAircraftById(Long aircraftId) {
         return aircraftRepository.findById(aircraftId).orElseThrow(() -> new AircraftNotFoundException(aircraftId));
     }
-    @SneakyThrows
+
     public Set<Aircraft> addAircrafts(AddAircraftsDTO addAircraftsDTO) {
         try {
             bitronixTransactionManager.begin();
@@ -53,7 +54,11 @@ public class AircraftService {
             return aircrafts;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("adding aircrafts - " + e.getMessage());
         }
     }

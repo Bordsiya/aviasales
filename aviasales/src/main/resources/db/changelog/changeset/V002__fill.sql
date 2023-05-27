@@ -862,7 +862,7 @@ VALUES(279, '2023-04-15', '23:08', 3465, 2115, '2023-04-15', '19:35', 69, 15, 8)
 INSERT INTO flights(id, arrival_date, arrival_time, default_price_for_adults, default_price_for_kids, departure_date, departure_time, aircraft_id, departure_airport_id, arrival_airport_id)
 VALUES(280, '2023-04-15', '8:30', 3505, 3110, '2023-04-15', '01:05', 70, 15, 8);
 
-INSERT INTO reservations(id, email, phone_number, code, time) VALUES(1, 'sophia.crowford@mail.ru', '+79527977523', 'ABCDE', '2023-04-10T17:09:42.411');
+INSERT INTO reservations(id, email, phone_number, code, time) VALUES(1, 'asiya.dragnil@mail.ru', '+79527977523', 'ABCDE', '2023-04-10T17:09:42.411');
 INSERT INTO reservations(id, email, phone_number, code, time) VALUES(2, 'bordun.2002@mail.ru', '+79527977526', 'ABAAA', '2023-04-5T10:03:45.414');
 
 INSERT INTO passengers(id, citizenship, document_number, document_type, expiration_date, first_name, gender, has_hearing_difficulties, has_vision_difficulties, is_kid, last_name, patronymic, required_wheelchair, flight_id, reservation_id, tariff_id)
@@ -871,3 +871,6 @@ INSERT INTO passengers(id, citizenship, document_number, document_type, expirati
 VALUES(2, 'Россия', '0987654321', 'PASSPORT', '2025-03-24', 'Анастасия', 'FEMALE', FALSE, FALSE, FALSE, 'Бордун', 'Владимировна', FALSE, 1, 2, 5);
 INSERT INTO passengers(id, citizenship, document_number, document_type, expiration_date, first_name, gender, has_hearing_difficulties, has_vision_difficulties, is_kid, last_name, patronymic, required_wheelchair, flight_id, reservation_id, tariff_id)
 VALUES(3, 'Россия', '0997654321', 'VISA', '2028-03-24', 'Юлия', 'FEMALE', FALSE, FALSE, TRUE, 'Полежаева', 'Абобовна', FALSE, 1, 2, 6);
+
+INSERT INTO users(id, email, password, role) VALUES(1, 'asiya.dragnil@mail', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'ADMIN');
+INSERT INTO users(id, email, password, role) VALUES(2, 'bordun.2002@mail', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'CUSTOMER');

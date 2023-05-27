@@ -1,33 +1,48 @@
 package com.example.aviasales.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
 import com.example.aviasales.dto.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
-import com.example.aviasales.entity.*;
-import com.example.aviasales.exception.*;
-import com.example.aviasales.exception.not_found.AircraftNotFoundException;
-import com.example.aviasales.exception.not_found.AirportNotFoundException;
+import com.example.aviasales.entity.Aircraft;
+import com.example.aviasales.entity.Airport;
+import com.example.aviasales.entity.Flight;
+import com.example.aviasales.entity.Passenger;
+import com.example.aviasales.entity.Tariff;
+import com.example.aviasales.exception.AircraftAlreadyInUseException;
+import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
+import com.example.aviasales.exception.FlightWithTheSameAirportsException;
+import com.example.aviasales.exception.MailException;
+import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
-import com.example.aviasales.util.mappers.FlightsMapper;
-import com.example.aviasales.util.mappers.models.AddFlightRequest;
-import com.example.aviasales.util.mappers.models.SearchRequest;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.SortingAlgorithm;
+import com.example.aviasales.util.mappers.FlightsMapper;
 import com.example.aviasales.util.mappers.SearchResponseMapper;
+import com.example.aviasales.util.mappers.models.AddFlightRequest;
+import com.example.aviasales.util.mappers.models.SearchRequest;
 import com.example.aviasales.util.sort.SearchResponseDTOSortUtils;
 import com.example.aviasales.util.sort.SearchResponseTariffWithPriceDTOSortUtils;
-import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import java.util.*;
 
 @Service
 public class FlightService {
+    Logger log = LoggerFactory.getLogger(FlightService.class);
     private FlightRepository flightRepository;
     private AirportService airportService;
     private AircraftService aircraftService;
@@ -115,7 +130,6 @@ public class FlightService {
         return Utils.getPage(searchResponseDTOS, searchRequest.getPageNumber(), searchRequest.getPageSize());
     }
 
-    @SneakyThrows
     public Set<Flight> addFlights(AddFlightsDTO addFlightsDTO) {
         try {
             bitronixTransactionManager.begin();
@@ -158,12 +172,15 @@ public class FlightService {
             return flights;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("adding flights - " + e.getMessage());
         }
     }
 
-    @SneakyThrows
     public Set<Long> deleteFlights(DeleteFlightsRequest deleteFlightsRequest) {
         try {
             bitronixTransactionManager.begin();
@@ -197,7 +214,11 @@ public class FlightService {
             return deleteFlightsIds;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("deleting flights - " + e.getMessage());
         }
     }

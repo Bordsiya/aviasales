@@ -1,41 +1,41 @@
 package com.example.aviasales.service;
 
-import bitronix.tm.BitronixTransactionManager;
-import com.example.aviasales.dto.requests.AddPassengersDTO;
-import com.example.aviasales.dto.PassengerDTO;
-import com.example.aviasales.dto.ReservationDTO;
-import com.example.aviasales.dto.requests.DeletePassengersDTO;
-import com.example.aviasales.entity.*;
-import com.example.aviasales.exception.MailException;
-import com.example.aviasales.exception.NoAdultsForFlightException;
-import com.example.aviasales.exception.TransactionException;
-import com.example.aviasales.exception.not_found.FlightNotFoundException;
-import com.example.aviasales.exception.not_found.PassengerNotFoundException;
-import com.example.aviasales.exception.not_found.ReservationNotFoundException;
-import com.example.aviasales.exception.not_found.TariffNotFoundException;
-import com.example.aviasales.exception.not_match.AirlinesNotMatchesException;
-import com.example.aviasales.exception.NotEnoughSeatsInAircraftException;
-import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException;
-import com.example.aviasales.repo.PassengerRepository;
-import com.example.aviasales.util.enums.DocumentType;
-import com.example.aviasales.util.Utils;
-import com.example.aviasales.util.enums.Gender;
-import com.example.aviasales.util.mappers.PassengerMapper;
-import lombok.SneakyThrows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import bitronix.tm.BitronixTransactionManager;
+import com.example.aviasales.dto.PassengerDTO;
+import com.example.aviasales.dto.ReservationDTO;
+import com.example.aviasales.dto.requests.AddPassengersDTO;
+import com.example.aviasales.dto.requests.DeletePassengersDTO;
+import com.example.aviasales.entity.Aircraft;
+import com.example.aviasales.entity.Flight;
+import com.example.aviasales.entity.Passenger;
+import com.example.aviasales.entity.Reservation;
+import com.example.aviasales.entity.Tariff;
+import com.example.aviasales.exception.MailException;
+import com.example.aviasales.exception.NoAdultsForFlightException;
+import com.example.aviasales.exception.NotEnoughSeatsInAircraftException;
+import com.example.aviasales.exception.TransactionException;
+import com.example.aviasales.exception.not_found.PassengerNotFoundException;
+import com.example.aviasales.exception.not_match.AirlinesNotMatchesException;
+import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException;
+import com.example.aviasales.repo.PassengerRepository;
+import com.example.aviasales.util.Utils;
+import com.example.aviasales.util.enums.DocumentType;
+import com.example.aviasales.util.enums.Gender;
+import com.example.aviasales.util.mappers.PassengerMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
 @Service
 public class PassengerService {
+    Logger log = LoggerFactory.getLogger(PassengerService.class);
     private PassengerRepository passengerRepository;
     private TariffService tariffService;
     private FlightService flightService;
@@ -67,7 +67,6 @@ public class PassengerService {
         return passengerRepository.findById(passengerId).orElseThrow(() -> new PassengerNotFoundException(passengerId));
     }
 
-    @SneakyThrows
     public Set<Passenger> addPassengers(AddPassengersDTO addPassengersDTO) {
         try {
             bitronixTransactionManager.begin();
@@ -125,12 +124,15 @@ public class PassengerService {
             return passengers;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("adding passengers - " + e.getMessage());
         }
     }
 
-    @SneakyThrows
     public Set<Long> deletePassengers(DeletePassengersDTO deletePassengersDTO) {
         try {
             bitronixTransactionManager.begin();
@@ -174,7 +176,11 @@ public class PassengerService {
             return deletePassengersIds;
         }
         catch (Exception e) {
-            bitronixTransactionManager.rollback();
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
             throw new TransactionException("deleting passengers - " + e.getMessage());
         }
     }
