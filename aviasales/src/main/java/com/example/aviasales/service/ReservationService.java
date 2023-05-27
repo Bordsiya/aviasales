@@ -29,4 +29,10 @@ public class ReservationService {
         Reservation reservation = reservationMapper.fromDto(reservationDTO);
         return reservationRepository.save(reservation);
     }
+
+    public Long deleteReservation(Long reservationId) {
+        getReservationById(reservationId);
+        reservationRepository.deleteById(reservationId);
+        return reservationId;
+    }
 }

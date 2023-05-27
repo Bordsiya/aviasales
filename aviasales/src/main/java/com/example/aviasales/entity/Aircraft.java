@@ -31,10 +31,10 @@ public class Aircraft {
     @Column(name = "number_of_seats", nullable = false)
     @JsonView
     private Integer numberOfSeats;
-    @OneToMany(mappedBy = "aircraft")
+    @OneToMany(mappedBy = "aircraft", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Set<Flight> flights;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView
     @JoinColumn(name = "airline_id", referencedColumnName = "id")
     private Airline airline;

@@ -6,6 +6,7 @@ import com.example.aviasales.util.annotations.ValueOfEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Schema(description = "Сущность пассажира рейса")
 @Setter
 @Getter
+@NoArgsConstructor
 public class PassengerDTO {
 
     public PassengerDTO(

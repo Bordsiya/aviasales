@@ -60,15 +60,15 @@ public class Passenger {
     @Column(name = "required_wheelchair", nullable = false)
     @JsonView
     private Boolean requiredWheelchair;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id", referencedColumnName = "id")
     @JsonView
     private Flight flight;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "tariff_id", referencedColumnName = "id")
     @JsonView
     private Tariff tariff;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "reservation_id", referencedColumnName = "id")
     @JsonView
     private Reservation reservation;

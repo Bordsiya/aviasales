@@ -1,4 +1,4 @@
-package com.example.aviasales.util;
+package com.example.aviasales.util.mappers.models;
 
 import com.example.aviasales.util.annotations.ValueOfEnum;
 import com.example.aviasales.util.enums.SortingAlgorithm;
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,41 +23,8 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class SearchRequest {
-    public SearchRequest(
-            Long airportFromId,
-            Long airportToId,
-            LocalDate dateFrom,
-            LocalDate dateBack,
-            Long amountOfAdults,
-            Long amountOfChildren,
-            String tariff,
-            Boolean hasBaggage,
-            String departureTimeFrom,
-            String arrivalTimeFrom,
-            Long flightDurationTimeUntilInHH,
-            Long maxPrice,
-            String sortingAlgorithm,
-            Integer pageNumber,
-            Integer pageSize
-    ) {
-        this.airportFromId = airportFromId;
-        this.airportToId = airportToId;
-        this.dateFrom = dateFrom;
-        this.dateBack = dateBack;
-        this.amountOfAdults = amountOfAdults;
-        this.amountOfChildren = amountOfChildren;
-        this.tariff = tariff;
-        this.hasBaggage = hasBaggage;
-        this.departureTimeFrom = LocalTime.parse(departureTimeFrom);
-        this.arrivalTimeFrom = LocalTime.parse(arrivalTimeFrom);
-        this.flightDurationTimeUntilInHH = flightDurationTimeUntilInHH;
-        this.maxPrice = maxPrice;
-        this.sortingAlgorithm = sortingAlgorithm;
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-    }
-
     private Long airportFromId;
     private Long airportToId;
     private LocalDate dateFrom;

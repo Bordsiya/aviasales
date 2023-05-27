@@ -60,4 +60,27 @@ public class GlobalErrorHandler {
         return errorDTO;
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.AUTH_ERROR, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+    @ExceptionHandler(FlightWithTheSameAirportsException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleFlightWithTheSameAirportsException(FlightWithTheSameAirportsException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.IMPOSSIBLE_OPERATION, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
+
+    @ExceptionHandler(DepartureTimeAfterArrivalTimeException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleDepartureTimeAfterArrivalTimeException(DepartureTimeAfterArrivalTimeException ex, WebRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO(
+                Code.IMPOSSIBLE_OPERATION, new Date(), ex.getMessage(), request.getDescription(false));
+        return errorDTO;
+    }
 }

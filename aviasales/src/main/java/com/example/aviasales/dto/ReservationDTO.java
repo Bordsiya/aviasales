@@ -3,16 +3,19 @@ package com.example.aviasales.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @Schema(description = "Сущность бронирования")
+@NoArgsConstructor
 public class ReservationDTO {
     @NotBlank(message = "Reservation-code is required.")
     @Schema(description = "Код бронирования", example = "vQEF6")

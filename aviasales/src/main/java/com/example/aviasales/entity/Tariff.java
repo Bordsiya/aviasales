@@ -27,7 +27,7 @@ public class Tariff {
     @Column(name = "tariff_name", nullable = false)
     @JsonView
     private String tariffName;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "airline_id", referencedColumnName = "id")
     @JsonView
     private Airline airline;

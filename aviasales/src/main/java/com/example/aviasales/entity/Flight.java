@@ -26,11 +26,11 @@ public class Flight {
     @Column(name = "id")
     @JsonView
     private Long flightId;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "departure_airport_id", referencedColumnName = "id")
     @JsonView
     private Airport departureAirport;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "arrival_airport_id", referencedColumnName = "id")
     @JsonView
     private Airport arrivalAirport;
@@ -52,11 +52,11 @@ public class Flight {
     @Column(name = "default_price_for_adults", nullable = false)
     @JsonView
     private Long defaultPriceForAdults;
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "aircraft_id", referencedColumnName = "id")
     @JsonView
     private Aircraft aircraft;
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "flight")
     @JsonIgnore
     List<Passenger> passengers;
 

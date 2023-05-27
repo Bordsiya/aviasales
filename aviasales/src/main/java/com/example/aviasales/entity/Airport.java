@@ -37,10 +37,10 @@ public class Airport {
     @Column(name = "country", nullable = false)
     @JsonView
     private String country;
-    @OneToMany(mappedBy = "departureAirport")
+    @OneToMany(mappedBy = "departureAirport", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     Set<Flight> flightsFrom;
-    @OneToMany(mappedBy = "arrivalAirport")
+    @OneToMany(mappedBy = "arrivalAirport", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     Set<Flight> flightsTo;
 

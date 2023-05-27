@@ -35,7 +35,7 @@ public class Reservation {
     @Column(name = "email", nullable = false)
     @JsonView
     private String email;
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Set<Passenger> passengers;
 
