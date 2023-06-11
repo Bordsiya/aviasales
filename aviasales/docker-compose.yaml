@@ -12,3 +12,12 @@ services:
     image: redis/redis-stack-server:latest
     ports:
       - "6379:6379"
+  master_rabbit:
+    image: aiwin/rabbitmq-stomp:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - '5672:5672' #Default port of RabbitMQ
+      - '15672:15672' #RabbitMQ Web UI
+      - '61613:61613' #STOMP port

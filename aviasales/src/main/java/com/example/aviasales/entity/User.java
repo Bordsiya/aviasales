@@ -1,22 +1,18 @@
 package com.example.aviasales.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.example.aviasales.util.enums.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -43,13 +39,20 @@ public class User {
     @JsonView
     private RoleType role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Application> applications;
+
     @Override
     public String toString() {
-        return "User [" + "\n" +
+        String ans = "User [" + "\n" +
                 "user-id=" + userId + "\n" +
                 ", email=" + email + "\n" +
                 ", password=" + password + "\n" +
-                ", role=%s" + role.name() + "\n" +
+                ", role=" + role.name() + "\n" +
+                ", applications=%s\n" +
                 "]";
+        return String.format(ans,
+                Objects.requireNonNullElse(applications, "[]"));
     }
 }

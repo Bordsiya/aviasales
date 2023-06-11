@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AuthService {
@@ -32,7 +33,8 @@ public class AuthService {
                 null,
                 userDTO.getEmail(),
                 passwordEncoder.encode(userDTO.getPassword()),
-                role
+                role,
+                Set.of()
         );
 
         return userRepository.save(user);

@@ -7,31 +7,17 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import com.example.aviasales.dto.PassengerDTO;
-import com.example.aviasales.dto.requests.AddAircraftsDTO;
-import com.example.aviasales.dto.requests.AddAirlinesDTO;
-import com.example.aviasales.dto.requests.AddFlightsDTO;
-import com.example.aviasales.dto.requests.DeleteFlightsRequest;
-import com.example.aviasales.dto.requests.DeletePassengersDTO;
-import com.example.aviasales.entity.Aircraft;
-import com.example.aviasales.entity.Airline;
-import com.example.aviasales.entity.Flight;
-import com.example.aviasales.entity.Passenger;
-import com.example.aviasales.service.AircraftService;
-import com.example.aviasales.service.AirlineService;
-import com.example.aviasales.service.FlightService;
-import com.example.aviasales.service.PassengerService;
+import com.example.aviasales.dto.requests.*;
+import com.example.aviasales.entity.*;
+import com.example.aviasales.service.*;
+import com.example.aviasales.util.enums.ApplicationStatus;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/private")
@@ -42,16 +28,19 @@ public class AdminController {
     private AirlineService airlineService;
     private FlightService flightService;
     private PassengerService passengerService;
+    private ApplicationService applicationService;
 
     @Autowired
     public AdminController(AircraftService aircraftService,
                            AirlineService airlineService,
                            FlightService flightService,
-                           PassengerService passengerService) {
+                           PassengerService passengerService,
+                           ApplicationService applicationService) {
         this.aircraftService = aircraftService;
         this.airlineService = airlineService;
         this.flightService = flightService;
         this.passengerService = passengerService;
+        this.applicationService = applicationService;
     }
 
     @PostMapping(path = "/aircrafts/add-aircrafts",
@@ -109,4 +98,28 @@ public class AdminController {
     ) {
         return ResponseEntity.ok(passengerService.updatePassenger(id, passengerDTO));
     }
+
+    @GetMapping(path = "/applications/search-by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Application>> getApplicationsByStatus(
+            @RequestParam String applicationStatus
+    ) {
+        return ResponseEntity.ok(applicationService.searchByStatus(ApplicationStatus.valueOf(applicationStatus)));
+    }
+
+    @GetMapping(path = "/applications/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Application> getApplicationById(
+            @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id
+    ) {
+        return ResponseEntity.ok(applicationService.getApplicationById(id));
+    }
+
+    /*
+    @PostMapping
+    public ResponseEntity<Long> setApplicationStatus(
+            @Valid @RequestBody SetApplicationStatusRequestDTO setApplicationStatusRequestDTO
+    ) {
+        return ResponseEntity.ok(applicationService.changeApplicationStatus(setApplicationStatusRequestDTO));
+    }
+
+     */
 }

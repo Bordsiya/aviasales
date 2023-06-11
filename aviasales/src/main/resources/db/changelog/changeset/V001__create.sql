@@ -143,3 +143,18 @@ create table if not exists public.users
 alter table public.users
     owner to "user";
 
+create table if not exists public.applications
+(
+    id                  bigserial       primary key,
+    user_id             bigserial       not null
+        constraint fklrgmua8va47so5ldeqh750233
+            references public.users,
+    application_type    varchar(255)    not null,
+    payload             text            not null,
+    application_status  varchar(255)    not null,
+    publish_date        date            not null,
+    is_archived         boolean         not null
+);
+
+alter table public.applications
+    owner to "user";
