@@ -1,6 +1,6 @@
 version: '3'
 services:
-  master_postgres:
+  aviasales_postgres:
     image: postgres:13.3
     environment:
       - POSTGRES_USER=user
@@ -8,6 +8,7 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - '5432:5432'
+
   master_redis:
     image: redis/redis-stack-server:latest
     ports:
@@ -30,6 +31,15 @@ services:
     ports:
       - "9095:9095"
     depends_on:
+      - aviasales_postgres
       - master_redis
-      - master_postgres
+      - master_rabbit
+
+  mail_service:
+    container_name: mail_service
+    build:
+      context: ./mail_service
+    ports:
+      - "9097:9097"
+    depends_on:
       - master_rabbit
