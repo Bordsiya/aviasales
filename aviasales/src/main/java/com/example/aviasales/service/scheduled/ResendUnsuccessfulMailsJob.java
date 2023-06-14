@@ -1,6 +1,5 @@
 package com.example.aviasales.service.scheduled;
 
-import com.example.aviasales.client.RecommendationClient;
 import com.example.aviasales.dto.ReSendMailsResult;
 import com.example.aviasales.service.UnsuccessfulMailReSender;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +15,8 @@ public class ResendUnsuccessfulMailsJob extends QuartzJobBean {
     private static final String RESULT_KEY = "checkAndResendResult";
     private final UnsuccessfulMailReSender mailReSender;
 
-    private final RecommendationClient client;
-
     @Override
     protected void executeInternal(JobExecutionContext context) {
-        System.out.println(client.getAllUserRecommendations(1L));
         var contextMap = context.getJobDetail().getJobDataMap();
         var previousResult = (ReSendMailsResult) contextMap.get(RESULT_KEY);
         System.out.printf("Job started, previous result: %s\n", previousResult);
