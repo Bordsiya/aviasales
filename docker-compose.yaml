@@ -12,6 +12,7 @@ services:
     image: redis/redis-stack-server:latest
     ports:
       - "6379:6379"
+
   master_rabbit:
     image: aiwin/rabbitmq-stomp:latest
     environment:
@@ -21,3 +22,14 @@ services:
       - '5672:5672' #Default port of RabbitMQ
       - '15672:15672' #RabbitMQ Web UI
       - '61613:61613' #STOMP port
+
+  aviasales:
+    container_name: aviasales
+    build:
+      context: ./aviasales
+    ports:
+      - "9095:9095"
+    depends_on:
+      - master_redis
+      - master_postgres
+      - master_rabbit
