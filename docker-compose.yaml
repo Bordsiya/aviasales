@@ -1,0 +1,67 @@
+version: '3'
+services:
+  aviasales_postgres:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - '5432:5432'
+
+  master_redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+
+  master_rabbit:
+    image: aiwin/rabbitmq-stomp:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - '5672:5672' #Default port of RabbitMQ
+      - '15672:15672' #RabbitMQ Web UI
+      - '61613:61613' #STOMP port
+
+  aviasales:
+    container_name: aviasales
+    build:
+      context: ./aviasales
+    ports:
+      - "9095:9095"
+    depends_on:
+      - aviasales_postgres
+      - master_redis
+      - master_rabbit
+
+  mail_service:
+    container_name: mail_service
+    build:
+      context: ./mail_service
+    ports:
+      - "9097:9097"
+    depends_on:
+      - master_rabbit
+
+  recommendation_postgres:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    expose:
+      - '5434'
+    ports:
+      - '5434:5434'
+    command: -p 5434
+
+  recommendation_service:
+    container_name: recommendation_service
+    build:
+      context: ./recommendation_service
+    ports:
+      - "9096:9096"
+    depends_on:
+      - master_rabbit
+      - recommendation_postgres

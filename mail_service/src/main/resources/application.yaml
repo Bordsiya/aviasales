@@ -1,0 +1,40 @@
+server:
+  port: 9097
+
+logging:
+  level:
+    root: info
+
+#DB
+spring:
+  jackson:
+    deserialization:
+      fail-on-ignored-properties: true
+      fail-on-unknown-properties: true
+  mail:
+    host: smtp.mail.ru
+    port: 587
+    username: bordun.2002@mail.ru
+    password: Y6nh9cUhkG0kxNDvH2x6
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  rabbitmq:
+    stream:
+      username: user
+      password: password
+      host: localhost
+      port: 61613
+
+#for handshake
+endpoint: /ws
+
+stomp:
+  broker:
+    relay: /topic
+destination:
+  prefix: /app
