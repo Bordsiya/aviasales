@@ -1,0 +1,13 @@
+version: '3'
+services:
+  recommendation_postgres:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    expose:
+      - '5434'
+    ports:
+      - '5434:5434'
+    command: -p 5434

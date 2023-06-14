@@ -43,3 +43,25 @@ services:
       - "9097:9097"
     depends_on:
       - master_rabbit
+
+  recommendation_postgres:
+    image: postgres:13.3
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    expose:
+      - '5434'
+    ports:
+      - '5434:5434'
+    command: -p 5434
+
+  recommendation_service:
+    container_name: recommendation_service
+    build:
+      context: ./recommendation_service
+    ports:
+      - "9096:9096"
+    depends_on:
+      - master_rabbit
+      - recommendation_postgres
