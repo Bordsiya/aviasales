@@ -21,7 +21,7 @@ public class ReSendMailJobConfig {
     JobDetail showReSendMailJobDetail() {
         return JobBuilder
                 .newJob(ResendUnsuccessfulMailsJob.class)
-                .withIdentity("showTimeJob", groupName)
+                .withIdentity("ReSendMailJob", groupName)
                 .storeDurably()
                 .requestRecovery(true)
                 .build();
@@ -32,7 +32,7 @@ public class ReSendMailJobConfig {
         return TriggerBuilder
                 .newTrigger()
                 .forJob(showReSendMailJobDetail)
-                .withIdentity("showTimeJobTrigger", groupName)
+                .withIdentity("ReSendMailJobTrigger", groupName)
                 .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 .build();
     }
