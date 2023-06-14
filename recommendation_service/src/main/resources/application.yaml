@@ -1,0 +1,44 @@
+#DB
+server:
+  tomcat:
+    relaxed-query-chars: '[,]'
+  port: 9096
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+
+  liquibase:
+    change-log:
+      'classpath:db/changelog/db.changelog-master.yaml'
+
+  rabbitmq:
+    username: user
+    password: password
+    host: localhost
+    port: 61613
+
+#for handshake
+endpoint: /socket-endpoint
+
+#for broker receive // JavaScript: stompClient.subscribe('/queue/messages', f);
+stomp:
+  broker:
+    relay: /queue
+
+#for send // JavaScript: stompClient.send('/app/messages', {}, json);
+destination:
+  prefix: /app
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
