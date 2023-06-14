@@ -1,0 +1,103 @@
+#DB
+server:
+  tomcat:
+    relaxed-query-chars: '[,]'
+  port: 9096
+
+spring:
+  quartz:
+    job-store-type: jdbc # Saving jobs in db, not in mem
+    jdbc:
+      initialize-schema: never # We will initialize schema manually
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: 'QuartzScheduler'
+            instanceId: 'NON_CLUSTERED'
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            useProperties: false
+            tablePrefix: qrtz_
+            isClustered: false # Working not int cluster, have single instance
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 1
+            threadsInheritContextClassLoaderOfInitializingThread: true
+    auto-startup: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: com.example.aviasales.util.CustomPostgreDialect
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+
+  liquibase:
+    change-log:
+      'classpath:db/changelog/db.changelog-master.yaml'
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      topics:
+        flights: flights
+        passengers: passengers
+
+  
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      fail-on-ignored-properties: true
+  
+  mail:
+    host: smtp.mail.ru
+    port: 587
+    username: bordun.2002@mail.ru
+    password: Y6nh9cUhkG0kxNDvH2x6
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  rabbitmq:
+    username: user
+    password: password
+    host: localhost
+    port: 61613
+
+#for handshake
+endpoint: /socket-endpoint
+
+#for broker receive // JavaScript: stompClient.subscribe('/queue/messages', f);
+stomp:
+  broker:
+    relay: /queue
+
+#for send // JavaScript: stompClient.send('/app/messages', {}, json);
+destination:
+  prefix: /app
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+scheduler:
+  re_send_mail:
+    # every 10 minutes
+    # cron: "*/10 * * * *"
+
+    # every minute
+    cron: "*/3 * * * * ?"
+    group_name: PERMANENT

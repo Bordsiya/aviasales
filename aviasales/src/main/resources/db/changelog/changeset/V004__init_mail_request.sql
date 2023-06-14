@@ -1,4 +1,4 @@
-create table mail_request
+create table if not exists mail_request
 (
     id         bigserial primary key,
     user_id    bigint      not null REFERENCES users (id),
