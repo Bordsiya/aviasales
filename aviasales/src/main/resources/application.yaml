@@ -2,7 +2,7 @@
 server:
   tomcat:
     relaxed-query-chars: '[,]'
-  port: 9096
+  port: 9095
 
 spring:
   quartz:
@@ -53,6 +53,16 @@ spring:
         flights: flights
         passengers: passengers
 
+  cloud:
+    openfeign:
+      cache:
+        enabled: false
+      client:
+        config:
+          default:
+            connectTimeout: 2000
+            readTimeout: 2000
+            loggerLevel: full
   
   jackson:
     deserialization:
@@ -101,3 +111,9 @@ scheduler:
     # every minute
     cron: "*/3 * * * * ?"
     group_name: PERMANENT
+
+recommendation_service:
+  # local
+  url: http://localhost:9096
+  # prod
+  # url: http://recommendation-service:9096

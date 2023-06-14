@@ -31,6 +31,10 @@ dependencies {
 	implementation 'io.projectreactor.netty:reactor-netty-core'
 	implementation 'io.projectreactor.netty:reactor-netty-http'
 
+	// Feign
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.6'
+	implementation 'org.springframework.cloud:spring-cloud-openfeign-core:3.1.6'
+
 	implementation 'org.projectlombok:lombok:1.18.26'
 	implementation 'org.jetbrains:annotations:24.0.1'
 

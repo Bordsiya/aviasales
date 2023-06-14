@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.example.recommendationservice.dto.RecommendationDto;
 import com.example.recommendationservice.enums.RecommendationType;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
@@ -50,4 +51,14 @@ public class Recommendation {
     @Column(name = "created_date")
     @JsonView
     private LocalDate createdDate;
+
+    public RecommendationDto toDto() {
+        return new RecommendationDto(
+                id,
+                userId,
+                text,
+                type,
+                createdDate
+        );
+    }
 }

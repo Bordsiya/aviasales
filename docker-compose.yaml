@@ -35,8 +35,8 @@ services:
       - master_redis
       - master_rabbit
 
-  mail_service:
-    container_name: mail_service
+  mail-service:
+    container_name: mail-service
     build:
       context: ./mail_service
     ports:
@@ -56,8 +56,8 @@ services:
       - '5434:5434'
     command: -p 5434
 
-  recommendation_service:
-    container_name: recommendation_service
+  recommendation-service:
+    container_name: recommendation-service
     build:
       context: ./recommendation_service
     ports:

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import com.example.recommendationservice.dto.RecommendationDto;
 import com.example.recommendationservice.entity.Recommendation;
 import com.example.recommendationservice.service.RecommendationService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,13 +31,19 @@ public class RecommendationController {
             path = "/{userId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Recommendation>> getAllUserRecommendations(
+    public ResponseEntity<List<RecommendationDto>> getAllUserRecommendations(
             @PathVariable @Min(1) @Max(Long.MAX_VALUE)
             @Parameter(description = "id пользователя") Long userId
     ) {
         var found = service.getAllForUser(userId)
                 .stream()
-                .sorted(Comparator.comparing(Recommendation::getCreatedDate).reversed())
+                .sorted(
+                        Comparator
+                                .comparing(Recommendation::getCreatedDate)
+                                .reversed()
+                                .thenComparing(Recommendation::getId)
+                )
+                .map(Recommendation::toDto)
                 .toList();
         return ResponseEntity.ok(found);
     }
