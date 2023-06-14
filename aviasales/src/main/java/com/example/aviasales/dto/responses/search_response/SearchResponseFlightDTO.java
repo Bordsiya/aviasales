@@ -1,4 +1,4 @@
-package com.example.aviasales.dto.search_response;
+package com.example.aviasales.dto.responses.search_response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

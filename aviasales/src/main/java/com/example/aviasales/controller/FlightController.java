@@ -1,10 +1,7 @@
 package com.example.aviasales.controller;
 
-import com.example.aviasales.dto.requests.AddAirlinesDTO;
-import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.SearchRequestDTO;
-import com.example.aviasales.dto.search_response.SearchResponseDTO;
-import com.example.aviasales.entity.Airline;
+import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
 import com.example.aviasales.entity.Flight;
 import com.example.aviasales.service.FlightService;
 import com.example.aviasales.util.mappers.SearchRequestMapper;
@@ -18,13 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/public/flights")

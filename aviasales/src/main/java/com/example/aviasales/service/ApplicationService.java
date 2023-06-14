@@ -1,7 +1,6 @@
 package com.example.aviasales.service;
 
 import bitronix.tm.BitronixTransactionManager;
-import com.example.aviasales.dto.ApplicationResponse;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.requests.SetApplicationStatusRequestDTO;
 import com.example.aviasales.entity.Application;
@@ -16,15 +15,12 @@ import com.example.aviasales.util.enums.ApplicationType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService {
@@ -33,33 +29,27 @@ public class ApplicationService {
     private UserRepository userRepository;
     private BitronixTransactionManager bitronixTransactionManager;
     private ObjectMapper objectMapper;
-    private SimpMessagingTemplate template;
 
     @Autowired
     public ApplicationService(
             ApplicationRepository applicationRepository,
             BitronixTransactionManager bitronixTransactionManager,
-            UserRepository userRepository,
-            SimpMessagingTemplate template) {
+            UserRepository userRepository) {
         this.applicationRepository = applicationRepository;
         this.bitronixTransactionManager = bitronixTransactionManager;
         this.userRepository = userRepository;
         this.objectMapper = new ObjectMapper();
-        this.template = template;
     }
 
-    public Application addApplicationDeletePassenger(Long passengerId, Principal principal) {
+    public Application addApplicationDeletePassenger(Long passengerId, String email) {
         Application newApplication;
         try {
             bitronixTransactionManager.begin();
 
-            String email = principal.getName();
             User user = userRepository.findByEmail(email);
             if (user == null) {
                 throw new UserNotFoundException(email);
             }
-
-            //TODO(проверяем, что заявка валидна)
 
             Application application = new Application(
                     null,
@@ -75,15 +65,8 @@ public class ApplicationService {
 
             bitronixTransactionManager.commit();
 
-            template.convertAndSend(
-                    "/topic/applications-general",
-                    new ApplicationResponse(
-                            newApplication.getApplicationId(),
-                            "Заявка на удаление пассажира была отправлена на обработку"
-                    )
-            );
+            // TODO(кинуть в тредпул для хэндлеров заявок)
             return newApplication;
-
         }
         catch (Exception e) {
             try {
@@ -95,17 +78,15 @@ public class ApplicationService {
         }
     }
 
-    public Application addApplicationUpdatePassenger(Long passengerId, PassengerDTO passengerDTO, Principal principal) {
+    public Application addApplicationUpdatePassenger(Long passengerId, PassengerDTO passengerDTO, String email) {
         Application newApplication;
         try {
             bitronixTransactionManager.begin();
 
-            String email = principal.getName();
             User user = userRepository.findByEmail(email);
             if (user == null) {
                 throw new UserNotFoundException(email);
             }
-            //TODO(проверяем, что заявка валидна)
 
             Application application = new Application(
                     null,
@@ -122,15 +103,8 @@ public class ApplicationService {
 
             bitronixTransactionManager.commit();
 
-            template.convertAndSend(
-                    "/topic/applications-general",
-                    new ApplicationResponse(
-                            newApplication.getApplicationId(),
-                            "Заявка на изменение пассажира была отправлена на обработку"
-                    )
-            );
+            // TODO(кинуть в тредпул для хэндлеров заявок)
             return newApplication;
-
         }
         catch (Exception e) {
             try {
@@ -142,29 +116,31 @@ public class ApplicationService {
         }
     }
 
-    //TODO(метод)
-    public Long changeApplicationStatus(SetApplicationStatusRequestDTO setApplicationStatusRequestDTO) {
-        return 1L;
-    }
-
-    public Set<Application> searchByStatus(ApplicationStatus applicationStatus) {
-        return applicationRepository.findAll().stream().filter(it -> it.getApplicationStatus() == applicationStatus).collect(Collectors.toSet());
+    public Application changeApplicationStatus(SetApplicationStatusRequestDTO setApplicationStatusRequestDTO) {
+        Application application = getApplicationById(setApplicationStatusRequestDTO.getApplicationId());
+        application.setApplicationStatus(ApplicationStatus.valueOf(setApplicationStatusRequestDTO.getApplicationStatus()));
+        return applicationRepository.save(application);
     }
 
     public Application getApplicationById(Long applicationId) {
         return applicationRepository.findById(applicationId).orElseThrow(() -> new ApplicationNotFoundException(applicationId));
     }
 
-    public Long deleteApplication(Long applicationId) {
+    public Set<Application> getUserApplications(String email) {
+        Set<Application> applications = new HashSet<>();
         try {
             bitronixTransactionManager.begin();
 
-            getApplicationById(applicationId);
-            applicationRepository.deleteById(applicationId);
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                throw new UserNotFoundException(email);
+            }
+
+            applications.addAll(applicationRepository.findAllByUser(user));
 
             bitronixTransactionManager.commit();
-            //TODO(отправить сообщение об изменении статуса заявки)
-            return applicationId;
+
+            return applications;
         }
         catch (Exception e) {
             try {
@@ -172,8 +148,7 @@ public class ApplicationService {
             } catch (Exception ignore) {
                 log.error("Unable to rollback transaction", ignore);
             }
-            throw new TransactionException("deleting application - " + e.getMessage());
+            throw new TransactionException("adding application - " + e.getMessage());
         }
-
     }
 }

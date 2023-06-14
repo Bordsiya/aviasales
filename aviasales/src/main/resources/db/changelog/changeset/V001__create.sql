@@ -147,7 +147,6 @@ create table if not exists public.applications
 (
     id                  bigserial       primary key,
     user_id             bigserial       not null
-        constraint fklrgmua8va47so5ldeqh750233
             references public.users,
     application_type    varchar(255)    not null,
     payload             text            not null,

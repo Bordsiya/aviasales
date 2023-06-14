@@ -1,5 +1,6 @@
 package com.example.aviasales.util.mappers;
 
+import com.example.aviasales.dto.responses.search_response.*;
 import com.example.aviasales.dto.search_response.*;
 import com.example.aviasales.entity.*;
 import org.springframework.stereotype.Component;

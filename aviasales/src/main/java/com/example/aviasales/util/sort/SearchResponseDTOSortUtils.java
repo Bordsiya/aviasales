@@ -1,7 +1,7 @@
 package com.example.aviasales.util.sort;
 
-import com.example.aviasales.dto.search_response.SearchResponseDTO;
-import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
+import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
+import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 
 import java.util.Collections;

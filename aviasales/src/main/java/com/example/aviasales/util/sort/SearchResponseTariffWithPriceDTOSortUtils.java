@@ -1,6 +1,6 @@
 package com.example.aviasales.util.sort;
 
-import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
+import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
 
 import java.util.Comparator;
 

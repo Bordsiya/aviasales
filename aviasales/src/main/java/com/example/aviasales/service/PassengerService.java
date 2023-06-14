@@ -10,6 +10,7 @@ import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
 import com.example.aviasales.dto.requests.DeletePassengersDTO;
+import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Flight;
 import com.example.aviasales.entity.Passenger;
@@ -31,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,8 +43,8 @@ public class PassengerService {
     private FlightService flightService;
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
-    private EmailService emailService;
     private BitronixTransactionManager bitronixTransactionManager;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
     public PassengerService(
@@ -51,16 +53,16 @@ public class PassengerService {
             @Lazy FlightService flightService,
             @Lazy ReservationService reservationService,
             PassengerMapper passengerMapper,
-            EmailService emailService,
-            BitronixTransactionManager bitronixTransactionManager
+            BitronixTransactionManager bitronixTransactionManager,
+            SimpMessagingTemplate simpMessagingTemplate
     ) {
         this.passengerRepository = passengerRepository;
         this.tariffService = tariffService;
         this.flightService = flightService;
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
-        this.emailService = emailService;
         this.bitronixTransactionManager = bitronixTransactionManager;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public Passenger getPassengerById(Long passengerId) {
@@ -118,8 +120,16 @@ public class PassengerService {
                 passengers.add(passengerRepository.save(newPassenger));
             }
 
-            sendEmail(buildAddPassengersText(flight, reservation, passengers),
-                    flight.getAircraft().getAirline().getAirlineName(), reservation.getEmail());
+            simpMessagingTemplate.convertAndSend(
+                    "/queue/mail-requests",
+                    new MailServiceRequest(
+                            1L, // TODO(добавить добавление в бд)
+                            reservation.getEmail(),
+                            flight.getAircraft().getAirline().getAirlineName(),
+                            buildAddPassengersText(flight, reservation, passengers)
+                    )
+            );
+
             bitronixTransactionManager.commit();
             return passengers;
         }
@@ -171,7 +181,15 @@ public class PassengerService {
                 }
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                sendEmail(buildDeletePassengersEmail(entry.getKey()), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
+                simpMessagingTemplate.convertAndSend(
+                        "/queue/mail-requests",
+                        new MailServiceRequest(
+                                1L, // TODO(добавить добавление в бд)
+                                entry.getValue(),
+                                reservationCodeToAirlineName.get(entry.getKey()),
+                                buildDeletePassengersEmail(entry.getKey())
+                        )
+                );
             }
             bitronixTransactionManager.commit();
             return deletePassengersIds;
@@ -232,8 +250,17 @@ public class PassengerService {
         passenger.setTariff(tariffService.getTariffById(passengerDTO.getTariffId()));
 
         Passenger newPassenger = passengerRepository.save(passenger);
-        sendEmail(buildUpdatePassenger(passenger.getReservation(), passenger),
-                passenger.getFlight().getAircraft().getAirline().getAirlineName(), passenger.getReservation().getEmail());
+
+        simpMessagingTemplate.convertAndSend(
+                "/queue/mail-requests", // TODO(добавить добавление в бд)
+                new MailServiceRequest(
+                        1L,
+                        passenger.getReservation().getEmail(),
+                        passenger.getFlight().getAircraft().getAirline().getAirlineName(),
+                        buildUpdatePassenger(passenger.getReservation(), passenger)
+                )
+        );
+
         return newPassenger;
     }
 
@@ -266,17 +293,11 @@ public class PassengerService {
                 "<i>Ваш отказ от билета был обработан </br></i>";
     }
 
+
     private String buildUpdatePassenger(Reservation reservation, Passenger passenger) {
         return "<b>Были изменены данные о пользователе в заказе " + reservation.getReservationCode() + "</b>,<br>" +
                 "<i>Пользователь: </br>" +
                 passenger.getFirstName() + " " + passenger.getLastName() + " " + passenger.getPatronymic() + "</br></i>";
     }
 
-    private void sendEmail(String text, String subject, String email) throws MailException {
-        emailService.sendHTMLMessage(
-                email,
-                subject,
-                text
-        );
-    }
 }

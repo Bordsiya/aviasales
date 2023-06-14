@@ -99,27 +99,10 @@ public class AdminController {
         return ResponseEntity.ok(passengerService.updatePassenger(id, passengerDTO));
     }
 
-    @GetMapping(path = "/applications/search-by-status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Application>> getApplicationsByStatus(
-            @RequestParam String applicationStatus
-    ) {
-        return ResponseEntity.ok(applicationService.searchByStatus(ApplicationStatus.valueOf(applicationStatus)));
-    }
-
     @GetMapping(path = "/applications/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Application> getApplicationById(
             @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id
     ) {
         return ResponseEntity.ok(applicationService.getApplicationById(id));
     }
-
-    /*
-    @PostMapping
-    public ResponseEntity<Long> setApplicationStatus(
-            @Valid @RequestBody SetApplicationStatusRequestDTO setApplicationStatusRequestDTO
-    ) {
-        return ResponseEntity.ok(applicationService.changeApplicationStatus(setApplicationStatusRequestDTO));
-    }
-
-     */
 }

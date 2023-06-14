@@ -12,8 +12,9 @@ import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
-import com.example.aviasales.dto.search_response.SearchResponseDTO;
-import com.example.aviasales.dto.search_response.SearchResponseTariffWithPriceDTO;
+import com.example.aviasales.dto.requests.MailServiceRequest;
+import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
+import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.Aircraft;
 import com.example.aviasales.entity.Airport;
 import com.example.aviasales.entity.Flight;
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,10 +49,10 @@ public class FlightService {
     private AirportService airportService;
     private AircraftService aircraftService;
     private ReservationService reservationService;
-    private EmailService emailService;
     private SearchResponseMapper searchResponseMapper;
     private FlightsMapper flightsMapper;
     private BitronixTransactionManager bitronixTransactionManager;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
     public FlightService(
@@ -58,19 +60,19 @@ public class FlightService {
             @Lazy AirportService airportService,
             @Lazy AircraftService aircraftService,
             @Lazy ReservationService reservationService,
-            EmailService emailService,
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
-            BitronixTransactionManager bitronixTransactionManager
+            BitronixTransactionManager bitronixTransactionManager,
+            SimpMessagingTemplate simpMessagingTemplate
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
         this.aircraftService = aircraftService;
         this.reservationService = reservationService;
-        this.emailService = emailService;
         this.searchResponseMapper = searchResponseMapper;
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -208,7 +210,15 @@ public class FlightService {
                 reservationService.deleteReservation(reservationId);
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                sendDeleteFlightEmail(entry.getKey(), reservationCodeToAirlineName.get(entry.getKey()), entry.getValue());
+                simpMessagingTemplate.convertAndSend(
+                        "/queue/mail-requests",
+                        new MailServiceRequest(
+                               1L, // TODO(добавить добавление в бд)
+                               entry.getKey(),
+                               reservationCodeToAirlineName.get(entry.getKey()),
+                               buildDeleteFlight(entry.getValue())
+                        )
+                );
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;
@@ -223,15 +233,10 @@ public class FlightService {
         }
     }
 
-    private void sendDeleteFlightEmail(String reservationCode, String airlineName, String email) throws MailException {
-        String textBase = "<b>Ваши билеты на aviasales.ru по заказу " + reservationCode + " больше недействительны </b>,<br>" +
+    private String buildDeleteFlight(String reservationCode) {
+        return "<b>Ваши билеты на aviasales.ru по заказу " + reservationCode + " больше недействительны </b>,<br>" +
                 "<i>Произошла отмена рейса </br>" +
                 "Обратитесь на сайт за возвратом </br> </i>";
-        emailService.sendHTMLMessage(
-                email,
-                airlineName,
-                textBase
-        );
     }
 
 
