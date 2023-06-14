@@ -1,7 +1,6 @@
 package com.example.recommendationservice.service.event;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.Random;
 
 import com.example.recommendationservice.entity.Recommendation;
