@@ -1,6 +1,7 @@
 package com.example.recommendationservice.controller;
 
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.validation.constraints.Max;
@@ -27,14 +28,16 @@ public class RecommendationController {
 
     @GetMapping(
             path = "/{userId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<Recommendation>> getAllUserRecommendations(
             @PathVariable @Min(1) @Max(Long.MAX_VALUE)
             @Parameter(description = "id пользователя") Long userId
     ) {
-        var found = service.getAllForUser(userId);
+        var found = service.getAllForUser(userId)
+                .stream()
+                .sorted(Comparator.comparing(Recommendation::getCreatedDate).reversed())
+                .toList();
         return ResponseEntity.ok(found);
     }
 }
