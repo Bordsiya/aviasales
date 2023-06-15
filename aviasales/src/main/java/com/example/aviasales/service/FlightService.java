@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import bitronix.tm.BitronixTransactionManager;
-import com.example.aviasales.controller.StompController;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
@@ -53,8 +52,6 @@ public class FlightService {
     private final SearchResponseMapper searchResponseMapper;
     private final FlightsMapper flightsMapper;
     private final BitronixTransactionManager bitronixTransactionManager;
-
-    private final StompController stompController;
     private final MailRequestRepository mailRequestRepository;
 
     @Autowired
@@ -66,8 +63,7 @@ public class FlightService {
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            MailRequestRepository mailRequestRepository,
-            StompController stompController
+            MailRequestRepository mailRequestRepository
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
@@ -77,7 +73,6 @@ public class FlightService {
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
         this.mailRequestRepository = mailRequestRepository;
-        this.stompController = stompController;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -220,16 +215,14 @@ public class FlightService {
                 reservationService.deleteReservation(reservationId);
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                stompController.send(
-                        "process-mail-message",
-                            new MailServiceRequest(
-                                    1L,
-                                    entry.getKey(),
-                                    reservationCodeToAirlineName.get(entry.getKey()),
-                                    buildDeleteFlight(entry.getValue())
-                            )
-                        );
-
+                mailRequestPublisher.produceMsg( // TODO save to DB
+                        new MailServiceRequest(
+                                1L,
+                                entry.getKey(),
+                                reservationCodeToAirlineName.get(entry.getKey()),
+                                buildDeleteFlight(entry.getValue())
+                        )
+                );
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;

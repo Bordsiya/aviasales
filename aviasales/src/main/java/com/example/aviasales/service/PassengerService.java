@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import bitronix.tm.BitronixTransactionManager;
-import com.example.aviasales.controller.StompController;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
@@ -50,13 +49,12 @@ public class PassengerService {
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
     private BitronixTransactionManager bitronixTransactionManager;
+    private MailRequestPublisher mailRequestPublisher;
 
     private UserRepository userRepository;
     private final MailRequestRepository mailRequestRepository;
 
     private ObjectMapper mapper;
-
-    private final StompController stompController;
 
     @Autowired
     public PassengerService(
@@ -66,10 +64,10 @@ public class PassengerService {
             @Lazy ReservationService reservationService,
             PassengerMapper passengerMapper,
             BitronixTransactionManager bitronixTransactionManager,
+            MailRequestPublisher mailRequestPublisher,
             MailRequestRepository mailRequestRepository,
             UserRepository userRepository,
-            ObjectMapper mapper,
-            StompController stompController
+            ObjectMapper mapper
     ) {
         this.passengerRepository = passengerRepository;
         this.tariffService = tariffService;
@@ -77,10 +75,10 @@ public class PassengerService {
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
+        this.mailRequestPublisher = mailRequestPublisher;
         this.mailRequestRepository = mailRequestRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
-        this.stompController = stompController;
     }
 
     public Passenger getPassengerById(Long passengerId) {
@@ -156,10 +154,7 @@ public class PassengerService {
                     .build();
             mailRequestEntity.setPayload(mapper.writeValueAsString(mailRequest));
             mailRequestRepository.save(mailRequestEntity);
-            stompController.send(
-                    "process-mail-message",
-                    mailRequest
-            );
+            mailRequestPublisher.produceMsg(mailRequest);
             bitronixTransactionManager.commit();
             return passengers;
         } catch (Exception e) {
@@ -213,8 +208,7 @@ public class PassengerService {
                 }
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                stompController.send(
-                        "process-mail-message",
+                mailRequestPublisher.produceMsg(
                         new MailServiceRequest(
                                 1L, // TODO(добавить добавление в бд)
                                 entry.getValue(),
@@ -284,8 +278,7 @@ public class PassengerService {
 
         Passenger newPassenger = passengerRepository.save(passenger);
 
-        stompController.send(
-                "process-mail-message",
+        mailRequestPublisher.produceMsg(
                 new MailServiceRequest(
                         1L, // TODO(добавить добавление в бд)
                         passenger.getReservation().getEmail(),

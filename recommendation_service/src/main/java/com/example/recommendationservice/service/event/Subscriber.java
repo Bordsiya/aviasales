@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RabbitListener(queues = "mailRequestQueue")
+@RabbitListener(queues = "recommendationQueue")
 @RequiredArgsConstructor
 public class Subscriber {
     private final ObjectMapper mapper;
