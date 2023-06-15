@@ -25,19 +25,7 @@ spring:
     username: user
     password: password
     host: localhost
-    port: 61613
-
-#for handshake
-endpoint: /socket-endpoint
-
-#for broker receive // JavaScript: stompClient.subscribe('/queue/messages', f);
-stomp:
-  broker:
-    relay: /queue
-
-#for send // JavaScript: stompClient.send('/app/messages', {}, json);
-destination:
-  prefix: /app
+    port: 5672
 
 springdoc:
   swagger-ui:
