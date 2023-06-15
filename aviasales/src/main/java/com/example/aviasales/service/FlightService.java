@@ -52,7 +52,6 @@ public class FlightService {
     private final SearchResponseMapper searchResponseMapper;
     private final FlightsMapper flightsMapper;
     private final BitronixTransactionManager bitronixTransactionManager;
-    private final MailRequestPublisher mailRequestPublisher;
     private final MailRequestRepository mailRequestRepository;
 
     @Autowired
@@ -64,7 +63,6 @@ public class FlightService {
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            MailRequestPublisher mailRequestPublisher,
             MailRequestRepository mailRequestRepository
     ) {
         this.flightRepository = flightRepository;
@@ -74,7 +72,6 @@ public class FlightService {
         this.searchResponseMapper = searchResponseMapper;
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
-        this.mailRequestPublisher = mailRequestPublisher;
         this.mailRequestRepository = mailRequestRepository;
     }
 
