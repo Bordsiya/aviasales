@@ -16,6 +16,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jta-bitronix', version: '2.4.13'
     testImplementation group: 'org.codehaus.btm', name: 'btm', version: '2.1.4'
 
@@ -37,6 +38,9 @@ dependencies {
 
     implementation 'org.projectlombok:lombok:1.18.26'
     implementation 'org.jetbrains:annotations:24.0.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.security:spring-security-messaging'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
