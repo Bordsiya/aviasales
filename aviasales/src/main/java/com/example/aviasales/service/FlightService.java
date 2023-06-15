@@ -23,10 +23,11 @@ import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.exception.AircraftAlreadyInUseException;
 import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
 import com.example.aviasales.exception.FlightWithTheSameAirportsException;
-import com.example.aviasales.exception.MailException;
 import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
+import com.example.aviasales.repo.MailRequestRepository;
+import com.example.aviasales.service.rabbitmq.MailRequestPublisher;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.FlightsMapper;
@@ -39,20 +40,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FlightService {
-    Logger log = LoggerFactory.getLogger(FlightService.class);
-    private FlightRepository flightRepository;
-    private AirportService airportService;
-    private AircraftService aircraftService;
-    private ReservationService reservationService;
-    private SearchResponseMapper searchResponseMapper;
-    private FlightsMapper flightsMapper;
-    private BitronixTransactionManager bitronixTransactionManager;
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private Logger log = LoggerFactory.getLogger(FlightService.class);
+    private final FlightRepository flightRepository;
+    private final AirportService airportService;
+    private final AircraftService aircraftService;
+    private final ReservationService reservationService;
+    private final SearchResponseMapper searchResponseMapper;
+    private final FlightsMapper flightsMapper;
+    private final BitronixTransactionManager bitronixTransactionManager;
+    private final MailRequestPublisher mailRequestPublisher;
+    private final MailRequestRepository mailRequestRepository;
 
     @Autowired
     public FlightService(
@@ -63,7 +64,8 @@ public class FlightService {
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            SimpMessagingTemplate simpMessagingTemplate
+            MailRequestPublisher mailRequestPublisher,
+            MailRequestRepository mailRequestRepository
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
@@ -72,7 +74,8 @@ public class FlightService {
         this.searchResponseMapper = searchResponseMapper;
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
-        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.mailRequestPublisher = mailRequestPublisher;
+        this.mailRequestRepository = mailRequestRepository;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -99,21 +102,25 @@ public class FlightService {
             ));
         }
         List<SearchResponseDTO> searchResponseDTOS = new ArrayList<>();
-        for (Flight flight: filteredFlights) {
+        for (Flight flight : filteredFlights) {
             Set<Tariff> tariffs = flight.getAircraft().getAirline().getTariffs();
-            Set<SearchResponseTariffWithPriceDTO> tariffsWithPrices = new TreeSet<>(SearchResponseTariffWithPriceDTOSortUtils.getComparator());
-            for (Tariff tariff: tariffs) {
-                long price = (flight.getDefaultPriceForKids() + tariff.getPriceForKids()) * searchRequest.getAmountOfChildren()
-                        + (flight.getDefaultPriceForAdults() + tariff.getPriceForAdults()) * searchRequest.getAmountOfAdults();
+            Set<SearchResponseTariffWithPriceDTO> tariffsWithPrices =
+                    new TreeSet<>(SearchResponseTariffWithPriceDTOSortUtils.getComparator());
+            for (Tariff tariff : tariffs) {
+                long price =
+                        (flight.getDefaultPriceForKids() + tariff.getPriceForKids()) * searchRequest.getAmountOfChildren()
+                                + (flight.getDefaultPriceForAdults() + tariff.getPriceForAdults()) * searchRequest.getAmountOfAdults();
                 if (tariff.getTariffType().name().equals(searchRequest.getTariff())
                         && tariff.getHasBaggage().equals(searchRequest.getHasBaggage())
                         && price <= searchRequest.getMaxPrice()
-                ) tariffsWithPrices.add(
-                        new SearchResponseTariffWithPriceDTO(
-                                tariff,
-                                price
-                        )
-                );
+                ) {
+                    tariffsWithPrices.add(
+                            new SearchResponseTariffWithPriceDTO(
+                                    tariff,
+                                    price
+                            )
+                    );
+                }
             }
             searchResponseDTOS.add(
                     searchResponseMapper.toDTO(
@@ -152,8 +159,10 @@ public class FlightService {
                             addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
                 }
 
-                Long flightIdUsingAircraft = flightRepository.getFlightIdWithAircraftIdBetweenDepartureDateAndArrivalDate(
-                        addFlightRequest.getAircraftId(), addFlightRequest.getDepartureDate(), addFlightRequest.getArrivalDate());
+                Long flightIdUsingAircraft =
+                        flightRepository.getFlightIdWithAircraftIdBetweenDepartureDateAndArrivalDate(
+                                addFlightRequest.getAircraftId(), addFlightRequest.getDepartureDate(),
+                                addFlightRequest.getArrivalDate());
                 if (flightIdUsingAircraft != null) {
                     throw new AircraftAlreadyInUseException(addFlightRequest.getAircraftId(), flightIdUsingAircraft);
                 }
@@ -172,8 +181,7 @@ public class FlightService {
             }
             bitronixTransactionManager.commit();
             return flights;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             try {
                 bitronixTransactionManager.rollback();
             } catch (Exception ignore) {
@@ -190,7 +198,7 @@ public class FlightService {
             Set<Long> deleteFlightsIds = new HashSet<>(deleteFlightsRequest.getFlightsIds());
             Map<String, String> reservationCodeToEmail = new HashMap<>();
             Map<String, String> reservationCodeToAirlineName = new HashMap<>();
-            for (Long flightId: deleteFlightsIds) {
+            for (Long flightId : deleteFlightsIds) {
                 Flight flight = getFlightById(flightId);
                 for (Passenger passenger : flight.getPassengers()) {
                     reservationsIds.add(passenger.getReservation().getReservationId());
@@ -210,20 +218,18 @@ public class FlightService {
                 reservationService.deleteReservation(reservationId);
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                simpMessagingTemplate.convertAndSend(
-                        "/queue/mail-requests",
+                mailRequestPublisher.produceMsg( // TODO save to DB
                         new MailServiceRequest(
-                               1L, // TODO(добавить добавление в бд)
-                               entry.getKey(),
-                               reservationCodeToAirlineName.get(entry.getKey()),
-                               buildDeleteFlight(entry.getValue())
+                                1L,
+                                entry.getKey(),
+                                reservationCodeToAirlineName.get(entry.getKey()),
+                                buildDeleteFlight(entry.getValue())
                         )
                 );
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             try {
                 bitronixTransactionManager.rollback();
             } catch (Exception ignore) {
@@ -238,6 +244,4 @@ public class FlightService {
                 "<i>Произошла отмена рейса </br>" +
                 "Обратитесь на сайт за возвратом </br> </i>";
     }
-
-
 }

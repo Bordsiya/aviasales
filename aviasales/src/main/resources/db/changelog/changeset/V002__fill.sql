@@ -872,5 +872,5 @@ VALUES(2, 'Россия', '0987654321', 'PASSPORT', '2025-03-24', 'Анаста�
 INSERT INTO passengers(id, citizenship, document_number, document_type, expiration_date, first_name, gender, has_hearing_difficulties, has_vision_difficulties, is_kid, last_name, patronymic, required_wheelchair, flight_id, reservation_id, tariff_id)
 VALUES(3, 'Россия', '0997654321', 'VISA', '2028-03-24', 'Юлия', 'FEMALE', FALSE, FALSE, TRUE, 'Полежаева', 'Абобовна', FALSE, 1, 2, 6);
 
-INSERT INTO users(id, email, password, role) VALUES(1, 'asiya.dragnil@mail', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'ADMIN');
-INSERT INTO users(id, email, password, role) VALUES(2, 'bordun.2002@mail', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'CUSTOMER');
+INSERT INTO users(id, email, password, role) VALUES(1, 'asiya.dragnil@mail.ru', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'ADMIN');
+INSERT INTO users(id, email, password, role) VALUES(2, 'bordun.2002@mail.ru', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'CUSTOMER');

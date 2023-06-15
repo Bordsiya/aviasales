@@ -24,11 +24,10 @@ spring:
             enable: true
 
   rabbitmq:
-    stream:
-      username: user
-      password: password
-      host: localhost
-      port: 61613
+    username: user
+    password: password
+    host: localhost
+    port: 5672
 
 #for handshake
 endpoint: /ws

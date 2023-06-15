@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import com.example.aviasales.util.enums.MailRequestStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "mail_request")
 public class MailRequest {
     @Id
