@@ -1,7 +1,6 @@
 package com.example.aviasales.service.rabbitmq;
 
 import com.example.aviasales.dto.BuyTicketEvent;
-import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

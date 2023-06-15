@@ -12,7 +12,6 @@ import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
-import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.Aircraft;
@@ -27,7 +26,6 @@ import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
 import com.example.aviasales.repo.MailRequestRepository;
-import com.example.aviasales.service.rabbitmq.MailRequestPublisher;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.FlightsMapper;
@@ -215,14 +213,6 @@ public class FlightService {
                 reservationService.deleteReservation(reservationId);
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                mailRequestPublisher.produceMsg( // TODO save to DB
-                        new MailServiceRequest(
-                                1L,
-                                entry.getKey(),
-                                reservationCodeToAirlineName.get(entry.getKey()),
-                                buildDeleteFlight(entry.getValue())
-                        )
-                );
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;

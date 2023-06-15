@@ -24,6 +24,10 @@ spring:
             enable: true
 
   rabbitmq:
+    username: user
+    password: password
+    host: localhost
+    port: 5672
     stream:
       username: user
       password: password
