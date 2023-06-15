@@ -25,12 +25,12 @@ public class EmailService {
 
             helper.setFrom(senderEmail);
             helper.setSubject(request.subject());
-            helper.setTo(request.receiverEmail());
+            helper.setTo(request.email());
             helper.setText(request.text(), true);
 
             emailSender.send(message);
         } catch (MessagingException e) {
-            throw new MailException(request.receiverEmail());
+            throw new MailException(request.email());
         }
     }
 }

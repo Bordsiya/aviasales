@@ -1,7 +1,8 @@
 package com.example.mailservice.model;
 
 public record EmailRequest(
-        String receiverEmail,
+        Long mailRequestId,
+        String email,
         String subject,
         String text
 ) {

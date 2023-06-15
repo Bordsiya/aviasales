@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.10'
-	id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.10'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.example'
@@ -9,70 +9,79 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jta-bitronix', version: '2.4.13'
-	testImplementation group: 'org.codehaus.btm', name: 'btm', version: '2.1.4'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jta-bitronix', version: '2.4.13'
+    testImplementation group: 'org.codehaus.btm', name: 'btm', version: '2.1.4'
 
-	// Quartz
-	implementation("org.springframework.boot:spring-boot-starter-quartz")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("com.h2database:h2")
+    // Quartz
+    implementation("org.springframework.boot:spring-boot-starter-quartz")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("com.h2database:h2")
 
-	// Netty
-	implementation platform('io.projectreactor:reactor-bom:2022.0.8')
-	// define dependencies without versions
-	implementation 'io.projectreactor.netty:reactor-netty'
-	implementation 'io.projectreactor.netty:reactor-netty-core'
-	implementation 'io.projectreactor.netty:reactor-netty-http'
+    // Netty
+    implementation platform('io.projectreactor:reactor-bom:2022.0.8')
+    // define dependencies without versions
+    implementation 'io.projectreactor.netty:reactor-netty'
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+    implementation 'io.projectreactor.netty:reactor-netty-http'
 
-	// Feign
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.6'
-	implementation 'org.springframework.cloud:spring-cloud-openfeign-core:3.1.6'
+    // Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.6'
+    implementation 'org.springframework.cloud:spring-cloud-openfeign-core:3.1.6'
 
-	implementation 'org.projectlombok:lombok:1.18.26'
-	implementation 'org.jetbrains:annotations:24.0.1'
+    implementation 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.jetbrains:annotations:24.0.1'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'org.springframework.boot:spring-boot-starter-artemis'
-	implementation 'com.google.code.gson:gson'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-artemis'
+    implementation group: 'org.springframework', name: 'spring-jms', version: '5.3.28'
+    implementation 'com.rabbitmq.jms:rabbitmq-jms:3.1.0'
 
-	implementation 'org.jetbrains:annotations:24.0.1'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
-	implementation 'io.swagger.core.v3:swagger-annotations:2.2.8'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
-	implementation 'org.projectlombok:lombok:1.18.26'
-	implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
+    implementation 'com.google.code.gson:gson'
 
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.testng:testng:7.1.0'
-	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.apache.activemq:activemq-client'
+    implementation 'org.apache.activemq:activemq-broker'
 
-	implementation 'org.postgresql:postgresql'
-	implementation 'redis.clients:jedis:3.7.0'
-	implementation 'com.redislabs:spring-redisearch:3.1.2'
 
-	implementation("org.liquibase:liquibase-core")
+    implementation 'org.jetbrains:annotations:24.0.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.8'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    implementation 'org.projectlombok:lombok:1.18.26'
+    implementation 'com.vladmihalcea:hibernate-types-52:2.21.1'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.testng:testng:7.1.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    implementation 'org.postgresql:postgresql'
+    implementation 'redis.clients:jedis:3.7.0'
+    implementation 'com.redislabs:spring-redisearch:3.1.2'
+
+    implementation 'com.rabbitmq:amqp-client'
+
+    implementation("org.liquibase:liquibase-core")
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 tasks.bootJar {
-	archiveFileName.set("service.jar")
+    archiveFileName.set("service.jar")
 }

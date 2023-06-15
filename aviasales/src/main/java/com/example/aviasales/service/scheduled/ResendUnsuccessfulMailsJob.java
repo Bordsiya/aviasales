@@ -8,7 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-@DisallowConcurrentExecution // disallows concurrent execution within instance
+@DisallowConcurrentExecution
 @PersistJobDataAfterExecution
 @RequiredArgsConstructor
 public class ResendUnsuccessfulMailsJob extends QuartzJobBean {

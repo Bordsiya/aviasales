@@ -13,6 +13,9 @@ repositories {
 }
 
 dependencies {
+    implementation("com.rabbitmq:amqp-client")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
     /**
      * Spring boot starters
      */
