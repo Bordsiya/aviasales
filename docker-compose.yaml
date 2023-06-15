@@ -15,14 +15,14 @@ services:
       - "6379:6379"
 
   master_rabbit:
-    image: aiwin/rabbitmq-stomp:latest
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
+    build:
+      context: ./
     ports:
       - '5672:5672' #Default port of RabbitMQ
       - '15672:15672' #RabbitMQ Web UI
       - '61613:61613' #STOMP port
+    volumes:
+      - "./rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
 
   aviasales:
     container_name: aviasales

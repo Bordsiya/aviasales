@@ -22,6 +22,11 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("io.projectreactor.netty:reactor-netty")
+    implementation("io.projectreactor.netty:reactor-netty-core")
+    implementation("io.projectreactor.netty:reactor-netty-http")
+
     /**
      * Utils & Logging
      */

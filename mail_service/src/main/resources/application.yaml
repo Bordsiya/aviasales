@@ -28,13 +28,13 @@ spring:
       username: user
       password: password
       host: localhost
-      port: 61613
+      port: 64823
 
 #for handshake
-endpoint: /ws
+endpoint: /websocket-server
 
 stomp:
   broker:
-    relay: /topic
+    relay: /queue
 destination:
   prefix: /app
