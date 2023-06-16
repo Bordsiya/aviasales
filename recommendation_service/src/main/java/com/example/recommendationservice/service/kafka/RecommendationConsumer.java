@@ -1,12 +1,9 @@
 package com.example.recommendationservice.service.kafka;
 
-import com.example.recommendationservice.config.KafkaConfig;
 import com.example.recommendationservice.service.event.BuyTicketEvent;
 import com.example.recommendationservice.service.event.BuyTicketEventWorker;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
