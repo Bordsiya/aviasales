@@ -2,7 +2,6 @@ package com.example.mailservice.service;
 
 import com.example.mailservice.exception.MailException;
 import com.example.mailservice.model.EmailRequest;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
