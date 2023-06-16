@@ -23,4 +23,4 @@ services:
     ports:
       - '5672:5672' #Default port of RabbitMQ
       - '15672:15672' #RabbitMQ Web UI
-      - '61613:61613' #STOMP port
+      - '64823:61613' #STOMP port
