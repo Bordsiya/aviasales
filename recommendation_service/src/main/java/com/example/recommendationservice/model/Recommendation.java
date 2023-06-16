@@ -1,4 +1,4 @@
-package com.example.recommendationservice.entity;
+package com.example.recommendationservice.model;
 
 import java.time.LocalDate;
 

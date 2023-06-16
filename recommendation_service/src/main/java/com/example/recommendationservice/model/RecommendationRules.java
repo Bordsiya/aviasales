@@ -1,4 +1,4 @@
-package com.example.recommendationservice.service.event;
+package com.example.recommendationservice.model;
 
 import java.util.List;
 import java.util.Map;

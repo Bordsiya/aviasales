@@ -1,14 +1,12 @@
-package com.example.recommendationservice.service.event;
+package com.example.recommendationservice.service;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.example.recommendationservice.model.BuyTicketEvent;
+import com.example.recommendationservice.model.RecommendationRules;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BuyTicketEventRulesService {
     private final ObjectMapper mapper;
-    private RecommendationRules rules = null;
+
+    private final FileReader fileReader;
+
+    private RecommendationRules rules;
+
+    @PostConstruct
+    private void initRules() throws JsonProcessingException {
+        var raw = fileReader.readFileAsString("recommendations.json");
+        rules = mapper.readValue(raw, RecommendationRules.class);
+    }
 
     public List<String> getRecommendations(BuyTicketEvent event) {
         if (rules == null) {
@@ -37,22 +44,5 @@ public class BuyTicketEventRulesService {
         }
 
         return result.stream().distinct().toList();
-    }
-
-    @PostConstruct
-    private void init() throws JsonProcessingException {
-        InputStream is = getResourceFileAsInputStream("recommendations.json");
-        if (is != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            var raw = (String) reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            rules = mapper.readValue(raw, RecommendationRules.class);
-        } else {
-            throw new RuntimeException("resource not found");
-        }
-    }
-
-    private InputStream getResourceFileAsInputStream(String fileName) {
-        ClassLoader classLoader = BuyTicketEventRulesService.class.getClassLoader();
-        return classLoader.getResourceAsStream(fileName);
     }
 }

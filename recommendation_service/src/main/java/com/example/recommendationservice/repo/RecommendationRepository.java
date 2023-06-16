@@ -2,7 +2,7 @@ package com.example.recommendationservice.repo;
 
 import java.util.List;
 
-import com.example.recommendationservice.entity.Recommendation;
+import com.example.recommendationservice.model.Recommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

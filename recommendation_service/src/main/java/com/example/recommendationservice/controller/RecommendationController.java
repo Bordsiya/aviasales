@@ -10,10 +10,10 @@ import javax.validation.constraints.Min;
 
 import com.example.recommendationservice.dto.RecommendationDto;
 import com.example.recommendationservice.dto.RecommendationResultDto;
-import com.example.recommendationservice.entity.Recommendation;
+import com.example.recommendationservice.model.BuyTicketEvent;
+import com.example.recommendationservice.model.Recommendation;
+import com.example.recommendationservice.service.BuyTicketEventWorker;
 import com.example.recommendationservice.service.RecommendationService;
-import com.example.recommendationservice.service.event.BuyTicketEvent;
-import com.example.recommendationservice.service.event.BuyTicketEventWorker;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
