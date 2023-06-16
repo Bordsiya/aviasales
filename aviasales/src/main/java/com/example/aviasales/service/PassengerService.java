@@ -8,6 +8,7 @@ import java.util.Set;
 
 import bitronix.tm.BitronixTransactionManager;
 import com.example.aviasales.controller.StompController;
+import com.example.aviasales.dto.BuyTicketEvent;
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.ReservationDTO;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
@@ -28,7 +29,7 @@ import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException
 import com.example.aviasales.repo.MailRequestRepository;
 import com.example.aviasales.repo.PassengerRepository;
 import com.example.aviasales.repo.UserRepository;
-import com.example.aviasales.service.rabbitmq.MailRequestPublisher;
+import com.example.aviasales.service.rabbitmq.RecommendationPublisher;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.enums.Gender;
@@ -50,13 +51,13 @@ public class PassengerService {
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
     private BitronixTransactionManager bitronixTransactionManager;
+    private RecommendationPublisher recommendationPublisher;
+    private StompController stompController;
 
     private UserRepository userRepository;
     private final MailRequestRepository mailRequestRepository;
 
     private ObjectMapper mapper;
-
-    private final StompController stompController;
 
     @Autowired
     public PassengerService(
@@ -66,10 +67,11 @@ public class PassengerService {
             @Lazy ReservationService reservationService,
             PassengerMapper passengerMapper,
             BitronixTransactionManager bitronixTransactionManager,
+            RecommendationPublisher recommendationPublisher,
+            StompController stompController,
             MailRequestRepository mailRequestRepository,
             UserRepository userRepository,
-            ObjectMapper mapper,
-            StompController stompController
+            ObjectMapper mapper
     ) {
         this.passengerRepository = passengerRepository;
         this.tariffService = tariffService;
@@ -77,6 +79,7 @@ public class PassengerService {
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
+        this.recommendationPublisher = recommendationPublisher;
         this.mailRequestRepository = mailRequestRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
@@ -139,6 +142,13 @@ public class PassengerService {
             }
 
             var user = userRepository.findByEmail(addPassengersDTO.getEmail());
+            var event = new BuyTicketEvent(
+                    user.getUserId(),
+                    flight.getDepartureAirport().getCountry(),
+                    flight.getArrivalAirport().getCountry()
+            );
+            recommendationPublisher.produceMsg(event);
+
             var mailRequestEntity = mailRequestRepository.save(
                     MailRequest.builder()
                             .createdAt(Instant.now())
@@ -156,10 +166,12 @@ public class PassengerService {
                     .build();
             mailRequestEntity.setPayload(mapper.writeValueAsString(mailRequest));
             mailRequestRepository.save(mailRequestEntity);
+
             stompController.send(
                     "process-mail-message",
                     mailRequest
             );
+
             bitronixTransactionManager.commit();
             return passengers;
         } catch (Exception e) {
@@ -212,17 +224,16 @@ public class PassengerService {
                     );
                 }
             }
-            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                stompController.send(
-                        "process-mail-message",
-                        new MailServiceRequest(
-                                1L, // TODO(добавить добавление в бд)
-                                entry.getValue(),
-                                reservationCodeToAirlineName.get(entry.getKey()),
-                                buildDeletePassengersEmail(entry.getKey())
-                        )
-                );
-            }
+//            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
+//                recommendationPublisher.produceMsg(
+//                        new MailServiceRequest(
+//                                1L, // TODO(добавить добавление в бд)
+//                                entry.getValue(),
+//                                reservationCodeToAirlineName.get(entry.getKey()),
+//                                buildDeletePassengersEmail(entry.getKey())
+//                        )
+//                );
+//            }
             bitronixTransactionManager.commit();
             return deletePassengersIds;
         } catch (Exception e) {
@@ -284,15 +295,14 @@ public class PassengerService {
 
         Passenger newPassenger = passengerRepository.save(passenger);
 
-        stompController.send(
-                "process-mail-message",
-                new MailServiceRequest(
-                        1L, // TODO(добавить добавление в бд)
-                        passenger.getReservation().getEmail(),
-                        passenger.getFlight().getAircraft().getAirline().getAirlineName(),
-                        buildUpdatePassenger(passenger.getReservation(), passenger)
-                )
-        );
+//        recommendationPublisher.produceMsg(
+//                new MailServiceRequest(
+//                        1L, // TODO(добавить добавление в бд)
+//                        passenger.getReservation().getEmail(),
+//                        passenger.getFlight().getAircraft().getAirline().getAirlineName(),
+//                        buildUpdatePassenger(passenger.getReservation(), passenger)
+//                )
+//        );
 
         return newPassenger;
     }

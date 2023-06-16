@@ -9,11 +9,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import bitronix.tm.BitronixTransactionManager;
-import com.example.aviasales.controller.StompController;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
-import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
 import com.example.aviasales.entity.Aircraft;
@@ -28,7 +26,6 @@ import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
 import com.example.aviasales.repo.MailRequestRepository;
-import com.example.aviasales.service.rabbitmq.MailRequestPublisher;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.FlightsMapper;
@@ -53,8 +50,6 @@ public class FlightService {
     private final SearchResponseMapper searchResponseMapper;
     private final FlightsMapper flightsMapper;
     private final BitronixTransactionManager bitronixTransactionManager;
-
-    private final StompController stompController;
     private final MailRequestRepository mailRequestRepository;
 
     @Autowired
@@ -66,8 +61,7 @@ public class FlightService {
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            MailRequestRepository mailRequestRepository,
-            StompController stompController
+            MailRequestRepository mailRequestRepository
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
@@ -77,7 +71,6 @@ public class FlightService {
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
         this.mailRequestRepository = mailRequestRepository;
-        this.stompController = stompController;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -220,16 +213,6 @@ public class FlightService {
                 reservationService.deleteReservation(reservationId);
             }
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-                stompController.send(
-                        "process-mail-message",
-                            new MailServiceRequest(
-                                    1L,
-                                    entry.getKey(),
-                                    reservationCodeToAirlineName.get(entry.getKey()),
-                                    buildDeleteFlight(entry.getValue())
-                            )
-                        );
-
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;

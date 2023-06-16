@@ -25,7 +25,7 @@ spring:
     username: user
     password: password
     host: localhost
-    port: 5672
+    port: 64823
 
 springdoc:
   swagger-ui:
