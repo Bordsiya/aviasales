@@ -2,9 +2,13 @@ package com.example.aviasales.controller;
 
 import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.dto.responses.MailServiceResponse;
+import com.example.aviasales.exception.not_found.MailRequestNotFoundException;
+import com.example.aviasales.repo.MailRequestRepository;
+import com.example.aviasales.util.enums.MailRequestStatus;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -33,11 +37,17 @@ public class StompController implements StompSessionHandler {
     Logger log = LoggerFactory.getLogger(StompController.class);
 
     StompSession stompSession = null;
+    private final MailRequestRepository repository;
 
     /* Map of subscriptions.
      */
     @Getter
     Map<String, StompSession.Subscription> subscriptions = new HashMap<>();
+
+    @Autowired
+    public StompController(MailRequestRepository mailRequestRepository) {
+        this.repository = mailRequestRepository;
+    }
 
     @EventListener(value = ApplicationReadyEvent.class)
     public void connect(){
@@ -120,8 +130,13 @@ public class StompController implements StompSessionHandler {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        //TODO(добавить логику)
-        log.info("Got a new message {}", ((MailServiceResponse) payload).getMailId());
+        MailServiceResponse mailServiceResponse = ((MailServiceResponse) payload);
+        log.info("Got a new message {}", mailServiceResponse.getMailRequestId());
+        var found = repository.findById(mailServiceResponse.getMailRequestId());
+        found.orElseThrow(() -> new MailRequestNotFoundException(mailServiceResponse.getMailRequestId()));
+        var maiLRequest = found.get();
+        maiLRequest.setStatus(MailRequestStatus.RECEIVED);
+        repository.save(maiLRequest);
     }
 
     /* Unsubscribe and close connection before destroying this instance (e.g. on application shutdown).

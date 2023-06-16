@@ -1,0 +1,1 @@
+[rabbitmq_jms_topic_exchange, rabbitmq_stomp, rabbitmq_prometheus, rabbitmq_management, rabbitmq_web_dispatch, rabbitmq_management_agent].

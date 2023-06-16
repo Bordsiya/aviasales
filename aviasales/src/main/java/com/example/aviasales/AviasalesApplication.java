@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy
 @EnableScheduling
 @EnableFeignClients
-@EnableRabbit
+//@EnableRabbit
 public class AviasalesApplication {
     public static void main(String[] args) {
         SpringApplication.run(AviasalesApplication.class, args);

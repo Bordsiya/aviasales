@@ -80,6 +80,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //implementation 'org.springframework.kafka:spring-kafka:3.0.0'
 }
 
 tasks.named('test') {

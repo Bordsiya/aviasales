@@ -1,5 +1,6 @@
 package com.example.aviasales.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,16 +10,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import bitronix.tm.BitronixTransactionManager;
+import com.example.aviasales.controller.StompController;
 import com.example.aviasales.dto.FlightDTO;
 import com.example.aviasales.dto.requests.AddFlightsDTO;
 import com.example.aviasales.dto.requests.DeleteFlightsRequest;
+import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.dto.responses.search_response.SearchResponseDTO;
 import com.example.aviasales.dto.responses.search_response.SearchResponseTariffWithPriceDTO;
-import com.example.aviasales.entity.Aircraft;
-import com.example.aviasales.entity.Airport;
-import com.example.aviasales.entity.Flight;
-import com.example.aviasales.entity.Passenger;
-import com.example.aviasales.entity.Tariff;
+import com.example.aviasales.entity.*;
 import com.example.aviasales.exception.AircraftAlreadyInUseException;
 import com.example.aviasales.exception.DepartureTimeAfterArrivalTimeException;
 import com.example.aviasales.exception.FlightWithTheSameAirportsException;
@@ -26,7 +25,9 @@ import com.example.aviasales.exception.TransactionException;
 import com.example.aviasales.exception.not_found.FlightNotFoundException;
 import com.example.aviasales.repo.FlightRepository;
 import com.example.aviasales.repo.MailRequestRepository;
+import com.example.aviasales.repo.UserRepository;
 import com.example.aviasales.util.Utils;
+import com.example.aviasales.util.enums.MailRequestStatus;
 import com.example.aviasales.util.enums.SortingAlgorithm;
 import com.example.aviasales.util.mappers.FlightsMapper;
 import com.example.aviasales.util.mappers.SearchResponseMapper;
@@ -34,10 +35,13 @@ import com.example.aviasales.util.mappers.models.AddFlightRequest;
 import com.example.aviasales.util.mappers.models.SearchRequest;
 import com.example.aviasales.util.sort.SearchResponseDTOSortUtils;
 import com.example.aviasales.util.sort.SearchResponseTariffWithPriceDTOSortUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,6 +54,11 @@ public class FlightService {
     private final SearchResponseMapper searchResponseMapper;
     private final FlightsMapper flightsMapper;
     private final BitronixTransactionManager bitronixTransactionManager;
+    private UserRepository userRepository;
+    private ObjectMapper mapper;
+
+    private StompController stompController;
+
     private final MailRequestRepository mailRequestRepository;
 
     @Autowired
@@ -61,7 +70,10 @@ public class FlightService {
             SearchResponseMapper searchResponseMapper,
             FlightsMapper flightsMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            MailRequestRepository mailRequestRepository
+            MailRequestRepository mailRequestRepository,
+            StompController stompController,
+            UserRepository userRepository,
+            ObjectMapper objectMapper
     ) {
         this.flightRepository = flightRepository;
         this.airportService = airportService;
@@ -71,6 +83,9 @@ public class FlightService {
         this.flightsMapper = flightsMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
         this.mailRequestRepository = mailRequestRepository;
+        this.stompController = stompController;
+        this.mapper = objectMapper;
+        this.userRepository = userRepository;
     }
 
     public Flight getFlightById(Long flightId) {
@@ -212,7 +227,34 @@ public class FlightService {
             for (Long reservationId : reservationsIds) {
                 reservationService.deleteReservation(reservationId);
             }
+
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String email = ((UserDetails)principal).getUsername();
+            var user = userRepository.findByEmail(email);
+
             for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
+                var mailRequestEntity = mailRequestRepository.save(
+                        MailRequest.builder()
+                                .createdAt(Instant.now())
+                                .status(MailRequestStatus.SENT)
+                                .payload("")
+                                .user(user)
+                                .build()
+                );
+
+                var mailRequest = MailServiceRequest.builder()
+                        .mailRequestId(mailRequestEntity.getId())
+                        .email(entry.getValue())
+                        .subject(reservationCodeToAirlineName.get(entry.getKey()))
+                        .text(buildDeleteFlight(entry.getKey()))
+                        .build();
+                mailRequestEntity.setPayload(mapper.writeValueAsString(mailRequest));
+                mailRequestRepository.save(mailRequestEntity);
+
+                stompController.send(
+                        "process-mail-message",
+                        mailRequest
+                );
             }
             bitronixTransactionManager.commit();
             return deleteFlightsIds;

@@ -1,6 +1,14 @@
 package com.example.mailservice.model;
 
-public record EmailResponse (
-        Long mailRequestId
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmailResponse {
+        private Long mailRequestId;
 }

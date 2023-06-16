@@ -14,8 +14,5 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MailServiceResponse {
-    @NotNull(message = "Mail-id cannot be null.")
-    @Min(1)
-    @JsonView
-    private Long mailId;
+    private Long mailRequestId;
 }

@@ -32,14 +32,14 @@ public class WebSocketController {
     public void processMessage(EmailRequest emailRequest) {
         try {
             emailService.send(emailRequest);
+            simpMessagingTemplate.convertAndSend(
+                    "/queue/mail-messages",
+                    new EmailResponse(emailRequest.getMailRequestId())
+            );
         }
-        catch (MailException mailException) {
-            return;
+        catch (MailException ignored) {
+
         }
-        simpMessagingTemplate.convertAndSend(
-                "/queue/mail-messages",
-                new EmailResponse(emailRequest.mailRequestId())
-        );
     }
 
 }

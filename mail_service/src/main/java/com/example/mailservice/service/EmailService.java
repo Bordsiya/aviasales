@@ -24,13 +24,13 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message);
 
             helper.setFrom(senderEmail);
-            helper.setSubject(request.subject());
-            helper.setTo(request.email());
-            helper.setText(request.text(), true);
+            helper.setSubject(request.getSubject());
+            helper.setTo(request.getEmail());
+            helper.setText(request.getText(), true);
 
             emailSender.send(message);
-        } catch (MessagingException e) {
-            throw new MailException(request.email());
+        } catch (Exception e) {
+            throw new MailException(request.getEmail());
         }
     }
 }

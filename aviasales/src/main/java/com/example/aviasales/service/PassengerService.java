@@ -40,6 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -141,13 +143,16 @@ public class PassengerService {
                 passengers.add(passengerRepository.save(newPassenger));
             }
 
-            var user = userRepository.findByEmail(addPassengersDTO.getEmail());
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String email = ((UserDetails)principal).getUsername();
+            var user = userRepository.findByEmail(email);
+
             var event = new BuyTicketEvent(
                     user.getUserId(),
                     flight.getDepartureAirport().getCountry(),
                     flight.getArrivalAirport().getCountry()
             );
-            recommendationPublisher.produceMsg(event);
+            //recommendationPublisher.produceMsg(event);
 
             var mailRequestEntity = mailRequestRepository.save(
                     MailRequest.builder()
@@ -224,16 +229,35 @@ public class PassengerService {
                     );
                 }
             }
-//            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
-//                recommendationPublisher.produceMsg(
-//                        new MailServiceRequest(
-//                                1L, // TODO(добавить добавление в бд)
-//                                entry.getValue(),
-//                                reservationCodeToAirlineName.get(entry.getKey()),
-//                                buildDeletePassengersEmail(entry.getKey())
-//                        )
-//                );
-//            }
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String email = ((UserDetails)principal).getUsername();
+            var user = userRepository.findByEmail(email);
+
+            for (Map.Entry<String, String> entry : reservationCodeToEmail.entrySet()) {
+                var mailRequestEntity = mailRequestRepository.save(
+                        MailRequest.builder()
+                                .createdAt(Instant.now())
+                                .status(MailRequestStatus.SENT)
+                                .payload("")
+                                .user(user)
+                                .build()
+                );
+
+                var mailRequest = MailServiceRequest.builder()
+                        .mailRequestId(mailRequestEntity.getId())
+                        .email(entry.getValue())
+                        .subject(reservationCodeToAirlineName.get(entry.getKey()))
+                        .text(buildDeletePassengersEmail(entry.getKey()))
+                        .build();
+                mailRequestEntity.setPayload(mapper.writeValueAsString(mailRequest));
+                mailRequestRepository.save(mailRequestEntity);
+
+                stompController.send(
+                        "process-mail-message",
+                        mailRequest
+                );
+            }
+
             bitronixTransactionManager.commit();
             return deletePassengersIds;
         } catch (Exception e) {
@@ -247,64 +271,94 @@ public class PassengerService {
     }
 
     public Passenger updatePassenger(Long passengerId, PassengerDTO passengerDTO) {
-        Passenger passenger = getPassengerById(passengerId);
-        passenger.setFirstName(passengerDTO.getFirstName());
-        passenger.setLastName(passengerDTO.getLastName());
-        passenger.setPatronymic(passengerDTO.getPatronymic());
-        passenger.setGender(Gender.valueOf(passengerDTO.getGender()));
-        passenger.setCitizenship(passengerDTO.getCitizenship());
+        try {
+            bitronixTransactionManager.begin();
+            Passenger passenger = getPassengerById(passengerId);
+            passenger.setFirstName(passengerDTO.getFirstName());
+            passenger.setLastName(passengerDTO.getLastName());
+            passenger.setPatronymic(passengerDTO.getPatronymic());
+            passenger.setGender(Gender.valueOf(passengerDTO.getGender()));
+            passenger.setCitizenship(passengerDTO.getCitizenship());
 
-        if (passenger.getIsKid() == Boolean.FALSE && passengerDTO.getIsKid() == Boolean.TRUE) {
-            Set<Long> passengersWithTheSameReservation = passengerRepository
-                    .getPassengersBySameReservation(passenger.getReservation().getReservationId());
-            long amountOfAdults = 0;
-            for (Long passengerReservationId : passengersWithTheSameReservation) {
-                if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) {
-                    amountOfAdults++;
+            if (passenger.getIsKid() == Boolean.FALSE && passengerDTO.getIsKid() == Boolean.TRUE) {
+                Set<Long> passengersWithTheSameReservation = passengerRepository
+                        .getPassengersBySameReservation(passenger.getReservation().getReservationId());
+                long amountOfAdults = 0;
+                for (Long passengerReservationId : passengersWithTheSameReservation) {
+                    if (getPassengerById(passengerReservationId).getIsKid() == Boolean.FALSE) {
+                        amountOfAdults++;
+                    }
+                }
+                if (amountOfAdults == 1) {
+                    throw new NoAdultsForFlightException(passenger.getFlight().getFlightId());
                 }
             }
-            if (amountOfAdults == 1) {
-                throw new NoAdultsForFlightException(passenger.getFlight().getFlightId());
+
+            passenger.setIsKid(passengerDTO.getIsKid());
+
+            if (passenger.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
+                    || passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.PASSPORT.name()))
+            ) {
+                throw new DocumentTypeNotMachKidException(passengerDTO.getDocumentType(), passengerDTO.getIsKid());
             }
-        }
 
-        passenger.setIsKid(passengerDTO.getIsKid());
+            passenger.setDocumentType(DocumentType.valueOf(passengerDTO.getDocumentType()));
+            passenger.setDocumentNumber(passengerDTO.getDocumentNumber());
+            passenger.setExpirationDate(passengerDTO.getExpirationDate());
+            passenger.setHasHearingDifficulties(passengerDTO.getHasHearingDifficulties());
+            passenger.setHasVisionDifficulties(passengerDTO.getHasVisionDifficulties());
+            passenger.setRequiredWheelchair(passengerDTO.getRequiredWheelchair());
 
-        if (passenger.getIsKid() == Boolean.TRUE && (passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.MILITARY_RECORD.name())
-                || passengerDTO.getDocumentType().equalsIgnoreCase(DocumentType.PASSPORT.name()))
-        ) {
-            throw new DocumentTypeNotMachKidException(passengerDTO.getDocumentType(), passengerDTO.getIsKid());
-        }
+            Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
+            if (!tariff.getAirline().equals(passenger.getFlight().getAircraft().getAirline())) {
+                throw new AirlinesNotMatchesException(
+                        "Flight", "Tariff",
+                        passenger.getFlight().getAircraft().getAirline().getAirlineId(),
+                        tariff.getAirline().getAirlineId()
+                );
+            }
+            passenger.setTariff(tariffService.getTariffById(passengerDTO.getTariffId()));
 
-        passenger.setDocumentType(DocumentType.valueOf(passengerDTO.getDocumentType()));
-        passenger.setDocumentNumber(passengerDTO.getDocumentNumber());
-        passenger.setExpirationDate(passengerDTO.getExpirationDate());
-        passenger.setHasHearingDifficulties(passengerDTO.getHasHearingDifficulties());
-        passenger.setHasVisionDifficulties(passengerDTO.getHasVisionDifficulties());
-        passenger.setRequiredWheelchair(passengerDTO.getRequiredWheelchair());
+            Passenger newPassenger = passengerRepository.save(passenger);
 
-        Tariff tariff = tariffService.getTariffById(passengerDTO.getTariffId());
-        if (!tariff.getAirline().equals(passenger.getFlight().getAircraft().getAirline())) {
-            throw new AirlinesNotMatchesException(
-                    "Flight", "Tariff",
-                    passenger.getFlight().getAircraft().getAirline().getAirlineId(),
-                    tariff.getAirline().getAirlineId()
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String email = ((UserDetails)principal).getUsername();
+            var user = userRepository.findByEmail(email);
+
+            var mailRequestEntity = mailRequestRepository.save(
+                    MailRequest.builder()
+                            .createdAt(Instant.now())
+                            .status(MailRequestStatus.SENT)
+                            .payload("")
+                            .user(user)
+                            .build()
             );
+
+            var mailRequest = MailServiceRequest.builder()
+                    .mailRequestId(mailRequestEntity.getId())
+                    .email(passenger.getReservation().getEmail())
+                    .subject(passenger.getFlight().getAircraft().getAirline().getAirlineName())
+                    .text(buildUpdatePassenger(passenger.getReservation(), passenger))
+                    .build();
+
+            mailRequestEntity.setPayload(mapper.writeValueAsString(mailRequest));
+            mailRequestRepository.save(mailRequestEntity);
+
+            stompController.send(
+                    "process-mail-message",
+                    mailRequest
+            );
+
+            bitronixTransactionManager.commit();
+            return newPassenger;
+        } catch (Exception e) {
+            try {
+                bitronixTransactionManager.rollback();
+            } catch (Exception ignore) {
+                log.error("Unable to rollback transaction", ignore);
+            }
+            throw new TransactionException("updating passenger - " + e.getMessage());
         }
-        passenger.setTariff(tariffService.getTariffById(passengerDTO.getTariffId()));
-
-        Passenger newPassenger = passengerRepository.save(passenger);
-
-//        recommendationPublisher.produceMsg(
-//                new MailServiceRequest(
-//                        1L, // TODO(добавить добавление в бд)
-//                        passenger.getReservation().getEmail(),
-//                        passenger.getFlight().getAircraft().getAirline().getAirlineName(),
-//                        buildUpdatePassenger(passenger.getReservation(), passenger)
-//                )
-//        );
-
-        return newPassenger;
     }
 
     private String buildAddPassengersText(Flight flight, Reservation reservation, Set<Passenger> passengers) {

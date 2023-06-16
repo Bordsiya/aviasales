@@ -1,9 +1,17 @@
 package com.example.mailservice.model;
 
-public record EmailRequest(
-        Long mailRequestId,
-        String email,
-        String subject,
-        String text
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class EmailRequest {
+        private Long mailRequestId;
+        private String email;
+        private String subject;
+        private String text;
 }

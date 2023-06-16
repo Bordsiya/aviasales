@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,12 +36,12 @@ public class ApplicationController {
             summary = "Составление заявки на отказ от билета для пассажира",
             description = "Заявка на удаление пассажира"
     )
-    @PostMapping(path = "/delete-passenger/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =
-            MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/delete-passenger/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Application> createDeletePassengerApplication(
-            @PathVariable @Min(1) Long id, Principal principal
-    ){
-        return ResponseEntity.ok(applicationService.addApplicationDeletePassenger(id, principal.getName()));
+            @PathVariable @Min(1) Long id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails)principal).getUsername();
+        return ResponseEntity.ok(applicationService.addApplicationDeletePassenger(id, email));
     }
 
     @Operation(
@@ -49,9 +51,11 @@ public class ApplicationController {
     @PostMapping(path = "/update-passenger/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =
             MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Application> createUpdatePassengerApplication(
-            @PathVariable @Min(1) Long id, @Valid @RequestBody PassengerDTO passengerDTO, Principal principal
+            @PathVariable @Min(1) Long id, @Valid @RequestBody PassengerDTO passengerDTO
     ){
-        return ResponseEntity.ok(applicationService.addApplicationUpdatePassenger(id, passengerDTO, principal.getName()));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((UserDetails)principal).getUsername();
+        return ResponseEntity.ok(applicationService.addApplicationUpdatePassenger(id, passengerDTO, email));
     }
 
     @Operation(
