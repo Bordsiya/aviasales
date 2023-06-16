@@ -29,7 +29,7 @@ import com.example.aviasales.exception.not_match.DocumentTypeNotMachKidException
 import com.example.aviasales.repo.MailRequestRepository;
 import com.example.aviasales.repo.PassengerRepository;
 import com.example.aviasales.repo.UserRepository;
-import com.example.aviasales.service.rabbitmq.RecommendationPublisher;
+import com.example.aviasales.service.kafka.RecommendationProducer;
 import com.example.aviasales.util.Utils;
 import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.enums.Gender;
@@ -53,7 +53,7 @@ public class PassengerService {
     private ReservationService reservationService;
     private PassengerMapper passengerMapper;
     private BitronixTransactionManager bitronixTransactionManager;
-    private RecommendationPublisher recommendationPublisher;
+    private RecommendationProducer recommendationProducer;
     private StompController stompController;
 
     private UserRepository userRepository;
@@ -69,7 +69,7 @@ public class PassengerService {
             @Lazy ReservationService reservationService,
             PassengerMapper passengerMapper,
             BitronixTransactionManager bitronixTransactionManager,
-            RecommendationPublisher recommendationPublisher,
+            RecommendationProducer recommendationProducer,
             StompController stompController,
             MailRequestRepository mailRequestRepository,
             UserRepository userRepository,
@@ -81,7 +81,7 @@ public class PassengerService {
         this.reservationService = reservationService;
         this.passengerMapper = passengerMapper;
         this.bitronixTransactionManager = bitronixTransactionManager;
-        this.recommendationPublisher = recommendationPublisher;
+        this.recommendationProducer = recommendationProducer;
         this.mailRequestRepository = mailRequestRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
@@ -152,7 +152,7 @@ public class PassengerService {
                     flight.getDepartureAirport().getCountry(),
                     flight.getArrivalAirport().getCountry()
             );
-            //recommendationPublisher.produceMsg(event);
+            recommendationProducer.sendMessage(event);
 
             var mailRequestEntity = mailRequestRepository.save(
                     MailRequest.builder()

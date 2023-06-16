@@ -25,6 +25,11 @@ spring:
             threadCount: 1
             threadsInheritContextClassLoaderOfInitializingThread: true
     auto-startup: false
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
