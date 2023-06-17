@@ -31,7 +31,7 @@ public class WebSocketController {
             log.info("Email successfully sent, sending ack: {}", requestId);
             simpMessagingTemplate.convertAndSend(responseQueue, new EmailResponse(requestId));
         } catch (MailException ignored) {
-
+            log.info("Email data is incorrect: {}", emailRequest);
         }
     }
 }
