@@ -7,11 +7,14 @@ import com.example.recommendationservice.enums.RecommendationType;
 import com.example.recommendationservice.model.BuyTicketEvent;
 import com.example.recommendationservice.model.Recommendation;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class BuyTicketEventWorker {
+    private final static Logger log = LoggerFactory.getLogger(BuyTicketEventWorker.class);
     private final BuyTicketEventRulesService service;
 
     private final RecommendationService recommendationService;
@@ -30,6 +33,7 @@ public class BuyTicketEventWorker {
                 .get();
 
         var toSave = constructNew(event, randomRecommendation);
+        log.info("Processed buyTicketEvent, saving recommendation: {}", toSave);
         return recommendationService.save(toSave);
     }
 

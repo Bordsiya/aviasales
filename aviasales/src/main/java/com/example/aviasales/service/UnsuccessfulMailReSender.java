@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UnsuccessfulMailReSender {
     private static final Logger log = LoggerFactory.getLogger(UnsuccessfulMailReSender.class);
-    private static final int DELAY_SECONDS = 1;
+    private static final int DELAY_SECONDS = 10;
     private final MailRequestRepository repository;
     private final StompController stompController;
     private final ObjectMapper objectMapper;

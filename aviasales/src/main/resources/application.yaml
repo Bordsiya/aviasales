@@ -41,7 +41,7 @@ spring:
     properties:
       hibernate:
         dialect: com.example.aviasales.util.CustomPostgreDialect
-    show-sql: true
+    show-sql: false
     generate-ddl: true
     hibernate:
       ddl-auto: none
@@ -96,7 +96,7 @@ scheduler:
     # cron: "*/10 * * * *"
 
     # every minute
-    cron: "*/3 * * * * ?"
+    cron: "*/10 * * * * ?"
     group_name: PERMANENT
 
 recommendation_service:

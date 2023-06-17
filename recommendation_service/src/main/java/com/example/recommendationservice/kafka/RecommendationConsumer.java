@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class RecommendationConsumer {
     private final static Logger log = LoggerFactory.getLogger(RecommendationConsumer.class);
     private final BuyTicketEventWorker worker;
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     @KafkaListener(topics = "recommendations_topic", groupId = "group-id")
     public void consumeMessage(String message) throws JsonProcessingException {
         BuyTicketEvent buyTicketEvent = mapper.readValue(message, BuyTicketEvent.class);
-        log.info("Got buy ticket event: " + buyTicketEvent.userId());
+        log.info("Got buy ticket event: {}", buyTicketEvent);
         worker.process(buyTicketEvent);
     }
 }

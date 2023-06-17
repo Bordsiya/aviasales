@@ -38,3 +38,7 @@ stomp:
     relay: /queue
 destination:
   prefix: /app
+
+messaging:
+  email-response-queue:
+    '/queue/mail-messages'
