@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.example.aviasales.entity.Flight;
 import com.example.aviasales.entity.Passenger;
-import com.example.aviasales.util.FightGenerator;
+import com.example.aviasales.util.FlightGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class FlightUpdatePublisher {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChannelTopic flightsTopic;
     private final ChannelTopic passengersTopic;
-    private final FightGenerator generator;
+    private final FlightGenerator generator;
     private final ObjectMapper mapper;
 
     private final List<Flight> records = new ArrayList<>();
