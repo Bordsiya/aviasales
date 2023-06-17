@@ -7,11 +7,13 @@ Aviasales.ru Поиск Дешевых Авиабилетов по 728 Авиа�
 
 ![image](https://user-images.githubusercontent.com/22819920/228567258-2bf3bd16-dee9-4fd8-889d-5caac2cc4527.png)
 ![image](https://github.com/Bordsiya/aviasales/assets/22819920/318514b8-57b7-45c8-b709-d6b5bced674b)
+![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/dd1cffe9-2518-435f-960a-f0aeb6e0946f)
 
 
 # BPMN #
 
-![bpmn](https://user-images.githubusercontent.com/22819920/228568057-e37499b7-ae11-4635-bf1f-9a284126a0d4.png)
+![bpmn-1](https://user-images.githubusercontent.com/22819920/228568057-e37499b7-ae11-4635-bf1f-9a284126a0d4.png)
+![bpmn-2](https://github.com/Bordsiya/aviasales/blob/master/docs/diagram_2lab.png)
 
 # Database Diagram #
 
