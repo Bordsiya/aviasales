@@ -1,14 +1,22 @@
 package com.example.aviasales.controller;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PreDestroy;
+
 import com.example.aviasales.dto.requests.MailServiceRequest;
 import com.example.aviasales.dto.responses.MailServiceResponse;
 import com.example.aviasales.exception.not_found.MailRequestNotFoundException;
 import com.example.aviasales.repo.MailRequestRepository;
 import com.example.aviasales.util.enums.MailRequestStatus;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -25,56 +33,44 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-import javax.annotation.PreDestroy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Controller
+@RequiredArgsConstructor
 public class StompController implements StompSessionHandler {
-    Logger log = LoggerFactory.getLogger(StompController.class);
-
-    StompSession stompSession = null;
+    private static final Logger log = LoggerFactory.getLogger(StompController.class);
     private final MailRequestRepository repository;
-
-    /* Map of subscriptions.
-     */
     @Getter
     Map<String, StompSession.Subscription> subscriptions = new HashMap<>();
-
-    @Autowired
-    public StompController(MailRequestRepository mailRequestRepository) {
-        this.repository = mailRequestRepository;
-    }
+    StompSession stompSession = null;
 
     @EventListener(value = ApplicationReadyEvent.class)
-    public void connect(){
+    public void connect() {
         WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("login", "user");
         connectHeaders.add("passcode", "password");
 
         List<Transport> transports = new ArrayList<>(1);
-        transports.add(new WebSocketTransport( new StandardWebSocketClient()) );
+        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         WebSocketClient transport = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(transport);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         try {
             stompClient.connect("ws://127.0.0.1:9097/websocket-server", handshakeHeaders, connectHeaders, this);
+            log.info("Connected to websocket-server");
         } catch (Exception e) {
-            log.error("Connection failed."); // TODO: Do some failover and implement retry patterns.
+            log.error("Connection failed.");
         }
     }
 
-    public boolean isConnected() {
+    private boolean isConnected() {
         return stompSession.isConnected();
     }
 
     public void subscribe(String queueName) {
-        if (isSubscribed(queueName)) return;
-        log.info("Subscribing to " + queueName);
+        if (isSubscribed(queueName)) {
+            return;
+        }
+        log.info("Subscribing to {}", queueName);
         StompSession.Subscription subscription = stompSession.subscribe("/queue/" + queueName, this);
         subscriptions.put(queueName, subscription);
     }
@@ -92,7 +88,11 @@ public class StompController implements StompSessionHandler {
     }
 
     public void send(String destination, MailServiceRequest mailServiceRequest) {
-        if (isConnected()) stompSession.send("/app/" + destination, mailServiceRequest);
+        if (isConnected()) {
+            stompSession.send("/app/" + destination, mailServiceRequest);
+        } else {
+            log.error("Not connected, can't send mail request");
+        }
     }
 
     @Override
@@ -105,7 +105,8 @@ public class StompController implements StompSessionHandler {
     }
 
     @Override
-    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload,
+                                Throwable exception) {
         log.info("Got an exception while handling a frame.\n" +
                 "Command: {}\n" +
                 "Headers: {}\n" +
@@ -131,16 +132,19 @@ public class StompController implements StompSessionHandler {
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         MailServiceResponse mailServiceResponse = ((MailServiceResponse) payload);
-        log.info("Got a new message {}", mailServiceResponse.getMailRequestId());
-        var found = repository.findById(mailServiceResponse.getMailRequestId());
+
+        var requestId = mailServiceResponse.getMailRequestId();
+        log.info("Got mail ack: {}", requestId);
+
+        var found = repository.findById(requestId);
         found.orElseThrow(() -> new MailRequestNotFoundException(mailServiceResponse.getMailRequestId()));
         var maiLRequest = found.get();
+
         maiLRequest.setStatus(MailRequestStatus.RECEIVED);
         repository.save(maiLRequest);
+        log.info("Mark mail request {} as received", requestId);
     }
 
-    /* Unsubscribe and close connection before destroying this instance (e.g. on application shutdown).
-            */
     @PreDestroy
     void onShutDown() {
         for (String key : subscriptions.keySet()) {
