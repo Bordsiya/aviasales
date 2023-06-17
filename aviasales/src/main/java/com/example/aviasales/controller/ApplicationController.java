@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,7 +52,7 @@ public class ApplicationController {
     @PostMapping(path = "/update-passenger/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =
             MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Application> createUpdatePassengerApplication(
-            @PathVariable @Min(1) Long id, @Valid @RequestBody PassengerDTO passengerDTO
+            @PathVariable @Min(1) Long id, @Validated @RequestBody PassengerDTO passengerDTO
     ){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((UserDetails)principal).getUsername();

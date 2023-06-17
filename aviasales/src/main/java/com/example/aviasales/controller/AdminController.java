@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -104,5 +105,14 @@ public class AdminController {
             @PathVariable @Min(1) @Max(Long.MAX_VALUE) Long id
     ) {
         return ResponseEntity.ok(applicationService.getApplicationById(id));
+    }
+
+    @PostMapping(
+            path = "/applications/change-application-status",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Application> changeApplicationStatus(
+            @Validated @RequestBody SetApplicationStatusRequestDTO setApplicationStatusRequestDTO
+    ) {
+        return ResponseEntity.ok(applicationService.changeApplicationStatus(setApplicationStatusRequestDTO));
     }
 }

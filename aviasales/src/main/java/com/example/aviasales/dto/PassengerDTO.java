@@ -4,6 +4,8 @@ import com.example.aviasales.util.enums.DocumentType;
 import com.example.aviasales.util.enums.Gender;
 import com.example.aviasales.util.annotations.ValueOfEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,6 +77,7 @@ public class PassengerDTO {
     private String documentNumber;
     @NotNull(message = "Expiration-date cannot be null.")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Schema(description = "Дата истечения срока документа", example = "2023-06-21")
     private LocalDate expirationDate;
     @Schema(description = "Имеются ли проблемы со слухом?", example = "false")
