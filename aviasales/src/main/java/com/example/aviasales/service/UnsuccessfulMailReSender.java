@@ -1,6 +1,5 @@
 package com.example.aviasales.service;
 
-import java.time.Duration;
 import java.time.Instant;
 
 import com.example.aviasales.controller.StompController;
@@ -13,50 +12,45 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UnsuccessfulMailReSender {
+    private static final Logger log = LoggerFactory.getLogger(UnsuccessfulMailReSender.class);
+    private static final int DELAY_SECONDS = 1;
     private final MailRequestRepository repository;
-    Logger log = LoggerFactory.getLogger(UnsuccessfulMailReSender.class);
-    private static final int DELAY_MINUTES = 10;
-    private static final int JITTER_MINUTES = 1;
-
-    private StompController stompController;
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    public UnsuccessfulMailReSender(
-            StompController stompController,
-            MailRequestRepository mailRequestRepository,
-            ObjectMapper objectMapper
-    ) {
-        this.stompController = stompController;
-        this.repository = mailRequestRepository;
-        this.objectMapper = objectMapper;
-    }
+    private final StompController stompController;
+    private final ObjectMapper objectMapper;
 
     public ReSendMailsResult checkAndResendIfNecessary() {
-        var from = Instant.now()
-                .minusSeconds(Duration.ofMinutes(DELAY_MINUTES + JITTER_MINUTES).toSeconds());
+        var now = Instant.now();
+        var lastJobTime = now.minusSeconds(DELAY_SECONDS);
+        var found = repository.findAllByCreatedAtGreaterThan(lastJobTime.minusSeconds(DELAY_SECONDS));
 
-        var notSuccess = repository.findAllByCreatedAtGreaterThan(from)
-                .stream()
+        // Mark as FAILED for expired jobs
+        var reCentJobs = found.stream()
+                .filter(it -> it.getStatus() == MailRequestStatus.RE_SENT)
+                .filter(it -> it.getCreatedAt().isBefore(lastJobTime))
+                .toList();
+        for (MailRequest mr : reCentJobs) {
+            log.info(mr.getPayload());
+            mr.setStatus(MailRequestStatus.FAILED);
+            repository.save(mr);
+        }
+
+        // Mark as RE_SENT for jobs should be re-sent
+        var notSuccessAtLastJobs = found.stream()
                 .filter(it -> it.getStatus() == MailRequestStatus.SENT)
+                .filter(it -> !it.getCreatedAt().isBefore(lastJobTime))
                 .toList();
 
-
         int successCnt = 0;
-        for (MailRequest mr : notSuccess) {
+        for (MailRequest mr : notSuccessAtLastJobs) {
             try {
                 log.info(mr.getPayload());
-               MailServiceRequest mailServiceRequest = objectMapper.readValue(mr.getPayload(), MailServiceRequest.class);
-               stompController.send(
-                       "process-mail-message",
-                       mailServiceRequest);
-
+                var mailServiceRequest = objectMapper.readValue(mr.getPayload(), MailServiceRequest.class);
+                stompController.send("process-mail-message", mailServiceRequest);
                 mr.setStatus(MailRequestStatus.RE_SENT);
                 repository.save(mr);
                 successCnt++;
@@ -65,6 +59,6 @@ public class UnsuccessfulMailReSender {
             }
         }
 
-        return new ReSendMailsResult(notSuccess.size(), successCnt);
+        return new ReSendMailsResult(notSuccessAtLastJobs.size(), successCnt);
     }
 }
