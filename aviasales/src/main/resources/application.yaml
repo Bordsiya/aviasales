@@ -78,7 +78,7 @@ spring:
     host: smtp.mail.ru
     port: 587
     username: bordun.2002@mail.ru
-    password: Y6nh9cUhkG0kxNDvH2x6
+    password: 
     properties:
       mail:
         smtp:
