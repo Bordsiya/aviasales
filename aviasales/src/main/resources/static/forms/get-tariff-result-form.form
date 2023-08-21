@@ -1,0 +1,231 @@
+{
+  "components": [
+    {
+      "label": "Tariff Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0hy0qiu",
+        "columns": null
+      },
+      "id": "Field_1ptuuhz",
+      "key": "tariffId",
+      "readonly": true
+    },
+    {
+      "label": "Tariff Type",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1sxjhms",
+        "columns": null
+      },
+      "id": "Field_1dz7szd",
+      "key": "tariffType",
+      "readonly": true
+    },
+    {
+      "label": "Tariff Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0gdqg5y",
+        "columns": null
+      },
+      "id": "Field_152vudu",
+      "key": "tariffName",
+      "readonly": true
+    },
+    {
+      "text": "Airline:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0bd3fzu",
+        "columns": null
+      },
+      "id": "Field_0c2h91z"
+    },
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lc9x3o",
+        "columns": null
+      },
+      "id": "Field_10gqt4q",
+      "key": "airlineId",
+      "readonly": true
+    },
+    {
+      "label": "Airline Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lc9x3o",
+        "columns": null
+      },
+      "id": "Field_14fkca9",
+      "key": "airlineName",
+      "readonly": true
+    },
+    {
+      "height": 60,
+      "label": "Spacer",
+      "type": "spacer",
+      "layout": {
+        "row": "Row_0v154bl",
+        "columns": null
+      },
+      "id": "Field_0mj2mgk"
+    },
+    {
+      "label": "Price for kids",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0v154bl",
+        "columns": null
+      },
+      "id": "Field_00h7gzz",
+      "key": "priceForKids",
+      "readonly": true
+    },
+    {
+      "label": "Price for adults",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0iypawy",
+        "columns": null
+      },
+      "id": "Field_1dthper",
+      "key": "priceForAdults",
+      "readonly": true
+    },
+    {
+      "label": "Has exchange",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0iypawy",
+        "columns": null
+      },
+      "id": "Field_0oklr63",
+      "key": "hasExchange",
+      "readonly": true
+    },
+    {
+      "label": "Has refund",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0iypawy",
+        "columns": null
+      },
+      "id": "Field_1ng8kb0",
+      "key": "hasRefund",
+      "readonly": true
+    },
+    {
+      "label": "Has baggage",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0iypawy",
+        "columns": null
+      },
+      "id": "Field_0d6jufz",
+      "key": "hasBaggage",
+      "readonly": true
+    },
+    {
+      "label": "Amount of baggage",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1es4h0j",
+        "columns": null
+      },
+      "id": "Field_1uw4ujf",
+      "key": "amountOfBaggage",
+      "readonly": true
+    },
+    {
+      "label": "Weight per baggage in kg",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04wbcsn",
+        "columns": null
+      },
+      "id": "Field_03vq75s",
+      "key": "weightPerBaggageInKg",
+      "readonly": true
+    },
+    {
+      "label": "Sum of baggage sides in cm",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04wbcsn",
+        "columns": null
+      },
+      "id": "Field_1a8aez1",
+      "key": "sumOfBaggageSidesInCm",
+      "readonly": true
+    },
+    {
+      "label": "Amount of hand baggage",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04wbcsn",
+        "columns": null
+      },
+      "id": "Field_1y68ok7",
+      "key": "amountOfHandBaggage",
+      "readonly": true
+    },
+    {
+      "label": "Weight per hand baggage in kg",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04wbcsn",
+        "columns": null
+      },
+      "id": "Field_1bwb3pt",
+      "key": "weightPerHandBaggageInKg",
+      "readonly": true
+    },
+    {
+      "label": "Height per hand baggage in cm",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1vi1krk",
+        "columns": null
+      },
+      "id": "Field_1nyvyk1",
+      "key": "heightPerHandBaggageInCm",
+      "readonly": true
+    },
+    {
+      "label": "Width per hand baggage in cm",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1vi1krk",
+        "columns": null
+      },
+      "id": "Field_1s9ea35",
+      "key": "widthPerHandBaggageInCm",
+      "readonly": true
+    },
+    {
+      "label": "Depth per hand baggage in cm",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1c1w0gy",
+        "columns": null
+      },
+      "id": "Field_08irwk0",
+      "key": "depthPerHandBaggageInCm",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-tariff-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

@@ -1,0 +1,79 @@
+{
+  "components": [
+    {
+      "label": "Airport Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1p2wq59",
+        "columns": null
+      },
+      "id": "Field_1tsznuk",
+      "key": "airportId",
+      "readonly": true
+    },
+    {
+      "label": "Airport Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0a3c6di",
+        "columns": null
+      },
+      "id": "Field_066czox",
+      "key": "airportCode",
+      "readonly": true
+    },
+    {
+      "label": "Airport Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0jxd6dn",
+        "columns": null
+      },
+      "id": "Field_1how9r5",
+      "key": "airportName",
+      "readonly": true
+    },
+    {
+      "label": "City",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0d91b87",
+        "columns": null
+      },
+      "id": "Field_0lhjzy7",
+      "key": "city",
+      "readonly": true
+    },
+    {
+      "label": "State",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0d91b87",
+        "columns": null
+      },
+      "id": "Field_0873x47",
+      "key": "state",
+      "readonly": true
+    },
+    {
+      "label": "Country",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1mh7y1m",
+        "columns": null
+      },
+      "id": "Field_0radvkt",
+      "key": "country",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-airport-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

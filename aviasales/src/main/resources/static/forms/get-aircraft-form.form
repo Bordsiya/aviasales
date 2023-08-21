@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "label": "Aircraft Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_05198fg",
+        "columns": null
+      },
+      "id": "Field_0mwnr0g",
+      "key": "aircraftId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "get-aircraft-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

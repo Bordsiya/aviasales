@@ -1,0 +1,89 @@
+{
+  "components": [
+    {
+      "label": "Aircraft Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1egj4x8",
+        "columns": null
+      },
+      "id": "Field_1on825d",
+      "key": "aircraftId",
+      "readonly": true
+    },
+    {
+      "label": "Manufacturer",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1qp47h6",
+        "columns": null
+      },
+      "id": "Field_1au5a52",
+      "key": "manufacturer",
+      "readonly": true
+    },
+    {
+      "label": "Model",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1270990",
+        "columns": null
+      },
+      "id": "Field_0xtdjyx",
+      "key": "model",
+      "readonly": true
+    },
+    {
+      "label": "Number of seats",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0p1m9wl",
+        "columns": null
+      },
+      "id": "Field_1enf0w4",
+      "key": "numberOfSeats",
+      "readonly": true
+    },
+    {
+      "text": "Airline:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_05rnwih",
+        "columns": null
+      },
+      "id": "Field_0gmxfyg"
+    },
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_09cjrij",
+        "columns": null
+      },
+      "id": "Field_1oa534k",
+      "key": "airlineId",
+      "readonly": true
+    },
+    {
+      "label": "Airline Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_185kh3h",
+        "columns": null
+      },
+      "id": "Field_1ukdvoj",
+      "key": "airlineName",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-aircraft-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

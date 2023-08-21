@@ -1,3 +1,9 @@
+buildscript {
+    ext {
+        set('camundaVersion', "7.19.0")
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.10'
@@ -82,6 +88,17 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.springframework.kafka:spring-kafka'
+
+    //Camunda WE
+    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest'
+    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp'
+
+    // Not working
+    //    implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp-core:7.15.0'
+
+    // Additional, not necessary
+    //    implementation 'org.camunda.bpm.springboot:camunda-engine-plugin-spin'
+    //    implementation 'org.camunda.bpm.springboot:camunda-spin-dataformat-all'
 }
 
 tasks.named('test') {
@@ -90,4 +107,10 @@ tasks.named('test') {
 
 tasks.bootJar {
     archiveFileName.set("service.jar")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.camunda.bpm:camunda-bom:${camundaVersion}"
+    }
 }

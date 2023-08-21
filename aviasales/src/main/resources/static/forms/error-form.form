@@ -1,0 +1,24 @@
+{
+  "components": [
+    {
+      "label": "Error while operation occured",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0udfmb6",
+        "columns": null
+      },
+      "id": "Field_0hgp196",
+      "key": "error",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "error-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

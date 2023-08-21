@@ -1,0 +1,68 @@
+{
+  "components": [
+    {
+      "label": "Reservation Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1k3cdqs",
+        "columns": null
+      },
+      "id": "Field_0p8bmjs",
+      "key": "reservationId",
+      "readonly": true
+    },
+    {
+      "label": "Reservation Code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_11eggtt",
+        "columns": null
+      },
+      "id": "Field_12zmqve",
+      "key": "reservationCode",
+      "readonly": true
+    },
+    {
+      "label": "Time",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1lr4s3o",
+        "columns": null
+      },
+      "id": "Field_0f2wmkt",
+      "key": "time",
+      "readonly": true
+    },
+    {
+      "label": "Phone number",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1yhhrk8",
+        "columns": null
+      },
+      "id": "Field_1uocs7r",
+      "key": "phoneNumber",
+      "readonly": true
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1biqyn0",
+        "columns": null
+      },
+      "id": "Field_0vigo8b",
+      "key": "email",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-reservation-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}
