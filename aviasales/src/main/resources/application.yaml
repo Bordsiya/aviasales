@@ -78,7 +78,7 @@ spring:
     host: smtp.mail.ru
     port: 587
     username: bordun.2002@mail.ru
-    password: 5fdqtr1qHAmkWPirwG71
+    password:
     properties:
       mail:
         smtp:
@@ -109,8 +109,3 @@ recommendation_service:
 camunda.bpm.admin-user:
   id: admin
   password: admin
-
-camunda:
-  bpm:
-    authorization:
-      enabled: true
