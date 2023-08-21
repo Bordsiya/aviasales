@@ -1,0 +1,247 @@
+{
+  "components": [
+    {
+      "label": "Airport from Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ptf14v",
+        "columns": null
+      },
+      "id": "Field_079znxr",
+      "key": "airportFromId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Airport to Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ou2q0y",
+        "columns": null
+      },
+      "id": "Field_1grtv6j",
+      "key": "airportToId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Date from",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_13sphji",
+        "columns": null
+      },
+      "id": "Field_1ikr9j6",
+      "key": "dateFrom",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Date back",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_13sphji",
+        "columns": null
+      },
+      "id": "Field_0jg491m",
+      "key": "dateBack"
+    },
+    {
+      "label": "Amount of adults",
+      "type": "number",
+      "layout": {
+        "row": "Row_1952id7",
+        "columns": null
+      },
+      "id": "Field_0pelsf2",
+      "key": "amountOfAdults",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Amount of children",
+      "type": "number",
+      "layout": {
+        "row": "Row_1bhm7mm",
+        "columns": null
+      },
+      "id": "Field_01ak272",
+      "key": "amountOfChildren",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Econom",
+          "value": "ECONOM"
+        },
+        {
+          "label": "Comfort",
+          "value": "COMFORT"
+        },
+        {
+          "label": "Business",
+          "value": "BUSINESS"
+        },
+        {
+          "label": "First class",
+          "value": "FIRST_CLASS"
+        }
+      ],
+      "label": "Tariff type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1ibpcw5",
+        "columns": null
+      },
+      "id": "Field_0akfogj",
+      "key": "tariffType",
+      "searchable": false,
+      "defaultValue": "ECONOM",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "I have baggage",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0o416nc",
+        "columns": null
+      },
+      "id": "Field_0zgi74r",
+      "key": "hasBaggage"
+    },
+    {
+      "subtype": "time",
+      "dateLabel": "Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_0o416nc",
+        "columns": null
+      },
+      "id": "Field_0n0eps0",
+      "key": "departureTimeFrom",
+      "timeLabel": "Departure time from",
+      "timeSerializingFormat": "utc_offset",
+      "timeInterval": 15,
+      "use24h": true
+    },
+    {
+      "subtype": "time",
+      "dateLabel": "Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_0o416nc",
+        "columns": null
+      },
+      "id": "Field_1b96a76",
+      "key": "arrivalTimeFrom",
+      "timeLabel": "Arrival time from",
+      "timeSerializingFormat": "utc_offset",
+      "timeInterval": 15,
+      "use24h": true
+    },
+    {
+      "label": "Flight duration time in HH",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0o416nc",
+        "columns": null
+      },
+      "id": "Field_0db8why",
+      "key": "flightDurationTimeUntilInHH",
+      "validate": {
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "label": "Max Price",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13dj5ag",
+        "columns": null
+      },
+      "id": "Field_09iwnux",
+      "key": "maxPrice",
+      "validate": {
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Cheap first",
+          "value": "CHEAP_FIRST"
+        },
+        {
+          "label": "Departure time",
+          "value": "DEPARTURE_TIME"
+        },
+        {
+          "label": "Arrival time",
+          "value": "ARRIVAL_TIME"
+        }
+      ],
+      "label": "Sorting algorithm",
+      "type": "select",
+      "layout": {
+        "row": "Row_13dj5ag",
+        "columns": null
+      },
+      "id": "Field_0mkwn3v",
+      "key": "sortingAlgorithm"
+    },
+    {
+      "label": "Page number",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13dj5ag",
+        "columns": null
+      },
+      "id": "Field_02sa7a0",
+      "key": "pageNumber",
+      "validate": {
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "label": "Page size",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_13dj5ag",
+        "columns": null
+      },
+      "id": "Field_1dh2wbs",
+      "key": "pageSize",
+      "validate": {
+        "pattern": "[1-9]+[0-9]*"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "search-flights-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

@@ -1,0 +1,71 @@
+{
+  "components": [
+    {
+      "label": "Phone number",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0dqwzb1",
+        "columns": null
+      },
+      "id": "Field_113eq48",
+      "key": "phoneNumber",
+      "validate": {
+        "required": true,
+        "validationType": "phone"
+      }
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1avf6f9",
+        "columns": null
+      },
+      "id": "Field_0tnwyev",
+      "key": "email",
+      "validate": {
+        "required": true,
+        "validationType": "email"
+      }
+    },
+    {
+      "label": "Flight Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0tcuh3z",
+        "columns": null
+      },
+      "id": "Field_1j0fflv",
+      "key": "flightId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "label": "Passengers",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0il5urr",
+        "columns": null
+      },
+      "id": "Field_1v4v7tc",
+      "key": "passengers",
+      "disabled": true,
+      "conditional": {
+        "hide": "=true"
+      },
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "add-passengers-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

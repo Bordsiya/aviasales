@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0tlmrey" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="Collaboration_1qact2b">
+    <bpmn:participant id="Participant_0bthyni" name="RecommendationController - GET_ALL_USER_RECOMMENDATIONS" processRef="Get-User-Recommendations-process" />
+  </bpmn:collaboration>
+  <bpmn:process id="Get-User-Recommendations-process" name="Get User Recommendations process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:laneSet id="LaneSet_19al27z">
+      <bpmn:lane id="Lane_0nrhzfx" name="User">
+        <bpmn:flowNodeRef>Event_1cjcqh5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1n1t8bb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_117hbg5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0apfe4k</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0vj7o1y</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1n9vnmm" name="Server">
+        <bpmn:flowNodeRef>Activity_0ju9j1s</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1l1jpra</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Event_1cjcqh5" name="User wants to Get Recommendations">
+      <bpmn:outgoing>Flow_0uuy375</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:dataStoreReference id="DataStoreReference_07wvdtw" name="Recommendations" />
+    <bpmn:serviceTask id="Activity_0ju9j1s" name="Get Recommendations" camunda:delegateExpression="${getRecommendationsDelegator}">
+      <bpmn:incoming>Flow_0uuy375</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dw4piv</bpmn:outgoing>
+      <bpmn:property id="Property_1qrt491" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_1f05hjy">
+        <bpmn:sourceRef>DataStoreReference_07wvdtw</bpmn:sourceRef>
+        <bpmn:targetRef>Property_1qrt491</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1n1t8bb" name="Recommendations info" camunda:formKey="camunda-forms:/forms/result-form.form">
+      <bpmn:incoming>Flow_0dw4piv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0l47ylz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_117hbg5" name="Get Recommendations error" camunda:formKey="camunda-forms:/forms/error-form.form">
+      <bpmn:incoming>Flow_0o9pzhg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1azgoja</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0apfe4k" name="Recommendations are not viewed">
+      <bpmn:incoming>Flow_1azgoja</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_0vj7o1y" name="Recommendations are viewed">
+      <bpmn:incoming>Flow_0l47ylz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1l1jpra" name="Get Recommendations error" attachedToRef="Activity_0ju9j1s">
+      <bpmn:outgoing>Flow_0o9pzhg</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_17077hn" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0uuy375" sourceRef="Event_1cjcqh5" targetRef="Activity_0ju9j1s" />
+    <bpmn:sequenceFlow id="Flow_0dw4piv" sourceRef="Activity_0ju9j1s" targetRef="Activity_1n1t8bb" />
+    <bpmn:sequenceFlow id="Flow_0l47ylz" sourceRef="Activity_1n1t8bb" targetRef="Event_0vj7o1y" />
+    <bpmn:sequenceFlow id="Flow_0o9pzhg" sourceRef="Event_1l1jpra" targetRef="Activity_117hbg5" />
+    <bpmn:sequenceFlow id="Flow_1azgoja" sourceRef="Activity_117hbg5" targetRef="Event_0apfe4k" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1qact2b">
+      <bpmndi:BPMNShape id="Participant_0bthyni_di" bpmnElement="Participant_0bthyni" isHorizontal="true">
+        <dc:Bounds x="160" y="40" width="780" height="430" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0nrhzfx_di" bpmnElement="Lane_0nrhzfx" isHorizontal="true">
+        <dc:Bounds x="190" y="40" width="750" height="260" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1n9vnmm_di" bpmnElement="Lane_1n9vnmm" isHorizontal="true">
+        <dc:Bounds x="190" y="300" width="750" height="170" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cjcqh5_di" bpmnElement="Event_1cjcqh5">
+        <dc:Bounds x="252" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="227" y="195" width="87" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_07wvdtw_di" bpmnElement="DataStoreReference_07wvdtw">
+        <dc:Bounds x="245" y="355" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="227" y="412" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ju9j1s_di" bpmnElement="Activity_0ju9j1s">
+        <dc:Bounds x="360" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n1t8bb_di" bpmnElement="Activity_1n1t8bb">
+        <dc:Bounds x="670" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_117hbg5_di" bpmnElement="Activity_117hbg5">
+        <dc:Bounds x="580" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0apfe4k_di" bpmnElement="Event_0apfe4k">
+        <dc:Bounds x="762" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="737" y="145" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0vj7o1y_di" bpmnElement="Event_0vj7o1y">
+        <dc:Bounds x="852" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="827" y="255" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1l1jpra_di" bpmnElement="Event_1l1jpra">
+        <dc:Bounds x="442" y="382" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="490" y="390" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1azgoja_di" bpmnElement="Flow_1azgoja">
+        <di:waypoint x="680" y="120" />
+        <di:waypoint x="762" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l47ylz_di" bpmnElement="Flow_0l47ylz">
+        <di:waypoint x="770" y="230" />
+        <di:waypoint x="852" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uuy375_di" bpmnElement="Flow_0uuy375">
+        <di:waypoint x="288" y="170" />
+        <di:waypoint x="410" y="170" />
+        <di:waypoint x="410" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o9pzhg_di" bpmnElement="Flow_0o9pzhg">
+        <di:waypoint x="478" y="400" />
+        <di:waypoint x="600" y="400" />
+        <di:waypoint x="600" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dw4piv_di" bpmnElement="Flow_0dw4piv">
+        <di:waypoint x="410" y="420" />
+        <di:waypoint x="410" y="440" />
+        <di:waypoint x="630" y="440" />
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="670" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_1f05hjy_di" bpmnElement="DataInputAssociation_1f05hjy">
+        <di:waypoint x="295" y="380" />
+        <di:waypoint x="360" y="380" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

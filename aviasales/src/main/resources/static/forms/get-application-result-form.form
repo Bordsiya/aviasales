@@ -1,0 +1,143 @@
+{
+  "components": [
+    {
+      "label": "Application Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0o3c2is",
+        "columns": null
+      },
+      "id": "Field_0twuxzc",
+      "key": "applicationId",
+      "readonly": true
+    },
+    {
+      "text": "User:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0zbomgr",
+        "columns": null
+      },
+      "id": "Field_16m7y89"
+    },
+    {
+      "label": "User Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0zbomgr",
+        "columns": null
+      },
+      "id": "Field_19ef040",
+      "key": "userId",
+      "readonly": true
+    },
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0cyop29",
+        "columns": null
+      },
+      "id": "Field_1ltuhao",
+      "key": "email",
+      "readonly": true
+    },
+    {
+      "label": "Password",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1fbepkl",
+        "columns": null
+      },
+      "id": "Field_095v4v7",
+      "key": "password",
+      "readonly": true
+    },
+    {
+      "label": "Role",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0imu6ka",
+        "columns": null
+      },
+      "id": "Field_1kd2p6t",
+      "key": "role",
+      "readonly": true
+    },
+    {
+      "height": 60,
+      "label": "Spacer",
+      "type": "spacer",
+      "layout": {
+        "row": "Row_01dpclh",
+        "columns": null
+      },
+      "id": "Field_09fci0k"
+    },
+    {
+      "label": "Application type",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1nngfk1",
+        "columns": null
+      },
+      "id": "Field_0brbcfx",
+      "key": "applicationType",
+      "readonly": true
+    },
+    {
+      "label": "Payload",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_1nngfk1",
+        "columns": null
+      },
+      "id": "Field_1452zmu",
+      "key": "payload",
+      "readonly": true
+    },
+    {
+      "label": "Application status",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1nngfk1",
+        "columns": null
+      },
+      "id": "Field_0yi60xy",
+      "key": "applicationStatus",
+      "readonly": true
+    },
+    {
+      "label": "Publish date",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1nngfk1",
+        "columns": null
+      },
+      "id": "Field_1f9qikh",
+      "key": "publishDate",
+      "readonly": true
+    },
+    {
+      "label": "Is archived",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0d7sgyg",
+        "columns": null
+      },
+      "id": "Field_0tnqfpz",
+      "key": "isArchived",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-application-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ps1aa6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="Collaboration_05py5sk">
+    <bpmn:participant id="Participant_14eaks4" name="ApplicationController - CREATE_DELETE_PASSENGER_APPLICATION" processRef="Create-Delete-Passenger-Application-process" />
+  </bpmn:collaboration>
+  <bpmn:process id="Create-Delete-Passenger-Application-process" name="Create Delete Passenger Application process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:laneSet id="LaneSet_1fb39rf">
+      <bpmn:lane id="Lane_1pvntv2" name="User">
+        <bpmn:flowNodeRef>Event_1yqhv24</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0erj4vs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1lp45p9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1usx7qr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0riptr7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1bmezoc</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_16gceos" name="Server">
+        <bpmn:flowNodeRef>Activity_0fxqo5r</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1l5f4n7</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Event_1yqhv24" name="User wants to create Delete Passenger Application">
+      <bpmn:outgoing>Flow_10t9v7a</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_0erj4vs" name="Input data for Deleting Application" camunda:formKey="camunda-forms:/forms/delete-passenger-form.form">
+      <bpmn:incoming>Flow_10t9v7a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lco5fj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0fxqo5r" name="Create Delete Passenger Application" camunda:delegateExpression="${createDeletePassengerApplicationDelegator}">
+      <bpmn:incoming>Flow_1lco5fj</bpmn:incoming>
+      <bpmn:outgoing>Flow_13k9xvc</bpmn:outgoing>
+      <bpmn:property id="Property_14ecpyg" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_0l2be4h">
+        <bpmn:sourceRef>DataStoreReference_02el6ez</bpmn:sourceRef>
+        <bpmn:targetRef>Property_14ecpyg</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:dataStoreReference id="DataStoreReference_02el6ez" name="Applications" />
+    <bpmn:userTask id="Activity_1lp45p9" name="Delete Passenger Application error" camunda:formKey="camunda-forms:/forms/error-form.form">
+      <bpmn:incoming>Flow_06to1a6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gunzzu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1usx7qr" name="Application info" camunda:formKey="camunda-forms:/forms/get-application-result-form.form">
+      <bpmn:incoming>Flow_13k9xvc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j3jorn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0riptr7" name="Application is not created">
+      <bpmn:incoming>Flow_0gunzzu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1bmezoc" name="Application is created">
+      <bpmn:incoming>Flow_0j3jorn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_1l5f4n7" name="Create Delete Passenger Application error" attachedToRef="Activity_0fxqo5r">
+      <bpmn:outgoing>Flow_06to1a6</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1fb21lh" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_10t9v7a" sourceRef="Event_1yqhv24" targetRef="Activity_0erj4vs" />
+    <bpmn:sequenceFlow id="Flow_1lco5fj" sourceRef="Activity_0erj4vs" targetRef="Activity_0fxqo5r" />
+    <bpmn:sequenceFlow id="Flow_13k9xvc" sourceRef="Activity_0fxqo5r" targetRef="Activity_1usx7qr" />
+    <bpmn:sequenceFlow id="Flow_06to1a6" sourceRef="Event_1l5f4n7" targetRef="Activity_1lp45p9" />
+    <bpmn:sequenceFlow id="Flow_0gunzzu" sourceRef="Activity_1lp45p9" targetRef="Event_0riptr7" />
+    <bpmn:sequenceFlow id="Flow_0j3jorn" sourceRef="Activity_1usx7qr" targetRef="Event_1bmezoc" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_05py5sk">
+      <bpmndi:BPMNShape id="Participant_14eaks4_di" bpmnElement="Participant_14eaks4" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="830" height="420" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1pvntv2_di" bpmnElement="Lane_1pvntv2" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="800" height="245" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_16gceos_di" bpmnElement="Lane_16gceos" isHorizontal="true">
+        <dc:Bounds x="190" y="325" width="800" height="175" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yqhv24_di" bpmnElement="Event_1yqhv24">
+        <dc:Bounds x="252" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="236" y="225" width="68" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0erj4vs_di" bpmnElement="Activity_0erj4vs">
+        <dc:Bounds x="370" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fxqo5r_di" bpmnElement="Activity_0fxqo5r">
+        <dc:Bounds x="370" y="380" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_02el6ez_di" bpmnElement="DataStoreReference_02el6ez">
+        <dc:Bounds x="255" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="251" y="452" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lp45p9_di" bpmnElement="Activity_1lp45p9">
+        <dc:Bounds x="620" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1usx7qr_di" bpmnElement="Activity_1usx7qr">
+        <dc:Bounds x="680" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0riptr7_di" bpmnElement="Event_0riptr7">
+        <dc:Bounds x="812" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="788" y="175" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bmezoc_di" bpmnElement="Event_1bmezoc">
+        <dc:Bounds x="892" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="275" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1l5f4n7_di" bpmnElement="Event_1l5f4n7">
+        <dc:Bounds x="452" y="422" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="503" y="430" width="81" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_10t9v7a_di" bpmnElement="Flow_10t9v7a">
+        <di:waypoint x="288" y="200" />
+        <di:waypoint x="370" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lco5fj_di" bpmnElement="Flow_1lco5fj">
+        <di:waypoint x="420" y="240" />
+        <di:waypoint x="420" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06to1a6_di" bpmnElement="Flow_06to1a6">
+        <di:waypoint x="488" y="440" />
+        <di:waypoint x="630" y="440" />
+        <di:waypoint x="630" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13k9xvc_di" bpmnElement="Flow_13k9xvc">
+        <di:waypoint x="420" y="460" />
+        <di:waypoint x="420" y="480" />
+        <di:waypoint x="660" y="480" />
+        <di:waypoint x="660" y="250" />
+        <di:waypoint x="680" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j3jorn_di" bpmnElement="Flow_0j3jorn">
+        <di:waypoint x="780" y="250" />
+        <di:waypoint x="892" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gunzzu_di" bpmnElement="Flow_0gunzzu">
+        <di:waypoint x="720" y="150" />
+        <di:waypoint x="812" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0l2be4h_di" bpmnElement="DataInputAssociation_0l2be4h">
+        <di:waypoint x="305" y="420" />
+        <di:waypoint x="370" y="420" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,249 @@
+{
+  "components": [
+    {
+      "label": "First name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0scxald",
+        "columns": null
+      },
+      "id": "Field_08zsvqd",
+      "key": "firstName",
+      "validate": {
+        "required": true,
+        "pattern": "[a-zA-Z]+",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Last name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0i3q3o2",
+        "columns": null
+      },
+      "id": "Field_1i4g9io",
+      "key": "lastName",
+      "validate": {
+        "required": true,
+        "pattern": "[a-zA-Z]+",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Patronymic",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1p1o2bs",
+        "columns": null
+      },
+      "id": "Field_07y2dbx",
+      "key": "patronymic",
+      "validate": {
+        "required": true,
+        "pattern": "[a-zA-Z]+",
+        "minLength": 1
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Male",
+          "value": "MALE"
+        },
+        {
+          "label": "Female",
+          "value": "FEMALE"
+        }
+      ],
+      "label": "Gender",
+      "type": "select",
+      "layout": {
+        "row": "Row_12i07wk",
+        "columns": null
+      },
+      "id": "Field_1rfe6ho",
+      "key": "gender",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Citizenship",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0tjt9lk",
+        "columns": null
+      },
+      "id": "Field_1xt2am8",
+      "key": "citizenship",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[a-zA-Z]+"
+      }
+    },
+    {
+      "label": "Is a kid",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1cg2jie",
+        "columns": null
+      },
+      "id": "Field_0v8by8e",
+      "key": "isKid",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Passport",
+          "value": "PASSPORT"
+        },
+        {
+          "label": "Visa",
+          "value": "VISA"
+        },
+        {
+          "label": "Military record",
+          "value": "MILITARY_RECORD"
+        },
+        {
+          "label": "Birth certificate",
+          "value": "BIRTH_CERTIFICATE"
+        }
+      ],
+      "label": "Document type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1x4t66c",
+        "columns": null
+      },
+      "id": "Field_1yrl8ow",
+      "key": "documentType",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Document number",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1w8lfqr",
+        "columns": null
+      },
+      "id": "Field_1lmcekl",
+      "key": "documentNumber",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Expiration date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_1w8lfqr",
+        "columns": null
+      },
+      "id": "Field_0bsc5kf",
+      "key": "expirationDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Has hearing difficulties",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1w8lfqr",
+        "columns": null
+      },
+      "id": "Field_0t1l3no",
+      "key": "hasHearingDifficulties",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Has vision difficulties",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1w8lfqr",
+        "columns": null
+      },
+      "id": "Field_1w9584q",
+      "key": "hasVision"
+    },
+    {
+      "label": "Required wheelchair",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1nsm1mj",
+        "columns": null
+      },
+      "id": "Field_1uj9mnt",
+      "key": "requiredWheelchair",
+      "validate": {
+        "required": false
+      }
+    },
+    {
+      "label": "Tariff Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0pcbrp6",
+        "columns": null
+      },
+      "id": "Field_172bmx7",
+      "key": "tariffId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Do you want to add one more Passenger?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0pcbrp6",
+        "columns": null
+      },
+      "id": "Field_1ggjmtw",
+      "key": "addPassenger",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Passengers",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0pcbrp6",
+        "columns": null
+      },
+      "id": "Field_14rj0lp",
+      "key": "passengers",
+      "disabled": true,
+      "readonly": true,
+      "conditional": {
+        "hide": "=true"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "add-passenger-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

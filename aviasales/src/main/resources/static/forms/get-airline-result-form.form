@@ -1,0 +1,35 @@
+{
+  "components": [
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0hfygzl",
+        "columns": null
+      },
+      "id": "Field_0w0ngct",
+      "key": "airlineId",
+      "readonly": true
+    },
+    {
+      "label": "Airline name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0giefps",
+        "columns": null
+      },
+      "id": "Field_1uihi0q",
+      "key": "airlineName",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-airline-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

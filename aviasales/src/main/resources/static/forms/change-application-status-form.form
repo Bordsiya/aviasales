@@ -1,0 +1,69 @@
+{
+  "components": [
+    {
+      "label": "Application Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_03u33zo",
+        "columns": null
+      },
+      "id": "Field_1jkyw0t",
+      "key": "applicationId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Approved",
+          "value": "APPROVED"
+        },
+        {
+          "label": "On moderation",
+          "value": "ON_MODERATION"
+        },
+        {
+          "label": "Declined",
+          "value": "DECLINED"
+        },
+        {
+          "label": "Closed",
+          "value": "CLOSED"
+        }
+      ],
+      "label": "Application Status",
+      "type": "select",
+      "layout": {
+        "row": "Row_09h644o",
+        "columns": null
+      },
+      "id": "Field_0qwxrq1",
+      "key": "applicationStatus",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Comment",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_00xyz4l",
+        "columns": null
+      },
+      "id": "Field_07kr3d5",
+      "key": "comment"
+    }
+  ],
+  "type": "default",
+  "id": "change-application-status-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

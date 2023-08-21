@@ -1,0 +1,27 @@
+{
+  "components": [
+    {
+      "label": "Airline name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1py5k1n",
+        "columns": null
+      },
+      "id": "Field_0027emt",
+      "key": "airlineName",
+      "validate": {
+        "required": true,
+        "minLength": 1
+      }
+    }
+  ],
+  "type": "default",
+  "id": "add-airline-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

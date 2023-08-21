@@ -1,0 +1,71 @@
+{
+  "components": [
+    {
+      "label": "Manufacturer",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_01l02xo",
+        "columns": null
+      },
+      "id": "Field_1wfxvjc",
+      "key": "manufacturer",
+      "validate": {
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Model",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ah1h6x",
+        "columns": null
+      },
+      "id": "Field_1pvpyio",
+      "key": "model",
+      "validate": {
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Number of seats",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1hnlnj6",
+        "columns": null
+      },
+      "id": "Field_1w9fjrh",
+      "key": "numberOfSeats",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1clum9y",
+        "columns": null
+      },
+      "id": "Field_0w6xdiu",
+      "key": "airlineId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "add-aircraft-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

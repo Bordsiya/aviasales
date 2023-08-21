@@ -1,0 +1,341 @@
+{
+  "components": [
+    {
+      "label": "Flight Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_14tpb6w",
+        "columns": null
+      },
+      "id": "Field_05xswdt",
+      "key": "flightId",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "text": "Departure Airport:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0coxqxy",
+        "columns": null
+      },
+      "id": "Field_0tob65n"
+    },
+    {
+      "label": "Airport Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1i7xwj4",
+        "columns": null
+      },
+      "id": "Field_1akxp2k",
+      "key": "departureAirportId",
+      "readonly": true
+    },
+    {
+      "label": "Airport code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0ig4x2r",
+        "columns": null
+      },
+      "id": "Field_190ibah",
+      "key": "departureAirportCode",
+      "readonly": true
+    },
+    {
+      "label": "Airport name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_01zfgg9",
+        "columns": null
+      },
+      "id": "Field_0zrfh9l",
+      "key": "departureAirportName",
+      "readonly": true
+    },
+    {
+      "label": "City",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_04kr5nu",
+        "columns": null
+      },
+      "id": "Field_1pm1m6w",
+      "key": "departureCity",
+      "readonly": true
+    },
+    {
+      "label": "State",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08g4zzk",
+        "columns": null
+      },
+      "id": "Field_12cjtcu",
+      "key": "departureState",
+      "readonly": true
+    },
+    {
+      "label": "Country",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1cv2t3b",
+        "columns": null
+      },
+      "id": "Field_02gvuvo",
+      "key": "departureCountry",
+      "readonly": true
+    },
+    {
+      "text": "Arrival airport:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1cv2t3b",
+        "columns": null
+      },
+      "id": "Field_137qj2g"
+    },
+    {
+      "label": "Airport Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1cv2t3b",
+        "columns": null
+      },
+      "id": "Field_11fftce",
+      "key": "arrivalAirportId",
+      "readonly": true
+    },
+    {
+      "label": "Airport code",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1cv2t3b",
+        "columns": null
+      },
+      "id": "Field_1iu33y8",
+      "key": "arrivalAirportCode",
+      "readonly": true
+    },
+    {
+      "label": "Airport name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0octb1k",
+        "columns": null
+      },
+      "id": "Field_07yh8sd",
+      "key": "arrivalAirportName",
+      "readonly": true
+    },
+    {
+      "label": "City",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0octb1k",
+        "columns": null
+      },
+      "id": "Field_0dljeaj",
+      "key": "arrivalCity",
+      "readonly": true
+    },
+    {
+      "label": "State",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0octb1k",
+        "columns": null
+      },
+      "id": "Field_0rfqo3q",
+      "key": "arrivalState",
+      "readonly": true
+    },
+    {
+      "label": "Country",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0octb1k",
+        "columns": null
+      },
+      "id": "Field_0umtwmg",
+      "key": "arrivalCountry",
+      "readonly": true
+    },
+    {
+      "height": 60,
+      "label": "Spacer",
+      "type": "spacer",
+      "layout": {
+        "row": "Row_1v9lub5",
+        "columns": null
+      },
+      "id": "Field_0y6kiwk"
+    },
+    {
+      "label": "Departure date",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v9lub5",
+        "columns": null
+      },
+      "id": "Field_02j45gl",
+      "key": "departureDate",
+      "readonly": true
+    },
+    {
+      "label": "Arrival date",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v9lub5",
+        "columns": null
+      },
+      "id": "Field_1mpj4hd",
+      "key": "arrivalDate",
+      "readonly": true
+    },
+    {
+      "label": "Departure time",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1v9lub5",
+        "columns": null
+      },
+      "id": "Field_12dtesq",
+      "key": "departureTime",
+      "readonly": true
+    },
+    {
+      "label": "Arrival time",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0xm8519",
+        "columns": null
+      },
+      "id": "Field_0tsp0o8",
+      "key": "arrivalTime",
+      "readonly": true
+    },
+    {
+      "label": "Default price for kids",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0xm8519",
+        "columns": null
+      },
+      "id": "Field_1jabg25",
+      "key": "defaultPriceForKids",
+      "readonly": true
+    },
+    {
+      "label": "Default price for adults",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0xm8519",
+        "columns": null
+      },
+      "id": "Field_1rpioki",
+      "key": "defaultPriceForAdults",
+      "readonly": true
+    },
+    {
+      "text": "Aircraft:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_0ihf86z",
+        "columns": null
+      },
+      "id": "Field_0fxm1jl"
+    },
+    {
+      "label": "Aircraft Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08x830r",
+        "columns": null
+      },
+      "id": "Field_1oh1bi1",
+      "key": "aircraftId",
+      "readonly": true
+    },
+    {
+      "label": "Manufacturer",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08x830r",
+        "columns": null
+      },
+      "id": "Field_1dhks0g",
+      "key": "manufacturer",
+      "readonly": true
+    },
+    {
+      "label": "Model",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08x830r",
+        "columns": null
+      },
+      "id": "Field_0ktafq7",
+      "key": "model",
+      "readonly": true
+    },
+    {
+      "label": "Number of seats",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08x830r",
+        "columns": null
+      },
+      "id": "Field_06t1kzu",
+      "key": "numberOfSeats",
+      "readonly": true
+    },
+    {
+      "text": "Airline:",
+      "label": "Text view",
+      "type": "text",
+      "layout": {
+        "row": "Row_1ei9fyd",
+        "columns": null
+      },
+      "id": "Field_0gxvxpp"
+    },
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ei9fyd",
+        "columns": null
+      },
+      "id": "Field_1128oy7",
+      "key": "airlineId",
+      "readonly": true
+    },
+    {
+      "label": "Airline name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1ei9fyd",
+        "columns": null
+      },
+      "id": "Field_15qe433",
+      "key": "airlineName",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-flight-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

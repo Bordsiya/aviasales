@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "label": "Airline Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0drmwa0",
+        "columns": null
+      },
+      "id": "Field_0j887at",
+      "key": "airlineId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "get-airline-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "label": "Passenger Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_016pcee",
+        "columns": null
+      },
+      "id": "Field_0nik22h",
+      "key": "passengerId",
+      "validate": {
+        "required": true,
+        "minLength": 1,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "delete-passenger-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "label": "Are you already have an account?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_06pvxs1",
+        "columns": null
+      },
+      "id": "Field_1krkz5w",
+      "key": "haveAccount",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "have-account-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

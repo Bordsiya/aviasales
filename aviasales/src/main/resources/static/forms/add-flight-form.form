@@ -1,0 +1,155 @@
+{
+  "components": [
+    {
+      "label": "Departure airport Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_196kdmg",
+        "columns": null
+      },
+      "id": "Field_0bf43sy",
+      "key": "departureAirportId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Arrival airport Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0qivv64",
+        "columns": null
+      },
+      "id": "Field_1tv8xd5",
+      "key": "arrivalAirportId",
+      "validate": {
+        "pattern": "[1-9]+[0-9]*",
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Departure date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_16cz7zq",
+        "columns": null
+      },
+      "id": "Field_0tnafxi",
+      "key": "departureDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Arrival date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_16cz7zq",
+        "columns": null
+      },
+      "id": "Field_0u6edpc",
+      "key": "arrivalDate",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "subtype": "time",
+      "dateLabel": "Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_00lam7k",
+        "columns": null
+      },
+      "id": "Field_089hp38",
+      "key": "departureTime",
+      "timeLabel": "Departure time",
+      "timeSerializingFormat": "utc_offset",
+      "timeInterval": 15,
+      "use24h": true,
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "subtype": "time",
+      "dateLabel": "Date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_00lam7k",
+        "columns": null
+      },
+      "id": "Field_1nbw8pz",
+      "key": "arrivalTime",
+      "timeLabel": "Arrival time",
+      "timeSerializingFormat": "utc_offset",
+      "timeInterval": 15,
+      "use24h": true,
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Default price for kids",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_14i02r8",
+        "columns": null
+      },
+      "id": "Field_1i5qa2u",
+      "key": "defaultPriceForKids",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    },
+    {
+      "label": "Default price for adults",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0b8il8j",
+        "columns": null
+      },
+      "id": "Field_0al1eyf",
+      "key": "defaultPriceForAdults",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*"
+      }
+    },
+    {
+      "label": "Aircraft Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0b8il8j",
+        "columns": null
+      },
+      "id": "Field_07yvhk5",
+      "key": "aircraftId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    }
+  ],
+  "type": "default",
+  "id": "add-flight-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

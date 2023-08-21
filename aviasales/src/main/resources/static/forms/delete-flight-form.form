@@ -1,0 +1,28 @@
+{
+  "components": [
+    {
+      "label": "Flight Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1010ltq",
+        "columns": null
+      },
+      "id": "Field_0h4d2db",
+      "key": "flightId",
+      "validate": {
+        "required": true,
+        "pattern": "[1-9]+[0-9]*",
+        "minLength": 1
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_1bwbgms",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

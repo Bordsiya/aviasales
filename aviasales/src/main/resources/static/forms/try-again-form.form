@@ -1,0 +1,26 @@
+{
+  "components": [
+    {
+      "label": "Do you want to try again?",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1xorjl4",
+        "columns": null
+      },
+      "id": "Field_149nytm",
+      "key": "tryAgain",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "try-again-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

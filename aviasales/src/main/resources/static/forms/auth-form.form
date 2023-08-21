@@ -1,0 +1,41 @@
+{
+  "components": [
+    {
+      "label": "Email",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1b083fr",
+        "columns": null
+      },
+      "id": "Field_0nakt1j",
+      "key": "email",
+      "validate": {
+        "required": true,
+        "validationType": "email"
+      }
+    },
+    {
+      "label": "Password",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1icrgm1",
+        "columns": null
+      },
+      "id": "Field_032989m",
+      "key": "password",
+      "validate": {
+        "required": true,
+        "minLength": 8
+      }
+    }
+  ],
+  "type": "default",
+  "id": "auth-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}

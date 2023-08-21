@@ -1,0 +1,204 @@
+{
+  "components": [
+    {
+      "label": "First name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0de96lx",
+        "columns": null
+      },
+      "id": "Field_1io6vgf",
+      "key": "firstName",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "label": "Last name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0qctsx1",
+        "columns": null
+      },
+      "id": "Field_1w2f76e",
+      "key": "lastName",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "label": "Patronymic",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_040hjjn",
+        "columns": null
+      },
+      "id": "Field_1n72mi5",
+      "key": "patronymic",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "values": [
+        {
+          "label": "Female",
+          "value": "FEMALE"
+        },
+        {
+          "label": "Male",
+          "value": "MALE"
+        }
+      ],
+      "label": "Gender",
+      "type": "select",
+      "layout": {
+        "row": "Row_0zor9hu",
+        "columns": null
+      },
+      "id": "Field_14miyah",
+      "key": "gender",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "label": "Citizenship",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1hfo3xq",
+        "columns": null
+      },
+      "id": "Field_1whtwty",
+      "key": "citizenship",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "label": "Is a kid",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_1qchfns",
+        "columns": null
+      },
+      "id": "Field_0swp554",
+      "key": "isKid",
+      "validate": {
+        "required": false
+      },
+      "readonly": true
+    },
+    {
+      "values": [
+        {
+          "label": "Passport",
+          "value": "PASSPORT"
+        },
+        {
+          "label": "Visa",
+          "value": "VISA"
+        },
+        {
+          "label": "Military record",
+          "value": "MILITARY_RECORD"
+        },
+        {
+          "label": "Birth certificate",
+          "value": "BIRTH_CERTIFICATE"
+        }
+      ],
+      "label": "Document type",
+      "type": "select",
+      "layout": {
+        "row": "Row_1ndkwwh",
+        "columns": null
+      },
+      "id": "Field_0l8bkwu",
+      "key": "documentType",
+      "readonly": true
+    },
+    {
+      "label": "Document number",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0dcrnsf",
+        "columns": null
+      },
+      "id": "Field_03vkp24",
+      "key": "documentNumber",
+      "readonly": true
+    },
+    {
+      "subtype": "date",
+      "dateLabel": "Expiration date",
+      "label": "Date time",
+      "type": "datetime",
+      "layout": {
+        "row": "Row_0dcrnsf",
+        "columns": null
+      },
+      "id": "Field_117vidy",
+      "key": "expirationDate",
+      "readonly": true
+    },
+    {
+      "label": "Has hearing difficulties",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0dcrnsf",
+        "columns": null
+      },
+      "id": "Field_1ubnv4u",
+      "key": "hasHearingDifficulties",
+      "readonly": true
+    },
+    {
+      "label": "Has vision difficulties",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_0dcrnsf",
+        "columns": null
+      },
+      "id": "Field_0estlio",
+      "key": "hasVisionDifficulties",
+      "readonly": true
+    },
+    {
+      "label": "Required wheelchair",
+      "type": "checkbox",
+      "layout": {
+        "row": "Row_08sirhp",
+        "columns": null
+      },
+      "id": "Field_03lhwr7",
+      "key": "requiredWheelchair",
+      "readonly": true
+    },
+    {
+      "label": "Tariff Id",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_08sirhp",
+        "columns": null
+      },
+      "id": "Field_10as8p1",
+      "key": "tariffId",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "get-passenger-result-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.14.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0",
+  "schemaVersion": 10
+}
