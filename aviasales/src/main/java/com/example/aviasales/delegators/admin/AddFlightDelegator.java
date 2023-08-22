@@ -13,16 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Set;
 
 @Named
 public class AddFlightDelegator implements JavaDelegate {
     private FlightService flightService;
     private DelegateAuthCheckService delegateAuthCheckService;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private DateTimeFormatter timeFormatterOutput = DateTimeFormatter.ofPattern("hh:mm");
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
 
     @Autowired
     public AddFlightDelegator(FlightService flightService,
@@ -38,8 +36,8 @@ public class AddFlightDelegator implements JavaDelegate {
                     new FlightDTO(
                             Long.parseLong(String.valueOf(execution.getVariable("departureAirportId"))),
                             Long.parseLong(String.valueOf(execution.getVariable("arrivalAirportId"))),
-                            LocalDate.parse(String.valueOf(execution.getVariable("departureDate")), dateTimeFormatter),
-                            LocalDate.parse(String.valueOf(execution.getVariable("arrivalDate")), dateTimeFormatter),
+                            LocalDate.parse(String.valueOf(execution.getVariable("departureDate"))),
+                            LocalDate.parse(String.valueOf(execution.getVariable("arrivalDate"))),
                             String.valueOf(execution.getVariable("departureTime")),
                             String.valueOf(execution.getVariable("arrivalTime")),
                             Long.parseLong(String.valueOf(execution.getVariable("defaultPriceForKids"))),
@@ -63,10 +61,10 @@ public class AddFlightDelegator implements JavaDelegate {
             execution.setVariable("arrivalCity", flight.getArrivalAirport().getCity());
             execution.setVariable("arrivalState", flight.getArrivalAirport().getState());
             execution.setVariable("arrivalCountry", flight.getArrivalAirport().getCountry());
-            execution.setVariable("departureDate", dateTimeFormatterOutput.format(flight.getDepartureDate()));
-            execution.setVariable("arrivalDate", dateTimeFormatterOutput.format(flight.getArrivalDate()));
-            execution.setVariable("departureTime", timeFormatterOutput.format(flight.getDepartureTime()));
-            execution.setVariable("arrivalTime", timeFormatterOutput.format(flight.getArrivalTime()));
+            execution.setVariable("departureDate", dateTimeFormatter.format(flight.getDepartureDate()));
+            execution.setVariable("arrivalDate", dateTimeFormatter.format(flight.getArrivalDate()));
+            execution.setVariable("departureTime", timeFormatter.format(flight.getDepartureTime()));
+            execution.setVariable("arrivalTime", timeFormatter.format(flight.getArrivalTime()));
             execution.setVariable("defaultPriceForKids", flight.getDefaultPriceForKids());
             execution.setVariable("defaultPriceForAdults", flight.getDefaultPriceForAdults());
             execution.setVariable("aircraftId", flight.getAircraft().getAircraftId());

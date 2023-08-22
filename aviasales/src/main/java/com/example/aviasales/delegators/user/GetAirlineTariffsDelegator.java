@@ -3,6 +3,7 @@ package com.example.aviasales.delegators.user;
 import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.service.AirlineService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -17,11 +18,14 @@ import java.util.Set;
 public class GetAirlineTariffsDelegator implements JavaDelegate {
     private AirlineService airlineService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private ObjectMapper objectMapper;
     @Autowired
     public GetAirlineTariffsDelegator(AirlineService airlineService,
-                                      DelegateAuthCheckService delegateAuthCheckService) {
+                                      DelegateAuthCheckService delegateAuthCheckService,
+                                      ObjectMapper objectMapper) {
         this.airlineService = airlineService;
         this.delegateAuthCheckService = delegateAuthCheckService;
+        this.objectMapper = objectMapper;
     }
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -30,7 +34,7 @@ public class GetAirlineTariffsDelegator implements JavaDelegate {
             Long airlineId = Long.parseLong(String.valueOf(execution.getVariable("airlineId")));
             Set<Tariff> tariffs = airlineService.getAirlineTariffsByAirlineId(airlineId);
             log.error("result - " + tariffs.toString());
-            execution.setVariable("result", tariffs.toString());
+            execution.setVariable("result", objectMapper.writeValueAsString(tariffs));
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

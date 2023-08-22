@@ -4,6 +4,7 @@ import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.entity.Passenger;
 import com.example.aviasales.service.PassengerService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -14,11 +15,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Named
+@Slf4j
 public class UpdatePassengerDelegator implements JavaDelegate {
     private PassengerService passengerService;
     private DelegateAuthCheckService delegateAuthCheckService;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
     public UpdatePassengerDelegator(PassengerService passengerService,
                                     DelegateAuthCheckService delegateAuthCheckService) {
@@ -39,12 +40,13 @@ public class UpdatePassengerDelegator implements JavaDelegate {
                     Boolean.valueOf(String.valueOf(execution.getVariable("isKid"))),
                     String.valueOf(execution.getVariable("documentType")),
                     String.valueOf(execution.getVariable("documentNumber")),
-                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate")), dateTimeFormatter),
+                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasHearingDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasVisionDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("requiredWheelchair"))),
                     Long.parseLong(String.valueOf(execution.getVariable("tariffId")))
             );
+            log.error("after input");
             Passenger updatedPassenger = passengerService.updatePassenger(passengerId, passengerDTO);
             execution.setVariable("firstName", updatedPassenger.getFirstName());
             execution.setVariable("lastName", updatedPassenger.getLastName());
@@ -54,11 +56,11 @@ public class UpdatePassengerDelegator implements JavaDelegate {
             execution.setVariable("isKid", updatedPassenger.getIsKid());
             execution.setVariable("documentType", updatedPassenger.getDocumentType().name());
             execution.setVariable("documentNumber", updatedPassenger.getDocumentNumber());
-            execution.setVariable("expirationDate", dateTimeFormatterOutput.format(updatedPassenger.getExpirationDate()));
+            execution.setVariable("expirationDate", dateTimeFormatter.format(updatedPassenger.getExpirationDate()));
             execution.setVariable("hasHearingDifficulties", updatedPassenger.getHasHearingDifficulties());
             execution.setVariable("hasVisionDifficulties", updatedPassenger.getHasVisionDifficulties());
             execution.setVariable("requiredWheelchair", updatedPassenger.getRequiredWheelchair());
-            execution.setVariable("tariffId", updatedPassenger.getTariff());
+            execution.setVariable("tariffId", updatedPassenger.getTariff().getTariffId());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

@@ -135,16 +135,17 @@
       "readonly": true
     },
     {
-      "subtype": "date",
-      "dateLabel": "Expiration date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Expiration date",
+      "type": "textfield",
       "layout": {
         "row": "Row_0dcrnsf",
         "columns": null
       },
-      "id": "Field_117vidy",
+      "id": "Field_1bpjg5m",
       "key": "expirationDate",
+      "validate": {
+        "required": false
+      },
       "readonly": true
     },
     {

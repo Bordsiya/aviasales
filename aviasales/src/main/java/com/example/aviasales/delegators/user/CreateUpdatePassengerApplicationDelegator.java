@@ -19,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 public class CreateUpdatePassengerApplicationDelegator implements JavaDelegate {
     private ApplicationService applicationService;
     private DelegateAuthCheckService delegateAuthCheckService;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
     public CreateUpdatePassengerApplicationDelegator(ApplicationService applicationService,
@@ -41,7 +40,7 @@ public class CreateUpdatePassengerApplicationDelegator implements JavaDelegate {
                     Boolean.valueOf(String.valueOf(execution.getVariable("isKid"))),
                     String.valueOf(execution.getVariable("documentType")),
                     String.valueOf(execution.getVariable("documentNumber")),
-                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate")), dateTimeFormatter),
+                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasHearingDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasVisionDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("requiredWheelchair"))),

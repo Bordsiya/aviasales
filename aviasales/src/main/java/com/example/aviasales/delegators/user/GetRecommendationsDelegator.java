@@ -3,6 +3,7 @@ package com.example.aviasales.delegators.user;
 import com.example.aviasales.dto.RecommendationDto;
 import com.example.aviasales.service.RecommendationService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,11 +18,14 @@ import java.util.List;
 public class GetRecommendationsDelegator implements JavaDelegate {
     private RecommendationService recommendationService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private ObjectMapper objectMapper;
     @Autowired
     public GetRecommendationsDelegator(RecommendationService recommendationService,
-                                       DelegateAuthCheckService delegateAuthCheckService) {
+                                       DelegateAuthCheckService delegateAuthCheckService,
+                                       ObjectMapper objectMapper) {
         this.recommendationService = recommendationService;
         this.delegateAuthCheckService = delegateAuthCheckService;
+        this.objectMapper = objectMapper;
     }
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -29,7 +33,7 @@ public class GetRecommendationsDelegator implements JavaDelegate {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             List<RecommendationDto> recommendations = recommendationService.getAllUserRecommendations(email);
-            execution.setVariable("result", recommendations.toString());
+            execution.setVariable("result", objectMapper.writeValueAsString(recommendations));
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

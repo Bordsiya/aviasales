@@ -31,71 +31,59 @@
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Departure date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Departure date",
+      "type": "textfield",
       "layout": {
-        "row": "Row_16cz7zq",
+        "row": "Row_0qivv64",
         "columns": null
       },
-      "id": "Field_0tnafxi",
+      "id": "Field_0qbodjn",
       "key": "departureDate",
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Arrival date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Arrival date",
+      "type": "textfield",
       "layout": {
-        "row": "Row_16cz7zq",
+        "row": "Row_021yc1r",
         "columns": null
       },
-      "id": "Field_0u6edpc",
+      "id": "Field_13z4sk0",
       "key": "arrivalDate",
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
       }
     },
     {
-      "subtype": "time",
-      "dateLabel": "Date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Departure time",
+      "type": "textfield",
       "layout": {
-        "row": "Row_00lam7k",
+        "row": "Row_0toi62m",
         "columns": null
       },
-      "id": "Field_089hp38",
+      "id": "Field_06p4tl0",
       "key": "departureTime",
-      "timeLabel": "Departure time",
-      "timeSerializingFormat": "utc_offset",
-      "timeInterval": 15,
-      "use24h": true,
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){2}:(\\d){2}"
       }
     },
     {
-      "subtype": "time",
-      "dateLabel": "Date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Arrival time",
+      "type": "textfield",
       "layout": {
         "row": "Row_00lam7k",
         "columns": null
       },
-      "id": "Field_1nbw8pz",
+      "id": "Field_1vpvr1r",
       "key": "arrivalTime",
-      "timeLabel": "Arrival time",
-      "timeSerializingFormat": "utc_offset",
-      "timeInterval": 15,
-      "use24h": true,
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){2}:(\\d){2}"
       }
     },
     {

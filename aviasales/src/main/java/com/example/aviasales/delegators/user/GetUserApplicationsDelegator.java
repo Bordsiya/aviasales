@@ -3,6 +3,7 @@ package com.example.aviasales.delegators.user;
 import com.example.aviasales.entity.Application;
 import com.example.aviasales.service.ApplicationService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,11 +18,14 @@ import java.util.Set;
 public class GetUserApplicationsDelegator implements JavaDelegate {
     private ApplicationService applicationService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private ObjectMapper objectMapper;
     @Autowired
     public GetUserApplicationsDelegator(ApplicationService applicationService,
-                                        DelegateAuthCheckService delegateAuthCheckService) {
+                                        DelegateAuthCheckService delegateAuthCheckService,
+                                        ObjectMapper objectMapper) {
         this.applicationService = applicationService;
         this.delegateAuthCheckService = delegateAuthCheckService;
+        this.objectMapper = objectMapper;
     }
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -29,7 +33,7 @@ public class GetUserApplicationsDelegator implements JavaDelegate {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             Set<Application> applicationSet = applicationService.getUserApplications(email);
-            execution.setVariable("result", applicationSet.toString());
+            execution.setVariable("result", objectMapper.writeValueAsString(applicationSet));
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

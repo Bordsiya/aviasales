@@ -31,31 +31,32 @@
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Date from",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Date from",
+      "type": "textfield",
       "layout": {
-        "row": "Row_13sphji",
+        "row": "Row_0ou2q0y",
         "columns": null
       },
-      "id": "Field_1ikr9j6",
+      "id": "Field_0iv4lq2",
       "key": "dateFrom",
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Date back",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Date back",
+      "type": "textfield",
       "layout": {
-        "row": "Row_13sphji",
+        "row": "Row_1id8plx",
         "columns": null
       },
-      "id": "Field_0jg491m",
-      "key": "dateBack"
+      "id": "Field_0a1wcig",
+      "key": "dateBack",
+      "validate": {
+        "required": false,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
+      }
     },
     {
       "label": "Amount of adults",
@@ -127,36 +128,32 @@
       "key": "hasBaggage"
     },
     {
-      "subtype": "time",
-      "dateLabel": "Date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Departure time from",
+      "type": "textfield",
       "layout": {
         "row": "Row_0o416nc",
         "columns": null
       },
-      "id": "Field_0n0eps0",
+      "id": "Field_10zqy1n",
       "key": "departureTimeFrom",
-      "timeLabel": "Departure time from",
-      "timeSerializingFormat": "utc_offset",
-      "timeInterval": 15,
-      "use24h": true
+      "validate": {
+        "required": false,
+        "pattern": "(\\d){2}:(\\d){2}"
+      }
     },
     {
-      "subtype": "time",
-      "dateLabel": "Date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Arrival time from",
+      "type": "textfield",
       "layout": {
         "row": "Row_0o416nc",
         "columns": null
       },
-      "id": "Field_1b96a76",
+      "id": "Field_0ye27zw",
       "key": "arrivalTimeFrom",
-      "timeLabel": "Arrival time from",
-      "timeSerializingFormat": "utc_offset",
-      "timeInterval": 15,
-      "use24h": true
+      "validate": {
+        "required": false,
+        "pattern": "(\\d){2}:(\\d){2}"
+      }
     },
     {
       "label": "Flight duration time in HH",

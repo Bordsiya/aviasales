@@ -161,7 +161,11 @@
         "columns": null
       },
       "id": "Field_1vxptyo",
-      "key": "expirationDate"
+      "key": "expirationDate",
+      "validate": {
+        "required": true,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
+      }
     },
     {
       "label": "Has hearing difficulties",

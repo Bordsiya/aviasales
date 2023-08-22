@@ -131,7 +131,7 @@
       "label": "Document number",
       "type": "textfield",
       "layout": {
-        "row": "Row_1w8lfqr",
+        "row": "Row_0jfehsy",
         "columns": null
       },
       "id": "Field_1lmcekl",
@@ -143,18 +143,17 @@
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Expiration date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Expiration date",
+      "type": "textfield",
       "layout": {
-        "row": "Row_1w8lfqr",
+        "row": "Row_0jfehsy",
         "columns": null
       },
-      "id": "Field_0bsc5kf",
+      "id": "Field_0rb74lq",
       "key": "expirationDate",
       "validate": {
-        "required": true
+        "required": true,
+        "pattern": "(\\d){4}-(\\d){2}-(\\d){2}"
       }
     },
     {

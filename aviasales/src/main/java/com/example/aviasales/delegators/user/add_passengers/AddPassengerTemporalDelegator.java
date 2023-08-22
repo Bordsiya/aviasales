@@ -16,7 +16,6 @@ import java.util.Set;
 
 @Named
 public class AddPassengerTemporalDelegator implements JavaDelegate {
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private ObjectMapper objectMapper;
     @Autowired
     public AddPassengerTemporalDelegator(ObjectMapper objectMapper) {
@@ -34,7 +33,7 @@ public class AddPassengerTemporalDelegator implements JavaDelegate {
                     Boolean.valueOf(String.valueOf(execution.getVariable("isKid"))),
                     String.valueOf(execution.getVariable("documentType")),
                     String.valueOf(execution.getVariable("documentNumber")),
-                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate")), dateTimeFormatter),
+                    LocalDate.parse(String.valueOf(execution.getVariable("expirationDate"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasHearingDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("hasVisionDifficulties"))),
                     Boolean.valueOf(String.valueOf(execution.getVariable("requiredWheelchair"))),
