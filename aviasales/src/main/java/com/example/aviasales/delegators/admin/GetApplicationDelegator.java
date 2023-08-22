@@ -9,11 +9,13 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
+import java.time.format.DateTimeFormatter;
 
 @Named
 public class GetApplicationDelegator implements JavaDelegate {
     private ApplicationService applicationService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
     public GetApplicationDelegator(ApplicationService applicationService,
                                    DelegateAuthCheckService delegateAuthCheckService) {
@@ -24,7 +26,7 @@ public class GetApplicationDelegator implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         try {
             delegateAuthCheckService.checkAdminAuthority(execution);
-            Long applicationId = Long.parseLong(String.valueOf("applicationId"));
+            Long applicationId = Long.parseLong(String.valueOf(execution.getVariable("applicationId")));
             Application application = applicationService.getApplicationById(applicationId);
             execution.setVariable("applicationId", application.getApplicationId());
             execution.setVariable("userId", application.getUser().getUserId());
@@ -32,8 +34,9 @@ public class GetApplicationDelegator implements JavaDelegate {
             execution.setVariable("password", application.getUser().getPassword());
             execution.setVariable("role", application.getUser().getRole().name());
             execution.setVariable("applicationType", application.getApplicationType().name());
+            execution.setVariable("applicationStatus", application.getApplicationStatus().name());
             execution.setVariable("payload", application.getPayload());
-            execution.setVariable("publishDate", application.getPublishDate());
+            execution.setVariable("publishDate", dateTimeFormatter.format(application.getPublishDate()));
             execution.setVariable("isArchived", application.getIsArchived());
         }
         catch (Throwable throwable) {

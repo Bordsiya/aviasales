@@ -9,11 +9,15 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
+import java.time.format.DateTimeFormatter;
 
 @Named
 public class GetFlightDelegator implements JavaDelegate {
     private FlightService flightService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
+
     @Autowired
     public GetFlightDelegator(FlightService flightService,
                               DelegateAuthCheckService delegateAuthCheckService) {
@@ -39,10 +43,10 @@ public class GetFlightDelegator implements JavaDelegate {
             execution.setVariable("arrivalCity", flight.getArrivalAirport().getCity());
             execution.setVariable("arrivalState", flight.getArrivalAirport().getState());
             execution.setVariable("arrivalCountry", flight.getArrivalAirport().getCountry());
-            execution.setVariable("departureDate", flight.getDepartureDate());
-            execution.setVariable("arrivalDate", flight.getArrivalDate());
-            execution.setVariable("departureTime", flight.getDepartureTime());
-            execution.setVariable("arrivalTime", flight.getArrivalTime());
+            execution.setVariable("departureDate", dateTimeFormatter.format(flight.getDepartureDate()));
+            execution.setVariable("arrivalDate", dateTimeFormatter.format(flight.getArrivalDate()));
+            execution.setVariable("departureTime", timeFormatter.format(flight.getDepartureTime()));
+            execution.setVariable("arrivalTime", timeFormatter.format(flight.getArrivalTime()));
             execution.setVariable("defaultPriceForKids", flight.getDefaultPriceForKids());
             execution.setVariable("defaultPriceForAdults", flight.getDefaultPriceForAdults());
             execution.setVariable("aircraftId", flight.getAircraft().getAircraftId());

@@ -66,16 +66,6 @@
       "readonly": true
     },
     {
-      "height": 60,
-      "label": "Spacer",
-      "type": "spacer",
-      "layout": {
-        "row": "Row_0v154bl",
-        "columns": null
-      },
-      "id": "Field_0mj2mgk"
-    },
-    {
       "label": "Price for kids",
       "type": "textfield",
       "layout": {

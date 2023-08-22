@@ -154,19 +154,14 @@
       }
     },
     {
-      "subtype": "date",
-      "dateLabel": "Expiration date",
-      "label": "Date time",
-      "type": "datetime",
+      "label": "Expiration date",
+      "type": "textfield",
       "layout": {
         "row": "Row_11ihzng",
         "columns": null
       },
-      "id": "Field_0kuggnz",
-      "key": "expirationDate",
-      "validate": {
-        "required": true
-      }
+      "id": "Field_1vxptyo",
+      "key": "expirationDate"
     },
     {
       "label": "Has hearing difficulties",

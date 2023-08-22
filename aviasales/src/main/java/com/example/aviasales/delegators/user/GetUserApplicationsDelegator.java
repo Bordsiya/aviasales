@@ -27,9 +27,9 @@ public class GetUserApplicationsDelegator implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         try {
             delegateAuthCheckService.checkCustomerAuthority(execution);
-            Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Set<Application> applicationSet = applicationService.getUserApplications(principal.getName());
-            execution.setVariable("result", applicationSet);
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Set<Application> applicationSet = applicationService.getUserApplications(email);
+            execution.setVariable("result", applicationSet.toString());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

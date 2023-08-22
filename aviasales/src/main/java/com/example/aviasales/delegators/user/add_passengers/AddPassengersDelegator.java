@@ -43,7 +43,7 @@ public class AddPassengersDelegator implements JavaDelegate {
                     String.valueOf(execution.getVariable("email")),
                     Long.parseLong(String.valueOf(execution.getVariable("flightId")))
             );
-            execution.setVariable("result", passengerService.addPassengers(addPassengersDTO));
+            execution.setVariable("result", passengerService.addPassengers(addPassengersDTO).toString());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

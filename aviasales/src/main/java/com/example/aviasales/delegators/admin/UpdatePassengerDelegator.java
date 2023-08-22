@@ -18,6 +18,7 @@ public class UpdatePassengerDelegator implements JavaDelegate {
     private PassengerService passengerService;
     private DelegateAuthCheckService delegateAuthCheckService;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
     public UpdatePassengerDelegator(PassengerService passengerService,
                                     DelegateAuthCheckService delegateAuthCheckService) {
@@ -53,7 +54,7 @@ public class UpdatePassengerDelegator implements JavaDelegate {
             execution.setVariable("isKid", updatedPassenger.getIsKid());
             execution.setVariable("documentType", updatedPassenger.getDocumentType().name());
             execution.setVariable("documentNumber", updatedPassenger.getDocumentNumber());
-            execution.setVariable("expirationDate", updatedPassenger.getExpirationDate());
+            execution.setVariable("expirationDate", dateTimeFormatterOutput.format(updatedPassenger.getExpirationDate()));
             execution.setVariable("hasHearingDifficulties", updatedPassenger.getHasHearingDifficulties());
             execution.setVariable("hasVisionDifficulties", updatedPassenger.getHasVisionDifficulties());
             execution.setVariable("requiredWheelchair", updatedPassenger.getRequiredWheelchair());

@@ -27,9 +27,9 @@ public class GetRecommendationsDelegator implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         try {
             delegateAuthCheckService.checkCustomerAuthority(execution);
-            Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            List<RecommendationDto> recommendations = recommendationService.getAllUserRecommendations(principal);
-            execution.setVariable("result", recommendations);
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            List<RecommendationDto> recommendations = recommendationService.getAllUserRecommendations(email);
+            execution.setVariable("result", recommendations.toString());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

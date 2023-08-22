@@ -11,14 +11,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Named;
 import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 
 @Named
-public class CreateDeletePassengerApplication implements JavaDelegate {
+public class CreateDeletePassengerApplicationDelegator implements JavaDelegate {
     private ApplicationService applicationService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
-    public CreateDeletePassengerApplication(ApplicationService applicationService,
-                                            DelegateAuthCheckService delegateAuthCheckService) {
+    public CreateDeletePassengerApplicationDelegator(ApplicationService applicationService,
+                                                     DelegateAuthCheckService delegateAuthCheckService) {
         this.applicationService = applicationService;
         this.delegateAuthCheckService = delegateAuthCheckService;
     }
@@ -27,16 +29,17 @@ public class CreateDeletePassengerApplication implements JavaDelegate {
         try {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             Long passengerId = Long.parseLong(String.valueOf(execution.getVariable("passengerId")));
-            Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Application application = applicationService.addApplicationDeletePassenger(passengerId, principal.getName());
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Application application = applicationService.addApplicationDeletePassenger(passengerId, email);
             execution.setVariable("applicationId", application.getApplicationId());
             execution.setVariable("userId", application.getUser().getUserId());
             execution.setVariable("email", application.getUser().getEmail());
             execution.setVariable("password", application.getUser().getPassword());
             execution.setVariable("role", application.getUser().getRole().name());
             execution.setVariable("applicationType", application.getApplicationType().name());
+            execution.setVariable("applicationStatus", application.getApplicationStatus().name());
             execution.setVariable("payload", application.getPayload());
-            execution.setVariable("publishDate", application.getPublishDate());
+            execution.setVariable("publishDate", dateTimeFormatter.format(application.getPublishDate()));
             execution.setVariable("isArchived", application.getIsArchived());
         }
         catch (Throwable throwable) {

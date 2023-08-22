@@ -53,7 +53,7 @@ public class SearchFlightsDelegator implements JavaDelegate {
             );
             List<SearchResponseDTO> searchedFlights = flightService
                     .getFlightsFiltered(searchRequestMapper.fromDTO(searchRequestDTO));
-            execution.setVariable("result", searchedFlights);
+            execution.setVariable("result", searchedFlights.toString());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

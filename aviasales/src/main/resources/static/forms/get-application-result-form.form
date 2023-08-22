@@ -66,16 +66,6 @@
       "readonly": true
     },
     {
-      "height": 60,
-      "label": "Spacer",
-      "type": "spacer",
-      "layout": {
-        "row": "Row_01dpclh",
-        "columns": null
-      },
-      "id": "Field_09fci0k"
-    },
-    {
       "label": "Application type",
       "type": "textfield",
       "layout": {

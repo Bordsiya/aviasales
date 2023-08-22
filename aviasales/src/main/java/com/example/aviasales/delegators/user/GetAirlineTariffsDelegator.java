@@ -3,6 +3,7 @@ package com.example.aviasales.delegators.user;
 import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.service.AirlineService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -12,6 +13,7 @@ import javax.inject.Named;
 import java.util.Set;
 
 @Named
+@Slf4j
 public class GetAirlineTariffsDelegator implements JavaDelegate {
     private AirlineService airlineService;
     private DelegateAuthCheckService delegateAuthCheckService;
@@ -27,7 +29,8 @@ public class GetAirlineTariffsDelegator implements JavaDelegate {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             Long airlineId = Long.parseLong(String.valueOf(execution.getVariable("airlineId")));
             Set<Tariff> tariffs = airlineService.getAirlineTariffsByAirlineId(airlineId);
-            execution.setVariable("result", tariffs);
+            log.error("result - " + tariffs.toString());
+            execution.setVariable("result", tariffs.toString());
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

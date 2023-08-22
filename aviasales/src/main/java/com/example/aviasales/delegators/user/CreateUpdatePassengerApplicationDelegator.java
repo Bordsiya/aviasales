@@ -20,6 +20,7 @@ public class CreateUpdatePassengerApplicationDelegator implements JavaDelegate {
     private ApplicationService applicationService;
     private DelegateAuthCheckService delegateAuthCheckService;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @Autowired
     public CreateUpdatePassengerApplicationDelegator(ApplicationService applicationService,
                                                      DelegateAuthCheckService delegateAuthCheckService) {
@@ -46,16 +47,17 @@ public class CreateUpdatePassengerApplicationDelegator implements JavaDelegate {
                     Boolean.valueOf(String.valueOf(execution.getVariable("requiredWheelchair"))),
                     Long.parseLong(String.valueOf(execution.getVariable("tariffId")))
             );
-            Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Application application = applicationService.addApplicationUpdatePassenger(passengerId, passengerDTO, principal.getName());
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Application application = applicationService.addApplicationUpdatePassenger(passengerId, passengerDTO, email);
             execution.setVariable("applicationId", application.getApplicationId());
             execution.setVariable("userId", application.getUser().getUserId());
             execution.setVariable("email", application.getUser().getEmail());
             execution.setVariable("password", application.getUser().getPassword());
             execution.setVariable("role", application.getUser().getRole().name());
             execution.setVariable("applicationType", application.getApplicationType().name());
+            execution.setVariable("applicationStatus", application.getApplicationStatus().name());
             execution.setVariable("payload", application.getPayload());
-            execution.setVariable("publishDate", application.getPublishDate());
+            execution.setVariable("publishDate", dateTimeFormatterOutput.format(application.getPublishDate()));
             execution.setVariable("isArchived", application.getIsArchived());
         }
         catch (Throwable throwable) {

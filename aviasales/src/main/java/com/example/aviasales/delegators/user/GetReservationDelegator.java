@@ -9,11 +9,13 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
+import java.time.format.DateTimeFormatter;
 
 @Named
 public class GetReservationDelegator implements JavaDelegate {
     private ReservationService reservationService;
     private DelegateAuthCheckService delegateAuthCheckService;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm");
 
     @Autowired
     public GetReservationDelegator(ReservationService reservationService,
@@ -30,7 +32,7 @@ public class GetReservationDelegator implements JavaDelegate {
             Reservation reservation = reservationService.getReservationById(reservationId);
             execution.setVariable("reservationId", reservation.getReservationId());
             execution.setVariable("reservationCode", reservation.getReservationCode());
-            execution.setVariable("time", reservation.getTime());
+            execution.setVariable("time", dateTimeFormatter.format(reservation.getTime()));
             execution.setVariable("phoneNumber", reservation.getPhoneNumber());
             execution.setVariable("email", reservation.getEmail());
         }

@@ -34,7 +34,7 @@ public class GetAirportDelegator implements JavaDelegate {
             execution.setVariable("airportCode", airport.getAirportCode());
             execution.setVariable("airportName", airport.getAirportName());
             execution.setVariable("city", airport.getCity());
-            execution.setVariable("state", airport.getState());
+            execution.setVariable("state", airport.getState() == null ? "" : airport.getState());
             execution.setVariable("country", airport.getCountry());
         }
         catch (Throwable throwable) {

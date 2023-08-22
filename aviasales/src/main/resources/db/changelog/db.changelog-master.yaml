@@ -4,6 +4,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/V002__fill.sql
   - include:
+      file: db/changelog/changeset/V003__init_sequence.sql
+  - include:
       file: db/changelog/changeset/V004__init_mail_request.sql
   - include:
       file: db/changelog/changeset/V005__quartz_init.sql

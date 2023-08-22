@@ -38,9 +38,9 @@ public class GetTariffDelegator implements JavaDelegate {
             execution.setVariable("hasExchange", tariff.getHasExchange());
             execution.setVariable("hasRefund", tariff.getHasRefund());
             execution.setVariable("hasBaggage", tariff.getHasBaggage());
-            execution.setVariable("amountOfBaggage", tariff.getAmountOfBaggage());
-            execution.setVariable("weightPerBaggageInKg", tariff.getWeightPerBaggageInKg());
-            execution.setVariable("sumOfBaggageSidesInCm", tariff.getSumOfBaggageSidesInCm());
+            execution.setVariable("amountOfBaggage", tariff.getAmountOfBaggage() == null ? "" : tariff.getAmountOfBaggage());
+            execution.setVariable("weightPerBaggageInKg", tariff.getWeightPerBaggageInKg() == null ? "" : tariff.getWeightPerBaggageInKg());
+            execution.setVariable("sumOfBaggageSidesInCm", tariff.getSumOfBaggageSidesInCm() == null ? "" : tariff.getSumOfBaggageSidesInCm());
             execution.setVariable("amountOfHandBaggage", tariff.getAmountOfHandBaggage());
             execution.setVariable("weightPerHandBaggageInKg", tariff.getWeightPerHandBaggageInKg());
             execution.setVariable("heightPerHandBaggageInCm", tariff.getHeightPerHandBaggageInCm());

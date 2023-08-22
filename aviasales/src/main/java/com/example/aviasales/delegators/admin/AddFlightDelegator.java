@@ -21,6 +21,8 @@ public class AddFlightDelegator implements JavaDelegate {
     private FlightService flightService;
     private DelegateAuthCheckService delegateAuthCheckService;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private DateTimeFormatter dateTimeFormatterOutput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DateTimeFormatter timeFormatterOutput = DateTimeFormatter.ofPattern("hh:mm");
 
     @Autowired
     public AddFlightDelegator(FlightService flightService,
@@ -61,10 +63,10 @@ public class AddFlightDelegator implements JavaDelegate {
             execution.setVariable("arrivalCity", flight.getArrivalAirport().getCity());
             execution.setVariable("arrivalState", flight.getArrivalAirport().getState());
             execution.setVariable("arrivalCountry", flight.getArrivalAirport().getCountry());
-            execution.setVariable("departureDate", flight.getDepartureDate());
-            execution.setVariable("arrivalDate", flight.getArrivalDate());
-            execution.setVariable("departureTime", flight.getDepartureTime());
-            execution.setVariable("arrivalTime", flight.getArrivalTime());
+            execution.setVariable("departureDate", dateTimeFormatterOutput.format(flight.getDepartureDate()));
+            execution.setVariable("arrivalDate", dateTimeFormatterOutput.format(flight.getArrivalDate()));
+            execution.setVariable("departureTime", timeFormatterOutput.format(flight.getDepartureTime()));
+            execution.setVariable("arrivalTime", timeFormatterOutput.format(flight.getArrivalTime()));
             execution.setVariable("defaultPriceForKids", flight.getDefaultPriceForKids());
             execution.setVariable("defaultPriceForAdults", flight.getDefaultPriceForAdults());
             execution.setVariable("aircraftId", flight.getAircraft().getAircraftId());

@@ -24,10 +24,10 @@ public class RecommendationService {
         this.userRepository = userRepository;
     }
 
-    public List<RecommendationDto> getAllUserRecommendations(Principal principal) {
-        User user = userRepository.findByEmail(principal.getName());
+    public List<RecommendationDto> getAllUserRecommendations(String email) {
+        User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException(principal.getName());
+            throw new UserNotFoundException(email);
         }
 
         return client.getAllUserRecommendations(user.getUserId());

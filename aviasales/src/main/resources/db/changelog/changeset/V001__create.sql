@@ -108,7 +108,7 @@ create table if not exists public.passengers
     citizenship              varchar(255) not null,
     document_number          varchar(255) not null,
     document_type            varchar(255) not null,
-    expiration_date          date,
+    expiration_date          date         not null,
     first_name               varchar(255) not null,
     gender                   varchar(255) not null,
     has_hearing_difficulties boolean      not null,
@@ -136,8 +136,8 @@ create table if not exists public.users
     id       bigserial
         primary key,
     email    varchar(255) not null,
-    password varchar(255),
-    role     varchar(255)
+    password varchar(255) not null,
+    role     varchar(255) not null
 );
 
 alter table public.users

@@ -28,6 +28,6 @@ public class RecommendationController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RecommendationDto>> getAllUserRecommendations(Principal principal) {
-        return ResponseEntity.ok(recommendationService.getAllUserRecommendations(principal));
+        return ResponseEntity.ok(recommendationService.getAllUserRecommendations(principal.getName()));
     }
 }
