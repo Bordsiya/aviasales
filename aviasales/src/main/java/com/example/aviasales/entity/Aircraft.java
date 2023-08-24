@@ -33,8 +33,8 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Aircraft {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
-    @SequenceGenerator(name = "users_id_seq", allocationSize = 1, sequenceName = "users_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "aircrafts_id_seq")
+    @SequenceGenerator(name = "aircrafts_id_seq", allocationSize = 1)
     @Column(name = "id")
     @JsonView
     private Long aircraftId;
