@@ -43,20 +43,28 @@ public class SearchFlightsDelegator implements JavaDelegate {
                     Long.parseLong(String.valueOf(execution.getVariable("airportFromId"))),
                     Long.parseLong(String.valueOf(execution.getVariable("airportToId"))),
                     LocalDate.parse(String.valueOf(execution.getVariable("dateFrom"))),
-                    LocalDate.parse(String.valueOf(execution.getVariable("dateBack"))),
+                    String.valueOf(execution.getVariable("dateBack")).isBlank() ? null
+                            : LocalDate.parse(String.valueOf(execution.getVariable("dateBack"))),
                     Long.parseLong(String.valueOf(execution.getVariable("amountOfAdults"))),
                     Long.parseLong(String.valueOf(execution.getVariable("amountOfChildren"))),
                     String.valueOf(execution.getVariable("tariffType")),
-                    Boolean.valueOf(String.valueOf(execution.getVariable("hasBaggage"))),
-                    String.valueOf(execution.getVariable("departureTimeFrom")),
-                    String.valueOf(execution.getVariable("arrivalTimeFrom")),
-                    Long.parseLong(String.valueOf(execution.getVariable("flightDurationTimeUntilInHH"))),
-                    Long.parseLong(String.valueOf(execution.getVariable("maxPrice"))),
-                    String.valueOf(execution.getVariable("sortingAlgorithm")),
-                    Integer.parseInt(String.valueOf(execution.getVariable("pageNumber"))),
-                    Integer.parseInt(String.valueOf(execution.getVariable("pageSize")))
+                    String.valueOf(execution.getVariable("hasBaggage")).isBlank() ? null :
+                            Boolean.valueOf(String.valueOf(execution.getVariable("hasBaggage"))),
+                    String.valueOf(execution.getVariable("departureTimeFrom")).isBlank() ? null :
+                            String.valueOf(execution.getVariable("departureTimeFrom")),
+                    String.valueOf(execution.getVariable("arrivalTimeFrom")).isBlank() ? null :
+                            String.valueOf(execution.getVariable("arrivalTimeFrom")),
+                    String.valueOf(execution.getVariable("flightDurationTimeUntilInHH")).isBlank() ? null :
+                            Long.parseLong(String.valueOf(execution.getVariable("flightDurationTimeUntilInHH"))),
+                    String.valueOf(execution.getVariable("maxPrice")).isBlank() ? null :
+                            Long.parseLong(String.valueOf(execution.getVariable("maxPrice"))),
+                    String.valueOf(execution.getVariable("sortingAlgorithm")).equals("null")? null :
+                            String.valueOf(execution.getVariable("sortingAlgorithm")),
+                    String.valueOf(execution.getVariable("pageNumber")).isBlank() ? null :
+                            Integer.parseInt(String.valueOf(execution.getVariable("pageNumber"))),
+                    String.valueOf(execution.getVariable("pageSize")).isBlank() ? null :
+                            Integer.parseInt(String.valueOf(execution.getVariable("pageSize")))
             );
-            log.error("after input");
             List<SearchResponseDTO> searchedFlights = flightService
                     .getFlightsFiltered(searchRequestMapper.fromDTO(searchRequestDTO));
             execution.setVariable("result", objectMapper.writeValueAsString(searchedFlights));

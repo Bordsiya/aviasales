@@ -11,6 +11,8 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Named
@@ -33,8 +35,8 @@ public class GetAirlineTariffsDelegator implements JavaDelegate {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             Long airlineId = Long.parseLong(String.valueOf(execution.getVariable("airlineId")));
             Set<Tariff> tariffs = airlineService.getAirlineTariffsByAirlineId(airlineId);
-            log.error("result - " + tariffs.toString());
-            execution.setVariable("result", objectMapper.writeValueAsString(tariffs));
+            List<Tariff> tariffList = new ArrayList<>(tariffs);
+            execution.setVariable("result", objectMapper.writeValueAsString(tariffList));
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());
