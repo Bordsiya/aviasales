@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,10 +43,26 @@ public class AddPassengerTemporalDelegator implements JavaDelegate {
             );
             Set<PassengerDTO> passengers = objectMapper.readValue(
                     String.valueOf(execution.getVariable("passengers")),
-                    new TypeReference<Set<PassengerDTO>>(){}
+                    new TypeReference<>(){}
             );
+            if (passengers == null) passengers = new HashSet<>();
             passengers.add(passengerDTO);
-            execution.setVariable("passengers", objectMapper.writeValueAsString(passengers));
+            List<PassengerDTO> passengerDTOList = new ArrayList<>(passengers);
+
+            execution.setVariable("passengers", objectMapper.writeValueAsString(passengerDTOList));
+            execution.setVariable("firstName", "");
+            execution.setVariable("lastName", "");
+            execution.setVariable("patronymic", "");
+            execution.setVariable("gender", null);
+            execution.setVariable("citizenship", "");
+            execution.setVariable("isKid", Boolean.FALSE);
+            execution.setVariable("documentType", null);
+            execution.setVariable("documentNumber", "");
+            execution.setVariable("expirationDate", "");
+            execution.setVariable("hasHearingDifficulties", Boolean.FALSE);
+            execution.setVariable("hasVisionDifficulties", Boolean.FALSE);
+            execution.setVariable("requiredWheelchair", Boolean.FALSE);
+            execution.setVariable("tariffId", "");
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());

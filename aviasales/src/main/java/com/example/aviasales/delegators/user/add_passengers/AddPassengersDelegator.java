@@ -2,6 +2,7 @@ package com.example.aviasales.delegators.user.add_passengers;
 
 import com.example.aviasales.dto.PassengerDTO;
 import com.example.aviasales.dto.requests.AddPassengersDTO;
+import com.example.aviasales.entity.Passenger;
 import com.example.aviasales.service.PassengerService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,7 +36,7 @@ public class AddPassengersDelegator implements JavaDelegate {
             delegateAuthCheckService.checkCustomerAuthority(execution);
             Set<PassengerDTO> passengers = objectMapper.readValue(
                     String.valueOf(execution.getVariable("passengers")),
-                    new TypeReference<Set<PassengerDTO>>(){}
+                    new TypeReference<>(){}
             );
             AddPassengersDTO addPassengersDTO = new AddPassengersDTO(
                     passengers,
@@ -43,7 +44,9 @@ public class AddPassengersDelegator implements JavaDelegate {
                     String.valueOf(execution.getVariable("email")),
                     Long.parseLong(String.valueOf(execution.getVariable("flightId")))
             );
-            execution.setVariable("result", passengerService.addPassengers(addPassengersDTO).toString());
+            Set<Passenger> addedPassengers = passengerService.addPassengers(addPassengersDTO);
+            List<Passenger> addedPassengersList = new ArrayList<>(addedPassengers);
+            execution.setVariable("result", objectMapper.writeValueAsString(addedPassengersList));
         }
         catch (Throwable throwable) {
             execution.setVariable("error", throwable.getMessage());
