@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	//id 'war' (for wildfly)
 	id 'org.springframework.boot' version '2.7.10'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
@@ -47,6 +48,9 @@ dependencies {
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
+	// for wildfly
+	// implementation 'javax.servlet:javax.servlet-api'
 }
 
 tasks.named('test') {
@@ -56,3 +60,12 @@ tasks.named('test') {
 tasks.bootJar {
 	archiveFileName.set("service.jar")
 }
+// for wildfly
+/*
+configurations {
+	all.collect { configuration ->
+		configuration.exclude   group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	}
+}
+
+ */

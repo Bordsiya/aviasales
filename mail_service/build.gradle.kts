@@ -1,5 +1,6 @@
 plugins {
     java
+    // war (for wildfly)
     id("org.springframework.boot") version "3.0.6"
     id("io.spring.dependency-management") version "1.1.0"
 }
@@ -40,6 +41,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
+
+    // for wildfly
+    // implementation("javax.servlet:javax.servlet-api:3.1.0")
 }
 
 tasks.withType<Test> {
@@ -51,3 +55,12 @@ val test by tasks.getting(Test::class) { testLogging.showStandardStreams = true 
 tasks.bootJar {
     archiveFileName.set("service.jar")
 }
+// for wildfly
+/*
+configurations {
+    all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    }
+}
+
+ */
