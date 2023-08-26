@@ -4,7 +4,6 @@ import com.example.aviasales.entity.Tariff;
 import com.example.aviasales.service.AirlineService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 @Named
-@Slf4j
 public class GetAirlineTariffsDelegator implements JavaDelegate {
     private AirlineService airlineService;
     private DelegateAuthCheckService delegateAuthCheckService;

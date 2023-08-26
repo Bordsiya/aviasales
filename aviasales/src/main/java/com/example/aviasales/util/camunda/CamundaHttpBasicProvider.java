@@ -27,7 +27,7 @@ public class CamundaHttpBasicProvider {
     public String getEmailFromToken(String token) throws BadCredentialsException {
         byte[] decodedValue = decoder.decode(token);
         String encodedToken = new String(decodedValue);
-        log.error("encoded-token = " + encodedToken);
+        log.info("encoded-token = " + encodedToken);
         int delim = encodedToken.indexOf(":");
         if (delim == -1) {
             throw new BadCredentialsException("Invalid basic authentication token");
@@ -37,7 +37,6 @@ public class CamundaHttpBasicProvider {
 
     public Authentication getAuthentication(String token) {
         String email = getEmailFromToken(token);
-        log.error("email:" + email);
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -45,8 +44,6 @@ public class CamundaHttpBasicProvider {
     public String encodeUsernamePassword(String username, String password) throws BadCredentialsException {
         String base64Token = username + ":" + password;
         try {
-            log.error("decode:" + Base64.getEncoder()
-                    .encodeToString(base64Token.getBytes(StandardCharsets.UTF_8)));
             return encoder.encodeToString(base64Token.getBytes());
         }
         catch (IllegalArgumentException ex) {

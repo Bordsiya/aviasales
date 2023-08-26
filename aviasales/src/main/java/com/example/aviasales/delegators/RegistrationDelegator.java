@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
 
-@Slf4j
 @Named
 public class RegistrationDelegator implements JavaDelegate {
     private AuthService authService;
@@ -40,10 +39,9 @@ public class RegistrationDelegator implements JavaDelegate {
                     (String) execution.getVariable("password")
             );
             String token = camundaHttpBasicProvider.encodeUsernamePassword(userDTO.getEmail(), userDTO.getPassword());
-            log.error(token);
 
             Boolean isAdmin = (Boolean) execution.getVariable("isAdmin");
-            User user = null;
+            User user;
             if (isAdmin) {
                 delegateAuthCheckService.checkAdminAuthority(execution);
                 user = authService.register(userDTO, RoleType.ADMIN);

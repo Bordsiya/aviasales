@@ -3,7 +3,6 @@ package com.example.aviasales.delegators.user;
 import com.example.aviasales.entity.Airport;
 import com.example.aviasales.service.AirportService;
 import com.example.aviasales.service.camunda.DelegateAuthCheckService;
-import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 
 @Named
-@Slf4j
 public class GetAirportDelegator implements JavaDelegate {
     private AirportService airportService;
     private DelegateAuthCheckService delegateAuthCheckService;

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Named;
-import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 
 @Named

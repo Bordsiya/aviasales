@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Named
-@Slf4j
 public class SearchFlightsDelegator implements JavaDelegate {
     private FlightService flightService;
     private SearchRequestMapper searchRequestMapper;
