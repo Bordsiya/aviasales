@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/V001__recommendation_init.sql
+  - include:
+      file: db/changelog/changeset/V002__fill.sql
+  - include:
+      file: db/changelog/changeset/V003__init_sequence.sql

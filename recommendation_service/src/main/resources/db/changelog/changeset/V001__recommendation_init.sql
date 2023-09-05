@@ -7,5 +7,13 @@ create table recommendation
     created_date date         not null
 );
 
+create table city_experience
+(
+    id          bigserial       primary key,
+    user_id     bigint          not null,
+    city        varchar(255)    not null,
+    scrobbles   bigint          not null
+);
+
 alter table public.recommendation
     owner to "user";

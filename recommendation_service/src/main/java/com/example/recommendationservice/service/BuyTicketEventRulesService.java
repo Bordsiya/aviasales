@@ -1,12 +1,17 @@
 package com.example.recommendationservice.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.example.recommendationservice.exception.CannotConstructRecommendationsException;
 import com.example.recommendationservice.model.BuyTicketEvent;
+import com.example.recommendationservice.model.CityExperience;
 import com.example.recommendationservice.model.RecommendationRules;
+import com.example.recommendationservice.repo.CityExperienceRepository;
+import com.example.recommendationservice.util.CityRatingLookUp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,34 +20,18 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BuyTicketEventRulesService {
-    private final ObjectMapper mapper;
 
-    private final FileReader fileReader;
-
-    private RecommendationRules rules;
-
-    @PostConstruct
-    private void initRules() throws JsonProcessingException {
-        var raw = fileReader.readFileAsString("recommendations.json");
-        rules = mapper.readValue(raw, RecommendationRules.class);
-    }
+    private final UserBasedCityRecommenderService userBasedCityRecommenderService;
+    private final CityExperienceService cityExperienceService;
 
     public List<String> getRecommendations(BuyTicketEvent event) {
-        if (rules == null) {
-            return Collections.emptyList();
+        cityExperienceService.addCityExperience(event);
+        ArrayList<CityRatingLookUp> userRec = userBasedCityRecommenderService.getSimilarRatings(event.userId());
+        int userSize = Math.min(userRec.size(), 10);
+        ArrayList<CityRatingLookUp> userList = new ArrayList<> (userRec.subList(0, userSize));
+        if (userSize == 0) {
+            throw new CannotConstructRecommendationsException();
         }
-
-        var rForCityFrom = rules.rules().get(event.cityFrom());
-        var rForCityTo = rules.rules().get(event.cityTo());
-
-        List<String> result = new java.util.ArrayList<>(Collections.emptyList());
-        if (rForCityFrom != null) {
-            result.addAll(rForCityFrom);
-        }
-        if (rForCityTo != null) {
-            result.addAll(rForCityTo);
-        }
-
-        return result.stream().distinct().toList();
+        return userList.stream().map(CityRatingLookUp::getCity).toList();
     }
 }
