@@ -874,7 +874,7 @@ VALUES(3, 'Россия', '0997654321', 'VISA', '2028-03-24', 'Юлия', 'FEMAL
 
 INSERT INTO users(id, email, password, role) VALUES(1, 'asiya.dragnil@mail.ru', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'ADMIN');
 INSERT INTO users(id, email, password, role) VALUES(2, 'bordun.2002@mail.ru', '$2a$10$z7pVvVo2Y/8/owDHxIcUQeA1lgwQFQUj3WyAPfhxuEMpYkkbBoPYG', 'CUSTOMER');
-INSERT INTO users(id, email, password, role) VALUES(3, 'aboba@mail.ru', '$2a$10$fE7dVS7r.xivrPXYRHAQs.g.nq0Qho9TB8txeO/5wl6lsB5jc6Dha', 'CUSTOMER');
+INSERT INTO users(id, email, password, role) VALUES(3, 'aboba@mail.ru', '$2a$10$fE7dVS7r.xivrPXYRHAQs.g.nq0Qho9TB8txeO/5wl6lsB5jc6Dha', 'ADMIN');
 INSERT INTO users(id, email, password, role) VALUES(4, 'aboba1@mail.ru', '$2a$10$fE7dVS7r.xivrPXYRHAQs.g.nq0Qho9TB8txeO/5wl6lsB5jc6Dha', 'CUSTOMER');
 INSERT INTO users(id, email, password, role) VALUES(5, 'aboba2@mail.ru', '$2a$10$fE7dVS7r.xivrPXYRHAQs.g.nq0Qho9TB8txeO/5wl6lsB5jc6Dha', 'CUSTOMER');
 INSERT INTO users(id, email, password, role) VALUES(6, 'aboba3@mail.ru', '$2a$10$fE7dVS7r.xivrPXYRHAQs.g.nq0Qho9TB8txeO/5wl6lsB5jc6Dha', 'CUSTOMER');
