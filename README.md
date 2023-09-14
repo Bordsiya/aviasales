@@ -2,29 +2,36 @@
 
 Бордун А.В.
 
-## Вариант №11102/9909320 ##
+## ТЗ ##
 Aviasales.ru Поиск Дешевых Авиабилетов по 728 Авиакомпаниям - http://www.aviasales.ru/
 
 ![image](https://user-images.githubusercontent.com/22819920/228567258-2bf3bd16-dee9-4fd8-889d-5caac2cc4527.png)
 ![image](https://github.com/Bordsiya/aviasales/assets/22819920/318514b8-57b7-45c8-b709-d6b5bced674b)
 ![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/dd1cffe9-2518-435f-960a-f0aeb6e0946f)
+![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/98833320-27e5-4ed8-89b1-f0e3e08c61fc)
 
 
-# BPMN (1-2 labs) #
 
-![bpmn-1](https://user-images.githubusercontent.com/22819920/228568057-e37499b7-ae11-4635-bf1f-9a284126a0d4.png)
-![bpmn-2](https://github.com/Bordsiya/aviasales/blob/master/docs/diagram_2lab.png)
+# BPMN #
+Авторизация:
+
+![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/09d49b4c-a834-4380-9951-039ca2b018a9)
+
+
+Добавление пассажиров:
+
+![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/758fd1b3-3457-4753-8f88-685056add5b2)
+
+Остальные бизнес-процессы имеют схему, похожую на приложенную ниже.
+Поиск полетов:
+
+![изображение](https://github.com/Bordsiya/aviasales/assets/22819920/d911311f-f9b9-4718-a73a-06d2a4ddddf8)
+
 
 # Architecture #
 
 ![Lab4Architecture](https://github.com/Bordsiya/aviasales/assets/22819920/ba89c0d5-fd67-4cfc-a6b4-de29608f23f7)
 
-
-# Database Diagram #
-
-![db_diagram](https://user-images.githubusercontent.com/22819920/234403414-b32aa065-c897-4c80-bff2-4253de8b20c9.png)
-![uml_users](https://github.com/Bordsiya/aviasales/assets/22819920/c1582d87-2012-457a-a884-54106f9e2906)
-![db_3_lab](https://github.com/Bordsiya/aviasales/blob/master/docs/add_db_elements_3lab.png)
 
 # API #
 http://localhost:9095/swagger-ui/index.html#/
