@@ -15,9 +15,10 @@ Aviasales.ru Поиск Дешевых Авиабилетов по 728 Авиа�
 ![bpmn-1](https://user-images.githubusercontent.com/22819920/228568057-e37499b7-ae11-4635-bf1f-9a284126a0d4.png)
 ![bpmn-2](https://github.com/Bordsiya/aviasales/blob/master/docs/diagram_2lab.png)
 
-# Architecture (3lab) #
+# Architecture #
 
-![architecture](https://github.com/Bordsiya/aviasales/blob/master/docs/architecture_3lab.jpg)
+![Lab4Architecture](https://github.com/Bordsiya/aviasales/assets/22819920/ba89c0d5-fd67-4cfc-a6b4-de29608f23f7)
+
 
 # Database Diagram #
 
